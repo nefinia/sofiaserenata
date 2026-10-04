@@ -701,9 +701,10 @@ function setLang(l){
   const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal"}[l]; lg.href="mentions-legales/?lang="+l;}
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
 }
-$("#enBtn").addEventListener("click",()=>setLang("en"));
-$("#frBtn").addEventListener("click",()=>setLang("fr"));
-$("#esBtn").addEventListener("click",()=>setLang("es"));
+const pickLang=l=>{setLang(l); try{localStorage.setItem("lang",l)}catch(_){}};
+$("#enBtn").addEventListener("click",()=>pickLang("en"));
+$("#frBtn").addEventListener("click",()=>pickLang("fr"));
+$("#esBtn").addEventListener("click",()=>pickLang("es"));
 
 showPoster(0);
 
@@ -712,10 +713,13 @@ showPoster(0);
 f.addEventListener("submit",async e=>{e.preventDefault();const L=document.documentElement.lang||"en",d=dict[L]||dict.en;const b=f.querySelector("button[type=submit]");b.disabled=true;
 try{const r=await fetch(f.action,{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.reset();st.textContent=d.sentOk;
 try{gtag("event","generate_lead",{form:"event_quote"});}catch(_){}}catch(_){st.textContent=d.sentErr;}b.disabled=false;});})();
-/* Language: ?lang=es|fr|en or #es|#fr|#en forces it; otherwise browser language */
+/* Language: ?lang= or #lang forces it; then the visitor's last choice; then the first
+   supported language in the browser's preference list (es-CL, fr-CA… count); else English */
 const urlLang=(new URLSearchParams(location.search).get("lang")||location.hash.slice(1)).toLowerCase();
-const navLang=(navigator.language||"").toLowerCase();
-setLang(dict[urlLang]?urlLang:/^es/.test(navLang)?"es":/^fr/.test(navLang)?"fr":"en");
+let savedLang=""; try{savedLang=localStorage.getItem("lang")||""}catch(_){}
+const navLang=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""])
+  .map(x=>String(x).toLowerCase().slice(0,2)).find(x=>dict[x])||"en";
+setLang(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang);
 </script>
 </body>
 </html>
