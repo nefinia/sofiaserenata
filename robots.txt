@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /scores/
+Sitemap: https://sofiaserenata.com/sitemap.xml
