@@ -72,13 +72,11 @@
     .top-in{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:12px}
     .brand{font-family:var(--display);font-size:1.45rem;color:var(--ink);text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:.3em}
     .brand-icon{height:1.5em;width:auto;display:block;margin-left:-.25em}
-    @media (max-width:560px){.home-link{display:none}.brand{font-size:1.3rem}}
+    @media (max-width:560px){.brand{font-size:1.3rem}}
     .menu{display:flex;gap:22px;align-items:center}
     .menu a{color:var(--ink);text-decoration:none;font-size:14px;letter-spacing:.06em}
     .menu a:hover{color:var(--rose)}
     .top-right{display:flex;align-items:center;gap:14px}
-    .home-link{font-size:12px;letter-spacing:.06em;color:var(--soft);text-decoration:none}
-    .home-link:hover{color:var(--rose)}
     .lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px}
     .lang button{background:none;border:0;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--soft);cursor:pointer}
     .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -242,7 +240,6 @@
       <a href="#contact" data-t="navContact">Contact</a>
     </nav>
     <div class="top-right">
-    <a class="home-link" href="https://sofiagallego.com/" title="Sofia Gallego — main website">sofiagallego.com</a>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="enBtn" aria-pressed="true">EN</button>
       <button type="button" id="frBtn" aria-pressed="false">FR</button>
