@@ -420,7 +420,7 @@
 
 <footer>
   <div data-t-html="footer">© <span id="y"></span> Sofia Gallego — Singer & Violinist — Paris & Île-de-France</div>
-  <div style="margin-top:6px"><a href="https://sofiagallego.com/">sofiagallego.com</a></div>
+  <div style="margin-top:6px"><a href="https://sofiagallego.com/">sofiagallego.com</a> · <a id="legal" href="mentions-legales/">Legal notice</a></div>
 </footer>
 
 <div class="player" id="player" hidden>
@@ -698,6 +698,7 @@ function setLang(l){
   document.querySelectorAll("[data-p]").forEach(el=>{const v=dict[l][el.dataset.p]; if(v) el.setAttribute("placeholder",v);});
   ["en","fr","es"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
   const y=document.getElementById("y"); if(y) y.textContent=new Date().getFullYear();
+  const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal"}[l]; lg.href="mentions-legales/?lang="+l;}
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
 }
 $("#enBtn").addEventListener("click",()=>setLang("en"));
