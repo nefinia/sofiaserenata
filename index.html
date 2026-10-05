@@ -631,7 +631,7 @@ const embed=(id,auto)=>`https://www.youtube-nocookie.com/embed/${id}?rel=0${auto
 /* ---------- Videos: poster first, iframe only on click ---------- */
 function showPoster(i){
   vid=i;
-  $("#screen").innerHTML=`<button class="poster" type="button" style="background-image:url('${thumb(VIDEOS[i][0])}')" aria-label="${esc(dict[lang].playVideo)}: ${esc(VIDEOS[i][1])}"><span class="big">${PLAY}</span></button>`;
+  $("#screen").innerHTML=`<button class="poster" type="button" data-ds-keep style="background-image:url('${thumb(VIDEOS[i][0])}')" aria-label="${esc(dict[lang].playVideo)}: ${esc(VIDEOS[i][1])}"><span class="big">${PLAY}</span></button>`;
   $("#vidNow").textContent=VIDEOS[i][1];
   $("#screen .poster").addEventListener("click",()=>{
     stopSong();
@@ -641,7 +641,7 @@ function showPoster(i){
 }
 function renderThumbs(){
   const list=allVids?VIDEOS:VIDEOS.slice(0,6);
-  $("#thumbs").innerHTML=list.map(([id,t],i)=>`<button class="thumb" type="button" data-v="${i}" aria-current="${i===vid}" aria-label="${esc(dict[lang].playVideo)}: ${esc(t)}"><span class="img" style="background-image:url('${thumb(id)}')"></span><span class="cap">${esc(t)}</span></button>`).join("");
+  $("#thumbs").innerHTML=list.map(([id,t],i)=>`<button class="thumb" type="button" data-v="${i}" aria-current="${i===vid}" aria-label="${esc(dict[lang].playVideo)}: ${esc(t)}"><span class="img" data-ds-keep style="background-image:url('${thumb(id)}')"></span><span class="cap">${esc(t)}</span></button>`).join("");
   $("#moreVids").textContent=allVids?dict[lang].lessVids:dict[lang].moreVids;
 }
 $("#thumbs").addEventListener("click",e=>{const b=e.target.closest(".thumb"); if(b) showPoster(+b.dataset.v);});
