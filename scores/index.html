@@ -245,8 +245,8 @@
 <script src="lib/magenta-core.js"></script>
 <script src="lib/midi-player.min.js"></script>
 <script>
-const CATS={solo:{en:"Solo violin",fr:"Violon seul"},duets:{en:"Violin & cello duets",fr:"Duos violon & violoncelle"},pop:{en:"Pop & film",fr:"Pop & cinéma"},classical:{en:"Classical",fr:"Classique"},voice:{en:"Opera & choral",fr:"Opéra & chœur"},latin:{en:"Tango & chanson",fr:"Tango & chanson"},jewish:{en:"Jewish & klezmer",fr:"Musique juive & klezmer"}};
-const INSTR={vc:{en:"Violin & cello",fr:"Violon & violoncelle"},vn:{en:"Solo violin",fr:"Violon seul"},vnp:{en:"Violin & piano",fr:"Violon & piano"},vp:{en:"Voice & piano",fr:"Voix & piano"},pno:{en:"Piano",fr:"Piano"},lead:{en:"Melody & chords",fr:"Mélodie & accords"},book:{en:"Songbook",fr:"Recueil"},part:{en:"Violin part",fr:"Partie de violon"},score:{en:"Full score",fr:"Conducteur"},trio:{en:"Trio (part)",fr:"Trio (partie)"},voice:{en:"Voice",fr:"Voix"}};
+const CATS={solo:{en:"Solo violin",fr:"Violon seul"},gig:{en:"Gig favourites",fr:"Favoris de scène"},duets:{en:"Violin & cello duets",fr:"Duos violon & violoncelle"},pop:{en:"Pop & film",fr:"Pop & cinéma"},classical:{en:"Classical",fr:"Classique"},voice:{en:"Opera & choral",fr:"Opéra & chœur"},latin:{en:"Tango & chanson",fr:"Tango & chanson"},jewish:{en:"Jewish & klezmer",fr:"Musique juive & klezmer"}};
+const INSTR={vc:{en:"Violin & cello",fr:"Violon & violoncelle"},vn:{en:"Solo violin",fr:"Violon seul"},vnp:{en:"Violin & piano",fr:"Violon & piano"},vp:{en:"Voice & piano",fr:"Voix & piano"},pno:{en:"Piano",fr:"Piano"},lead:{en:"Melody & chords",fr:"Mélodie & accords"},book:{en:"Songbook",fr:"Recueil"},part:{en:"Violin part",fr:"Partie de violon"},score:{en:"Full score",fr:"Conducteur"},trio:{en:"Trio (part)",fr:"Trio (partie)"},voice:{en:"Voice",fr:"Voix"},gtr:{en:"Guitar",fr:"Guitare"}};
 /* the song list is stored encrypted (vault/c-catalog) and only loaded after sign-in */
 let S=[];
 const T={
@@ -256,7 +256,7 @@ const T={
     search:"Search a score",gridL:"Grid",listL:"List",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",recent:"Recently opened",
     mFit:"Fit",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Close",lockOne:"Sign in to open this score.",
     fit:"Fit to screen",fitNote:"Reflows to your screen · Play scrolls by itself",viewPdf:"View PDF",pdfNote:"Full screen, turn pages with a tap or pedal",drive:"Open in Google Drive",
-    listen:"Listen",hide:"Stop",hint:"Violin and cello, with the repeats played through",hintSolo:"Solo violin line, with the repeats played through",dlMidi:"Download MIDI",onreq:"No score file yet. Ask Sofia.",
+    listen:"Listen",hide:"Stop",hint:"Violin and cello, with the repeats played through",hintSolo:"Solo violin line, with the repeats played through",hintGig:"With the repeats played through",dlMidi:"Download MIDI",onreq:"No score file yet. Ask Sofia.",
     devTitle:"On this device",devNote:"Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.",addFiles:"Add files…",remove:"Remove from this device",localNote:"Only on this device",back:"Back to events"},
   fr:{navVideos:"Vidéos",navServices:"Formules",navRep:"Répertoire",navXp:"À propos",navContact:"Contact",navScores:"Partitions",h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Une bibliothèque de travail d’arrangements pour violon et voix, pensés pour le jeu en direct. Chaque partition s’adapte à l’écran, peut être écoutée et reste disponible hors ligne. L’accès est ouvert aux musiciens sur demande.",
     lockH:"Accès musiciens",lockMsg:"Pour les musiciens avec qui je joue. Connectez-vous pour ouvrir la bibliothèque ; merci de ne pas diffuser les partitions.",req:"Demander un accès",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",
@@ -264,7 +264,7 @@ const T={
     search:"Chercher une partition",gridL:"Grille",listL:"Liste",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",recent:"Ouvertes récemment",
     mFit:"Écran",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Fermer",lockOne:"Connectez-vous pour ouvrir cette partition.",
     fit:"Adapté à l’écran",fitNote:"S’adapte à votre écran · Lecture qui défile toute seule",viewPdf:"Voir le PDF",pdfNote:"Plein écran, pages tournées d’un geste ou à la pédale",drive:"Ouvrir dans Google Drive",
-    listen:"Écouter",hide:"Arrêter",hint:"Violon et violoncelle, reprises comprises",hintSolo:"Ligne de violon seul, reprises comprises",dlMidi:"Télécharger le MIDI",onreq:"Pas encore de fichier. Demandez à Sofia.",
+    listen:"Écouter",hide:"Arrêter",hint:"Violon et violoncelle, reprises comprises",hintSolo:"Ligne de violon seul, reprises comprises",hintGig:"Reprises comprises",dlMidi:"Télécharger le MIDI",onreq:"Pas encore de fichier. Demandez à Sofia.",
     devTitle:"Sur cet appareil",devNote:"Ajoutez vos propres fichiers MusicXML (.musicxml, .xml, .mxl) ou MIDI. Ils restent uniquement sur cet appareil et fonctionnent sans internet.",addFiles:"Ajouter des fichiers…",remove:"Retirer de cet appareil",localNote:"Uniquement sur cet appareil",back:"Retour aux événements"}
 };
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -314,7 +314,7 @@ function openScore(id){
   let a="";
   if(s.k) a+=`<a class="act primary" data-rec href="fit.html?v=11&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
   s.f.forEach(([_,v],j)=>{ const id=pid(s,j); if(id) a+=`<a class="act${s.k?"":" primary"}" data-rec href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}"><span>${esc(t.viewPdf)}${v?" · "+esc(v):""}</span><small>${esc(t.pdfNote)}</small></a>`; });
-  if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.c==="solo"?t.hintSolo:t.hint)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
+  if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.c==="solo"?t.hintSolo:s.c==="gig"?t.hintGig:t.hint)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
   if(!a) a=`<p class="s-lock">${esc(t.onreq)}</p>`;
   const drive=s.f.map(([_,v],j)=>pid(s,j)?`<a href="https://drive.google.com/file/d/${pid(s,j)}/view" target="_blank" rel="noopener" data-rec>${esc(t.drive)}${v?" · "+esc(v):""}</a>`:"").join("");
   openPanel(h+`<div class="acts">${a}</div>`+(drive?`<p class="s-drive">${drive}</p>`:""));
