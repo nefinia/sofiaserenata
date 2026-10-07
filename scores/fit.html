@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="theme-color" content="#111111">
 <title>Score</title>
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
@@ -11,7 +12,8 @@
 :root{--bg:#141414;--bar:rgba(20,20,20,.9);--fg:#f2efe8;--muted:#a8a29a;--accent:#c9a46a;--paper:#fffdf8}
 *{box-sizing:border-box;touch-action:manipulation}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
-#app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;transform-origin:0 0;background:var(--paper)}
+#app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:var(--paper)}
+#rotor{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;transform-origin:0 0}
 #scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 body.pages #scroller{overflow:hidden}
 #score{background:var(--paper);min-height:100%}
@@ -43,12 +45,12 @@ body:not(.pages) .ponly{display:none}
 <body class="pages">
 <div id="app">
 <div id="msg">Loading the score…</div>
-<div id="scroller"><div id="score"></div></div>
+<div id="rotor"><div id="scroller"><div id="score"></div></div>
 <div class="zone" id="zl" aria-hidden="true"></div>
-<div class="zone" id="zr" aria-hidden="true"></div>
+<div class="zone" id="zr" aria-hidden="true"></div></div>
 <div id="bar">
   <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
-  <div id="title">Score</div>
+  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v10</span>
   <div class="seg" role="group" aria-label="Layout">
     <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
     <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
@@ -69,6 +71,7 @@ body:not(.pages) .ponly{display:none}
     <span id="spd" style="padding:0 8px;color:var(--muted);align-self:center">1</span>
     <button type="button" id="fast" title="Faster">+</button>
   </div>
+  <button type="button" id="rep" title="Repeats: written out in order (continuous) or as printed" hidden>→<span class="lbl" id="repLbl"> Continuous</span></button>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
 </div>
@@ -92,7 +95,8 @@ let rot=+(localStorage.getItem("fit-rot")||0)%ROTS.length;
 /* screen size that browser zoom can't distort: layout width + visible height at zoom 1 */
 const SW=()=>document.documentElement.clientWidth||innerWidth, SH=()=>Math.round(window.visualViewport?visualViewport.height*visualViewport.scale:innerHeight);
 const VW=()=>ROTS[rot][0]?SH():SW(), VH=()=>ROTS[rot][0]?SW():SH();
-function applyRot(){ const a=$("#app"), d=ROTS[rot][0];
+function applyRot(){ const a=$("#rotor"), d=ROTS[rot][0];
+  $("#app").style.width=SW()+"px"; $("#app").style.height=SH()+"px";
   a.style.width=VW()+"px"; a.style.height=VH()+"px";
   a.style.transform=d===90?`translateX(${SW()}px) rotate(90deg)`:d===270?`translateY(${SH()}px) rotate(-90deg)`:"none";
   $("#rotLbl").textContent=" "+ROTS[rot][1]; }
@@ -135,6 +139,8 @@ $("#gap").onclick=()=>setGap(gap+1);
 function setHsp(h){ hsp=h%HSP.length; try{localStorage.setItem("fit-hsp",hsp)}catch(e){} $("#hspLbl").textContent=" "+HSP[hsp][0]; $("#hsp").title="Space between notes: "+HSP[hsp][0]+" (H)"; layout(true); }
 $("#hsp").onclick=()=>setHsp(hsp+1);
 $("#rot").onclick=()=>setRot(rot+1);
+function showRep(){ $("#repLbl").textContent=cont?" Continuous":" Repeats as printed"; $("#rep").firstChild.textContent=cont?"→":"↺"; $("#rep").setAttribute("aria-pressed",cont); }
+$("#rep").onclick=()=>{ cont=!cont; try{localStorage.setItem("fit-cont",cont?"1":"0")}catch(e){} showRep(); if(tk){ loadFor(view); page=1; layout(false); $("#scroller").scrollTop=0; } };
 $("#play").onclick=()=>playing?stopPlay():startPlay(); $("#slow").onclick=()=>setSpd(spd-1); $("#fast").onclick=()=>setSpd(spd+1);
 function fitAll(){ // biggest size at which the whole piece fits one screen
   if(!tk) return; if(view!=="pages") setView("pages");
@@ -189,7 +195,8 @@ document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==
 /* print-only layout and repeated instrument names removed; "unrolled" version (repeats written out) used for Scroll / Play */
 let XO=null, XU=null, loaded=null;
 function clean(x){ return x.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"").replace(/<part-abbreviation[^>]*>[\s\S]*?<\/part-abbreviation>/g,"").replace(/<part-abbreviation-display>[\s\S]*?<\/part-abbreviation-display>/g,""); }
-function loadFor(v){ const want=(v==="scroll"&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
+let cont=(localStorage.getItem("fit-cont")||"1")==="1";
+function loadFor(v){ const want=(cont&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
 function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
 applyRot();
 async function start(){
@@ -203,7 +210,7 @@ async function start(){
     tk.setOptions({scale:scale(),breaks:"auto"});
     XO=clean(xml); loaded=null;
     if(!loadFor(view)) return fail();
-    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); setView(view); showBar(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); if(XU){ $("#rep").hidden=false; showRep(); } setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
 </script>
