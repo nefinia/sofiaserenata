@@ -17,7 +17,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 #scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 body.pages #scroller{overflow:hidden}
 #score{background:var(--paper);min-height:100%;padding-top:var(--top);transition:padding-top .25s ease,top .25s ease}
+#score{position:relative}
 #score svg{display:block;width:100%;height:auto}
+#score svg.ink-layer{display:block}
 body.pages #score svg{width:100%;height:100%}
 #score{touch-action:pan-y}
 #scroller,#scroller *{touch-action:pan-y}
@@ -42,19 +44,41 @@ body:not(.pages) .ponly{display:none}
 #cd{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;font:600 min(40vw,40vh)/1 system-ui,sans-serif;color:rgba(40,40,40,.28);pointer-events:none}
 #cd[hidden]{display:none}
 #menuBtn{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:4;width:44px;height:44px;min-width:44px;padding:0;border-radius:12px;border:0;background:rgba(40,40,40,.72);color:#fff;font-size:20px;line-height:44px;backdrop-filter:blur(6px)}
+#trPanel{position:absolute;inset:0;z-index:8;display:flex;align-items:flex-start;justify-content:center;padding:max(70px,env(safe-area-inset-top)) 12px 12px;background:rgba(0,0,0,.25)}
+#trPanel[hidden]{display:none}
+.trbox{background:#1c1c1c;border-radius:16px;padding:16px;width:min(420px,100%);box-shadow:0 14px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:12px}
+.trbox h4{margin:0;font-size:17px}
+.trbox label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:13px}
+.trbox select{font:inherit;font-size:16px;color:var(--fg);background:#2a2a2a;border:1px solid #3a3a3a;border-radius:10px;padding:10px}
+.trrow{display:flex;align-items:center;gap:8px}
+.trrow>span{flex:0 0 64px;color:var(--muted);font-size:13px}
+.trrow b{flex:1;text-align:center;font-weight:600}
+.trrow button{min-width:44px;min-height:44px;font-size:18px}
+.trnote{color:var(--muted);font-size:12.5px;margin:0}
+.trfoot{display:flex;gap:8px;justify-content:flex-end}
+.trfoot button{font-size:15px}
+#trDone{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
 @media (max-width:520px){.lbl{display:none}}
 </style>
 </head>
 <body class="pages">
 <div id="app">
 <div id="msg">Loading the score…</div>
+<div id="trPanel" hidden><div class="trbox" role="dialog" aria-label="Transpose">
+  <h4>Transpose</h4>
+  <label>Playing it on <select id="trInst"></select></label>
+  <div class="trrow"><span>Key</span><button type="button" id="trDn" aria-label="Down a semitone">−</button><b id="trKey">C major</b><button type="button" id="trUp" aria-label="Up a semitone">+</button></div>
+  <div class="trrow"><span>Octave</span><button type="button" id="trOd" aria-label="Octave down">−</button><b id="trOct">Auto</b><button type="button" id="trOu" aria-label="Octave up">+</button></div>
+  <p class="trnote" id="trNote"></p>
+  <div class="trfoot"><button type="button" id="trReset">Reset</button><button type="button" id="trDone">Done</button></div>
+</div></div>
 <div id="rotor"><div id="scroller"><div id="score"></div></div>
 <div id="cd" hidden aria-live="assertive"></div>
 <div class="zone" id="zl" aria-hidden="true"></div>
 <div class="zone" id="zr" aria-hidden="true"></div></div>
 <div id="bar">
   <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
-  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v12</span>
+  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v13</span>
   <div class="seg" role="group" aria-label="Layout">
     <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
     <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
@@ -77,12 +101,15 @@ body:not(.pages) .ponly{display:none}
   </div>
   <button type="button" id="cdBtn" title="Countdown before Play">⏱<span class="lbl" id="cdLbl"> 3 s</span></button>
   <button type="button" id="rep" title="Repeats: written out in order (continuous) or as printed" hidden>→<span class="lbl" id="repLbl"> Continuous</span></button>
+  <button type="button" id="trBtn" title="Transpose for another instrument or key (T)" hidden>♯<span class="lbl" id="trLbl"> Transpose</span></button>
+  <button type="button" id="inkBtn" title="Draw on the score (D)">✎<span class="lbl"> Draw</span></button>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
 </div>
 <button type="button" id="menuBtn" title="Menu" aria-label="Show menu">☰</button>
 </div>
 
+<script src="ink.js"></script>
 <script>
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
 const $=s=>document.querySelector(s);
@@ -142,9 +169,80 @@ function layout(keepRatio){
   page=keepRatio?Math.max(1,Math.min(pages,1+Math.round(ratio*(pages-1)))):Math.min(page,pages);
   draw();
 }
+/* ---------- transpose: instrument (written key, clef, range), semitones, octave ---------- */
+/* id, name, written minus sounding (semitones), clef, comfortable written range (MIDI) */
+const INST=[["asis","As written",0,null,0,127],["vn","Violin",0,"G2",55,100],["va","Viola",0,"C3",48,88],["vc","Cello",0,"F4",36,81],["db","Double bass",12,"F4",40,79],
+  ["fl","Flute",0,"G2",60,96],["ob","Oboe",0,"G2",58,93],["cl","Clarinet in B♭",2,"G2",52,96],["tp","Trumpet in B♭",2,"G2",54,86],["as","Alto sax (E♭)",9,"G2",58,89],["ts","Tenor sax (B♭)",14,"G2",58,89],
+  ["hn","Horn in F",7,"G2",54,84],["tb","Trombone",0,"F4",40,77],["gt","Guitar",12,"G2",52,95],["pr","Piano, right hand",0,"G2",55,96],["pl","Piano, left hand",0,"F4",28,64],
+  ["sop","Soprano",0,"G2",60,84],["mez","Mezzo-soprano",0,"G2",57,81],["alt","Alto (voice)",0,"G2",53,77],["ten","Tenor (voice)",12,"G2-8",60,84],["bar","Baritone",0,"F4",43,67],["bas","Bass (voice)",0,"F4",40,64]];
+const CLEF={G2:"<clef><sign>G</sign><line>2</line></clef>","G2-8":"<clef><sign>G</sign><line>2</line><clef-octave-change>-1</clef-octave-change></clef>",C3:"<clef><sign>C</sign><line>3</line></clef>",F4:"<clef><sign>F</sign><line>4</line></clef>"};
+const IV={0:[["P",1,0]],1:[["m",2,-5],["A",1,7]],2:[["M",2,2]],3:[["m",3,-3],["A",2,9]],4:[["M",3,4]],5:[["P",4,-1]],6:[["A",4,6],["d",5,-6]],7:[["P",5,1]],8:[["m",6,-4],["A",5,8]],9:[["M",6,3]],10:[["m",7,-2]],11:[["M",7,5]]};
+const MAJ=["C♭","G♭","D♭","A♭","E♭","B♭","F","C","G","D","A","E","B","F♯","C♯"], MIN=["A♭","E♭","B♭","F","C","G","D","A","E","B","F♯","C♯","G♯","D♯","A♯"];
+let XOs=null, XUs=null, f0=0, minor=false, pitches=[], trKey="", TR={semi:0,oct:null}, inst=localStorage.getItem("tr-inst")||"asis";
+const I=()=>INST.find(x=>x[0]===inst)||INST[0];
+function spell(T){ if(!T) return {s:"",f:f0}; const dn=T<0, a=Math.abs(T), oc=Math.floor(a/12); let best=null;
+  for(const [q,n,d] of IV[a%12]){ const f=f0+(dn?-d:d); if(!best||Math.abs(f)<Math.abs(best.f)) best={q,n,f}; }
+  return {s:(dn?"-":"")+best.q+(best.n+7*oc), f:best.f}; }
+function autoOct(base){ const [,,,clef,lo,hi]=I(); if(!clef||!pitches.length) return 0; let best=0, bs=-1, bc=1e9;
+  for(let k=-3;k<=3;k++){ let n=0, sum=0; for(const p of pitches){ const w=p+base+12*k; if(w>=lo&&w<=hi) n++; sum+=w; } const c=Math.abs(sum/pitches.length-(lo+hi)/2);
+    if(n>bs||(n===bs&&c<bc)){ best=k; bs=n; bc=c; } } return best; }
+function trState(){ const it=I(), base=it[2]+TR.semi, ao=autoOct(base), oct=TR.oct===null?ao:TR.oct, sp=spell(base+12*oct); return {it,base,ao,oct,sp}; }
+function trPrep(){ /* set the engine options and the (re-clefed) MusicXML for the current choice */
+  if(!tk) return; const {it,sp}=trState();
+  const nm=it[1].replace(/ \(.*\)|, .*/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  const clefify=x=>!x||!it[3]||/<staves>\s*[2-9]/.test(x)?x:x.replace(/<clef\b[^>]*>[\s\S]*?<\/clef>/g,CLEF[it[3]]).replace(/<part-name([^>]*)>[\s\S]*?<\/part-name>/,`<part-name$1>${nm}</part-name>`);
+  tk.setOptions({transpose:sp.s}); if(!ZIP){ XO=clefify(XOs); XU=XUs?clefify(XUs):null; } loaded=null; trUI(); }
+function trApply(){ trPrep(); loadFor(view); layout(true); }
+function trUI(){ const {it,ao,oct,sp}=trState(); const names=minor?MIN:MAJ, kn=Math.abs(sp.f)<=7?names[sp.f+7]+(minor?" minor":" major"):"";
+  $("#trKey").textContent=(kn||"Key")+(TR.semi?` (${TR.semi>0?"+":""}${TR.semi})`:"");
+  $("#trOct").textContent=TR.oct===null?(it[3]?`Auto (${ao>0?"+":""}${ao})`:"As written"):`${oct>0?"+":""}${oct}`;
+  $("#trNote").textContent=it[0]==="asis"?"":`Written for ${it[1].toLowerCase()}${it[2]?" (transposing instrument)":""}, ${it[3]==="F4"?"bass clef":it[3]==="C3"?"alto clef":it[3]==="G2-8"?"tenor (octave) clef":"treble clef"}, octave chosen to fit its range.`;
+  const changed=it[0]!=="asis"||TR.semi||TR.oct; $("#trLbl").textContent=" "+(changed?(it[0]!=="asis"?it[1].replace(/ \(.*\)| in .*|,.*/,""):"")+(TR.semi?(it[0]!=="asis"?" ":"")+(TR.semi>0?"+":"")+TR.semi:""):"Transpose");
+  $("#trBtn").setAttribute("aria-pressed",!!changed); }
+function trSave(){ try{ localStorage.setItem("tr:"+trKey,JSON.stringify(TR)); localStorage.setItem("tr-inst",inst); }catch(e){} }
+function trInit(key,xml){ trKey=key; try{ TR=Object.assign({semi:0,oct:null},JSON.parse(localStorage.getItem("tr:"+key)||"{}")); }catch(e){}
+  if(xml){ const m=xml.match(/<fifths>\s*(-?\d+)\s*<\/fifths>/); f0=m?+m[1]:0; minor=/<mode>\s*minor\s*<\/mode>/.test(xml);
+    const ST={C:0,D:2,E:4,F:5,G:7,A:9,B:11}; pitches=[]; const re=/<pitch>\s*<step>([A-G])<\/step>\s*(?:<alter>\s*(-?[\d.]+)\s*<\/alter>\s*)?<octave>(\d)<\/octave>/g; let r;
+    while((r=re.exec(xml))) pitches.push(12*(+r[3]+1)+ST[r[1]]+Math.round(+(r[2]||0))); }
+  $("#trInst").innerHTML=INST.map(([id,n])=>`<option value="${id}"${id===inst?" selected":""}>${n}</option>`).join("");
+  $("#trBtn").hidden=false; }
+$("#trBtn").onclick=()=>{ stopPlay(); trUI(); $("#trPanel").hidden=false; clearTimeout(hideT); };
+$("#trDone").onclick=()=>{ $("#trPanel").hidden=true; showBar(); };
+$("#trPanel").addEventListener("click",e=>{ if(e.target.id==="trPanel"){ $("#trPanel").hidden=true; showBar(); } });
+$("#trInst").onchange=e=>{ inst=e.target.value; TR.oct=null; trSave(); trApply(); };
+$("#trUp").onclick=()=>{ TR.semi=Math.min(11,TR.semi+1); trSave(); trApply(); };
+$("#trDn").onclick=()=>{ TR.semi=Math.max(-11,TR.semi-1); trSave(); trApply(); };
+$("#trOu").onclick=()=>{ TR.oct=Math.min(3,trState().oct+1); trSave(); trApply(); };
+$("#trOd").onclick=()=>{ TR.oct=Math.max(-3,trState().oct-1); trSave(); trApply(); };
+$("#trReset").onclick=()=>{ inst="asis"; TR={semi:0,oct:null}; $("#trInst").value="asis"; trSave(); trApply(); };
+
+/* ---------- annotations: drawings attached to bars ---------- */
+let ink=null, barN={};
+function toLocal(X,Y){ const d=ROTS[rot][0]; let x=X,y=Y; if(d===90){x=Y;y=SW()-X;} else if(d===270){x=SH()-Y;y=X;}
+  const sc=$("#score"), sr=$("#scroller"); return {x:x-sc.offsetLeft, y:y-(sc.offsetTop-sr.scrollTop)}; }
+function rectLocal(el){ const r=el.getBoundingClientRect(), a=toLocal(r.left,r.top), b=toLocal(r.right,r.bottom);
+  return {x:Math.min(a.x,b.x), y:Math.min(a.y,b.y), w:Math.abs(b.x-a.x), h:Math.abs(b.y-a.y)}; }
+function barFrames(){ const out=[];
+  document.querySelectorAll("#score g.measure").forEach(m=>{
+    let n=barN[m.id]; if(n===undefined){ try{ n=barN[m.id]=(tk.getElementAttr(m.id)||{}).n||m.id; }catch(e){ n=barN[m.id]=m.id; } }
+    const st=m.querySelector("g.staff"); if(!st) return; const ls=st.querySelectorAll(":scope > path"); if(ls.length<2) return;
+    const a=rectLocal(ls[0]), b=rectLocal(ls[ls.length-1]); const x=Math.min(a.x,b.x), w=Math.max(a.x+a.w,b.x+b.w)-x, y=a.y+a.h/2, h=(b.y+b.h/2)-y;
+    if(w>4&&h>4) out.push({key:String(n),x,y,w,h,unit:h});
+  }); return out; }
+function inkRender(){ if(ink) ink.render(); }
+function setupInk(store){
+  ink=Ink.create({container:$("#score"),captureParent:$("#rotor"),store,mode:"bar",frames:barFrames,toLocal,
+    hint:"Tap a bar, then draw. Two fingers scroll.",panBy:dy=>{ $("#scroller").scrollTop+=dy; inkRender(); },
+    onEnter:()=>{ stopPlay(); clearTimeout(hideT); $("#bar").classList.add("hide"); $("#menuBtn").hidden=true; $("#inkBtn").setAttribute("aria-pressed","true"); },
+    onExit:()=>{ $("#menuBtn").hidden=false; $("#inkBtn").setAttribute("aria-pressed","false"); showBar(); }});
+  $("#inkBtn").onclick=()=>ink.active?ink.exit():ink.enter();
+  $("#score").addEventListener("transitionend",inkRender); $("#scroller").addEventListener("scroll",()=>{ if(ink&&ink.active) inkRender(); },{passive:true});
+}
 function draw(){
   if(view==="pages"){ $("#score").innerHTML=tk.renderToSVG(page); $("#pg").textContent=page+" / "+pages; $("#prev").disabled=page<=1; $("#next").disabled=page>=pages; }
   else { let h=""; for(let i=1;i<=pages;i++) h+=tk.renderToSVG(i); $("#score").innerHTML=h; }
+  if(ink) $("#score").appendChild(ink.layer);
+  requestAnimationFrame(inkRender);
 }
 function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
 function setView(v){ view=v; if(tk) loadFor(v); try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
@@ -178,10 +276,10 @@ addEventListener("keydown",e=>{
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
   } else if(k==="PageDown"||k===" "){ e.preventDefault(); $("#scroller").scrollBy({top:VH()*0.85,behavior:"smooth"}); return; }
   else if(k==="PageUp"){ e.preventDefault(); $("#scroller").scrollBy({top:-VH()*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if(k==="p"||k==="P") (playing||counting)?stopPlay():startPlay();
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if((k==="t"||k==="T")&&tk) $("#trBtn").click(); else if((k==="d"||k==="D")&&ink) ink.active?ink.exit():ink.enter(); else if(k==="p"||k==="P") (playing||counting)?stopPlay():startPlay();
 });
 const along=t=>{ const d=ROTS[rot][0]; return d===90?t.clientY:d===270?-t.clientY:t.clientX; };
-let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
+let sx=null; addEventListener("touchstart",e=>{ if(ink&&ink.active){ sx=null; return; } sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
 addEventListener("touchend",e=>{ if(sx===null) return; const dx=along(e.changedTouches[0])-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
 let rT, lastW=innerWidth, lastH=innerHeight;
 addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)<4&&Math.abs(innerHeight-lastH)<60&&view==="scroll") return; lastW=innerWidth; lastH=innerHeight; layout(true); },200); });
@@ -197,9 +295,9 @@ addEventListener("touchmove",e=>{ if(e.touches.length>=2) e.preventDefault(); },
 addEventListener("touchend",e=>{ if(pinch0&&e.touches.length<2){ const t=e.changedTouches[0], o=e.touches[0]; pinch0=null; } },{passive:true});
 let lastPinch=1;
 addEventListener("touchmove",e=>{ if(pinch0&&e.touches.length===2){ const [a,b]=e.touches; lastPinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch0; } },{passive:true});
-addEventListener("touchend",e=>{ if(e.touches.length===0&&lastPinch!==1){ const r=lastPinch; lastPinch=1; if(r>1.12) setZoom(Math.min(16,Math.round((r-1)*12))); else if(r<0.88) setZoom(-Math.min(16,Math.round((1-r)*12))); } },{passive:true});
+addEventListener("touchend",e=>{ if(ink&&ink.active){ lastPinch=1; return; } if(e.touches.length===0&&lastPinch!==1){ const r=lastPinch; lastPinch=1; if(r>1.12) setZoom(Math.min(16,Math.round((r-1)*12))); else if(r<0.88) setZoom(-Math.min(16,Math.round((1-r)*12))); } },{passive:true});
 let lastTap=0;
-document.addEventListener("touchend",e=>{ if(e.touches.length||e.changedTouches.length!==1) return; const now=Date.now();
+document.addEventListener("touchend",e=>{ if(ink&&ink.active) return; if(e.touches.length||e.changedTouches.length!==1) return; const now=Date.now();
   if(now-lastTap<350){ e.preventDefault(); const t=e.changedTouches[0], el=document.elementFromPoint(t.clientX,t.clientY); if(el) el.dispatchEvent(new MouseEvent("click",{bubbles:true,clientX:t.clientX,clientY:t.clientY})); }
   lastTap=now; },{passive:false});
 document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
@@ -212,7 +310,7 @@ let XO=null, XU=null, loaded=null;
 function clean(x){ return x.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"").replace(/<part-abbreviation[^>]*>[\s\S]*?<\/part-abbreviation>/g,"").replace(/<part-abbreviation-display>[\s\S]*?<\/part-abbreviation-display>/g,""); }
 let cont=(localStorage.getItem("fit-cont")||"1")==="1";
 let ZIP=null;
-function loadFor(v){ if(ZIP){ if(loaded==="z") return true; loaded="z"; return tk.loadZipDataBuffer(ZIP); } const want=(cont&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
+function loadFor(v){ barN={}; if(ZIP){ if(loaded==="z") return true; loaded="z"; return tk.loadZipDataBuffer(ZIP); } const want=(cont&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
 function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
 function barSpace(){ const b=$("#bar"), h=(!b.classList.contains("hide")&&ROTS[rot][0]===0)?b.offsetHeight:0;
   document.documentElement.style.setProperty("--top",h+"px"); }
@@ -240,8 +338,9 @@ async function start(){
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!ZIP) XO=clean(xml); loaded=null;
+    XOs=XO; XUs=XU; trInit(vk||(lid?"l:"+lid:"")||xid||src||title, XOs); trPrep();
     if(!loadFor(view)) return fail();
-    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setView(view); showBar(); barSpace(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setupInk("ink:fit:"+(vk||(lid?"l:"+lid:"")||xid||src||title)); setView(view); showBar(); barSpace(); wake();
   }catch(e){ fail(); }
 }
 </script>
