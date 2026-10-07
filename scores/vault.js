@@ -61,7 +61,7 @@
   async function logout() { await kvDel("priv"); await kvDel("user"); await kvDel("sync"); await kvDel("dk"); keyP = Promise.resolve(null); syncP = null; }
 
   /* ---------- sync of drawings and transpose settings between this login's devices ---------- */
-  const SYNC_URL = window.SCORES_SYNC_URL || "https://scores-sync.sofiaserenata.workers.dev/v1/";
+  const SYNC_URL = window.SCORES_SYNC_URL || "https://scores-sync.sofiag-gallego.workers.dev/v1/";
   const SYNCED = k => /^(ink:|tr:|tr-inst$)/.test(k);
   const LS = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
   const jget = (k, d) => { try { return JSON.parse(LS.get(k)) || d; } catch (e) { return d; } };
