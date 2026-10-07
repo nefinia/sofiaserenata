@@ -110,12 +110,12 @@ const VIEWER=true; /* set to true once the Google API key is in view.html */
 const S=[
   {t:"Love Story",a:"Indila",c:"solo",x:"1xErYOt6XUKQqi8KSSEWC8V5R6TlnPxzS",i:"vn",arr:true,f:[["1Rvoc0rxosE1NuVNTgboI-KRWHgFCgO6W"]],m:"love-story-solo"},
   {t:"Hallelujah",a:"Leonard Cohen (after Lindsey Stirling)",c:"solo",x:"1h4_hlZ6QqLm0Dk1xAudpjH96wlqbrAcw",i:"vn",arr:true,f:[["11bERA9dakfBwYJwv9ziTmIbxrBlsxpE4"]]},
-  {t:"The Logical Song",a:"Supertramp",c:"solo",x:"1PMgB9P8__psrp8w7kBdeHPXT8p_BMk7b",i:"vn",arr:true,f:[["187pbydFkWAOnDi70fuyk0Szp0xJR9JXw"],["1vHxOXMV1Qypzv6Ohs7m5Oo-TYaDewk7P","two violins"]],m:"the-logical-song-solo"},
-  {t:"Breakfast in America",a:"Supertramp",c:"solo",x:"1lE-4z0Isggzrt3ddF-wUh5I8WvXaswlZ",i:"vn",arr:true,f:[["1fMPOG-w0PHzy-b5vdbSXIqYXuCAjkzS8"]],m:"breakfast-in-america-solo"},
-  {t:"School",a:"Supertramp",c:"solo",x:"1QGSNMA06Tam7y691vUiqYmlhl77YiYMI",i:"vn",arr:true,f:[["1vC7V_KZm1IRopCN8W6PILHTc69ftKDqV"]],m:"school-solo"},
+  {t:"The Logical Song",a:"Supertramp",c:"solo",u:"1Rct_UoZYttyILDgzrLtBun91RxBiINix",x:"1PMgB9P8__psrp8w7kBdeHPXT8p_BMk7b",i:"vn",arr:true,f:[["187pbydFkWAOnDi70fuyk0Szp0xJR9JXw"],["1vHxOXMV1Qypzv6Ohs7m5Oo-TYaDewk7P","two violins"]],m:"the-logical-song-solo"},
+  {t:"Breakfast in America",a:"Supertramp",c:"solo",u:"1d-_K03BIgdZalpkA3PjK4PsrIksirs8x",x:"1lE-4z0Isggzrt3ddF-wUh5I8WvXaswlZ",i:"vn",arr:true,f:[["1fMPOG-w0PHzy-b5vdbSXIqYXuCAjkzS8"]],m:"breakfast-in-america-solo"},
+  {t:"School",a:"Supertramp",c:"solo",u:"1mjYFDUqSh5s0n7EAqMupOl4Uvhr9TfZ0",x:"1QGSNMA06Tam7y691vUiqYmlhl77YiYMI",i:"vn",arr:true,f:[["1vC7V_KZm1IRopCN8W6PILHTc69ftKDqV"]],m:"school-solo"},
   {t:"Creep",a:"Radiohead",c:"solo",x:"1bgu4E9tGcvLCG-VnjgGCZRTKCtRYfiDL",i:"vn",arr:true,f:[["1jqTb4rDd4TQwxWlgXHWi5JMxkgvTbAId"]],m:"creep-solo"},
-  {t:"Don't Stop Believin'",a:"Journey",c:"solo",x:"1fgKXyTAv9QYHAYWQFtyS91NrdT9-NQxP",i:"vn",arr:true,f:[["1m4f3yFxCq5OZlDNFajIPJxLXzoS0y1dp"]],m:"dont-stop-believin-solo"},
-  {t:"Toxic",a:"Britney Spears",c:"solo",x:"1MhjpO0hvu3ceqTtvttWHcLk42YpoYBUa",i:"vn",arr:true,f:[["1ommCi3wEKI7nemwz1jH44l0x9YKv3naP"]]},
+  {t:"Don't Stop Believin'",a:"Journey",c:"solo",u:"1jIynF7iktEzdnRMCqo_OmZqKAgMazRUU",x:"1fgKXyTAv9QYHAYWQFtyS91NrdT9-NQxP",i:"vn",arr:true,f:[["1m4f3yFxCq5OZlDNFajIPJxLXzoS0y1dp"]],m:"dont-stop-believin-solo"},
+  {t:"Toxic",a:"Britney Spears",c:"solo",u:"1ppvwIzNMGm3K1xGru4DTHniGren47PmZ",x:"1MhjpO0hvu3ceqTtvttWHcLk42YpoYBUa",i:"vn",arr:true,f:[["1ommCi3wEKI7nemwz1jH44l0x9YKv3naP"]]},
   {t:"Despacito",a:"Luis Fonsi",c:"solo",x:"11Ybd2AoLAVGnK2DOlZX_6_Yb0kz3xY3K",i:"vn",arr:true,f:[["1kJ4_yMcuFS7PhatkxyLO7k0nEdn2dOds"]]},
   {t:"School",a:"Supertramp",c:"duets",i:"vc",arr:true,f:[["1WnvNRDYkmrqsiXKwQvEg4tJpDb6-fBnt"],["1_cfFrrIH9t9vmYlxoGT2Ab5s8MalQNZB","simplified cello"]],m:"school"},
   {t:"The Logical Song",a:"Supertramp",c:"duets",i:"vc",arr:true,f:[["1_qXt2YKihu5DslUyszdM9ES9TZAOLP99"],["1PQoKt4IgUu4BmszcZmCoU3nz3PeiWW6e","simplified cello"]],m:"the-logical-song"},
@@ -196,7 +196,7 @@ function render(){
     const rows=hits.filter(s=>s.c===k); if(!rows.length) return "";
     return `<section class="group"><h2>${esc(CATS[k][lang])}</h2><ul>${rows.map(s=>{
       const pills=[s.i?`<span class="pill">${esc(INSTR[s.i][lang])}</span>`:"",s.arr?`<span class="pill arr">${esc(T[lang].arr)}</span>`:""].join("");
-      const links=(s.x?`<a class="view fit" href="fit.html?v=8&x=${s.x}&t=${encodeURIComponent(s.t)}${s.f.length?"&id="+s.f[0][0]:""}">${esc(T[lang].fit)}</a>`:"")+(s.f.length?s.f.map(([id,v])=>(VIEWER?`<a class="view" href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}">${esc(T[lang].view)}${v?" · "+esc(v):""}</a>`:"")+`<a href="https://drive.google.com/file/d/${id}/view" target="_blank" rel="noopener">${esc(T[lang].score)}${v&&!VIEWER?" · "+esc(v):""}</a>`).join(""):`<span class="req">${esc(T[lang].onreq)}</span>`)
+      const links=(s.x?`<a class="view fit" href="fit.html?v=9&x=${s.x}${s.u?"&u="+s.u:""}&t=${encodeURIComponent(s.t)}${s.f.length?"&id="+s.f[0][0]:""}">${esc(T[lang].fit)}</a>`:"")+(s.f.length?s.f.map(([id,v])=>(VIEWER?`<a class="view" href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}">${esc(T[lang].view)}${v?" · "+esc(v):""}</a>`:"")+`<a href="https://drive.google.com/file/d/${id}/view" target="_blank" rel="noopener">${esc(T[lang].score)}${v&&!VIEWER?" · "+esc(v):""}</a>`).join(""):`<span class="req">${esc(T[lang].onreq)}</span>`)
         +(s.m?`<button type="button" class="listen" data-m="${s.m}" data-solo="${s.c==="solo"?1:""}" aria-expanded="false">▶ ${esc(T[lang].listen)}</button><a class="midi" href="midi/${s.m}.mid" download title="${esc(s.c==="solo"?T[lang].midiTipSolo:T[lang].midiTip)}">MIDI</a>`:"");
       return `<li class="item"><div><div class="title">${esc(s.t)}</div><div class="who">${esc(s.a)}</div>${pills?`<div class="meta">${pills}</div>`:""}</div><div class="side">${links}</div>${s.m?`<div class="player" id="pl-${s.m}" hidden></div>`:""}</li>`;
     }).join("")}</ul></section>`;

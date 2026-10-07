@@ -79,7 +79,7 @@ body:not(.pages) .ponly{display:none}
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
 const $=s=>document.querySelector(s);
 const P=new URLSearchParams(location.search);
-const xid=P.get("x"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id");
+const xid=P.get("x"), uid=P.get("u"), usrc=P.get("usrc"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id");
 document.title=title; $("#title").textContent=title;
 let tk=null, page=1, pages=1, view=localStorage.getItem("fit-view")||"pages";
 let zoom=+(localStorage.getItem("fit-zoom")||0);
@@ -128,7 +128,7 @@ function draw(){
   else { let h=""; for(let i=1;i<=pages;i++) h+=tk.renderToSVG(i); $("#score").innerHTML=h; }
 }
 function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
-function setView(v){ view=v; try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
+function setView(v){ view=v; if(tk) loadFor(v); try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===v)); page=1; layout(false); $("#scroller").scrollTop=0; }
 function setGap(g){ gap=g%GAPS.length; try{localStorage.setItem("fit-gap",gap)}catch(e){} $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#gap").title="Space between lines: "+GAPS[gap][0]+" (G)"; layout(true); }
 $("#gap").onclick=()=>setGap(gap+1);
@@ -186,17 +186,23 @@ document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
 let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
 
+/* print-only layout and repeated instrument names removed; "unrolled" version (repeats written out) used for Scroll / Play */
+let XO=null, XU=null, loaded=null;
+function clean(x){ return x.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"").replace(/<part-abbreviation[^>]*>[\s\S]*?<\/part-abbreviation>/g,"").replace(/<part-abbreviation-display>[\s\S]*?<\/part-abbreviation-display>/g,""); }
+function loadFor(v){ const want=(v==="scroll"&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
 function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
 applyRot();
 async function start(){
   const url=src||(xid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(xid)}?alt=media&key=${API_KEY}`:null);
   if(!url){ $("#msg").textContent="No score selected."; return; }
   let xml; try{ const r=await fetch(url); if(!r.ok) throw 0; xml=await r.text(); }catch(e){ return fail(); }
+  const uurl=usrc||(uid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(uid)}?alt=media&key=${API_KEY}`:null);
+  if(uurl){ try{ const r=await fetch(uurl); if(r.ok) XU=clean(await r.text()); }catch(e){} }
   try{
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
-    xml=xml.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"");
-    if(!tk.loadData(xml)) return fail();
+    XO=clean(xml); loaded=null;
+    if(!loadFor(view)) return fail();
     $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
