@@ -57,6 +57,7 @@ body:not(.pages) .ponly{display:none}
 .trnote{color:var(--muted);font-size:12.5px;margin:0}
 .trfoot{display:flex;gap:8px;justify-content:flex-end}
 .trfoot button{font-size:15px}
+#partSel{font:inherit;color:var(--fg);background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:6px 8px;min-height:36px;max-width:11em}
 #trDone{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
 @media (max-width:520px){.lbl{display:none}}
 </style>
@@ -78,7 +79,7 @@ body:not(.pages) .ponly{display:none}
 <div class="zone" id="zr" aria-hidden="true"></div></div>
 <div id="bar">
   <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
-  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v13</span>
+  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v14</span>
   <div class="seg" role="group" aria-label="Layout">
     <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
     <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
@@ -86,7 +87,7 @@ body:not(.pages) .ponly{display:none}
   <div class="seg" role="group" aria-label="Size">
     <button type="button" id="zout" title="Smaller (−)">A−</button>
     <button type="button" id="zin" title="Bigger (+)">A+</button>
-    <button type="button" id="all" title="Shrink until the whole score fits on one screen">Fit all</button>
+    <button type="button" id="all" title="As big as possible with the whole score on one screen">Fit screen</button>
   </div>
   <button type="button" id="gap" title="Space between lines (G)">↕<span class="lbl" id="gapLbl"> Normal</span></button>
   <button type="button" id="hsp" title="Space between notes (H)">↔<span class="lbl" id="hspLbl"> Normal</span></button>
@@ -101,6 +102,7 @@ body:not(.pages) .ponly{display:none}
   </div>
   <button type="button" id="cdBtn" title="Countdown before Play">⏱<span class="lbl" id="cdLbl"> 3 s</span></button>
   <button type="button" id="rep" title="Repeats: written out in order (continuous) or as printed" hidden>→<span class="lbl" id="repLbl"> Continuous</span></button>
+  <select id="partSel" title="Show every part, or only the one you play" aria-label="Part to show" hidden></select>
   <button type="button" id="trBtn" title="Transpose for another instrument or key (T)" hidden>♯<span class="lbl" id="trLbl"> Transpose</span></button>
   <button type="button" id="inkBtn" title="Draw on the score (D)">✎<span class="lbl"> Draw</span></button>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
@@ -117,7 +119,7 @@ const P=new URLSearchParams(location.search);
 const xid=P.get("x"), uid=P.get("u"), usrc=P.get("usrc"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id"), vk=P.get("k"), lid=P.get("l");
 document.title=title; $("#title").textContent=title;
 let tk=null, page=1, pages=1, view=localStorage.getItem("fit-view")||"pages";
-let zoom=+(localStorage.getItem("fit-zoom")||0);
+let zoom=+(localStorage.getItem("fit-zoom2")||0), zkey=""; /* fit-zoom2: size chosen with A−/A+ (the old "fit-zoom" was also set by Fit all, which left every score tiny) */
 const GAPS=[["Normal",8,30],["Compact",3,12],["Tight",0,4]];   // name, verovio spacingSystem, page margins
 let gap=+(localStorage.getItem("fit-gap")||0)%GAPS.length;
 const HSP=[["Normal",0.25,0.6],["Compact",0.17,0.5],["Tight",0.11,0.42]];   // name, spacingLinear, spacingNonLinear (lower = long notes take less room)
@@ -187,11 +189,22 @@ function autoOct(base){ const [,,,clef,lo,hi]=I(); if(!clef||!pitches.length) re
   for(let k=-3;k<=3;k++){ let n=0, sum=0; for(const p of pitches){ const w=p+base+12*k; if(w>=lo&&w<=hi) n++; sum+=w; } const c=Math.abs(sum/pitches.length-(lo+hi)/2);
     if(n>bs||(n===bs&&c<bc)){ best=k; bs=n; bc=c; } } return best; }
 function trState(){ const it=I(), base=it[2]+TR.semi, ao=autoOct(base), oct=TR.oct===null?ao:TR.oct, sp=spell(base+12*oct); return {it,base,ao,oct,sp}; }
+/* parts: with several instruments (e.g. voice + piano), show all of them or only one */
+let PARTS=[], partKey="", part="all";
+function readParts(x){ const out=[]; const re=/<score-part\b[^>]*\bid="([^"]+)"[^>]*>[\s\S]*?<part-name[^>]*>([\s\S]*?)<\/part-name>/g; let r; while(x&&(r=re.exec(x))) out.push({id:r[1],name:r[2].trim()||r[1]}); return out; }
+function pickPart(x){ if(!x||part==="all"||PARTS.length<2||!PARTS.some(q=>q.id===part)) return x;
+  for(const q of PARTS){ if(q.id===part) continue; const id=q.id.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    x=x.replace(new RegExp(`<score-part\\b[^>]*\\bid="${id}"[\\s\\S]*?<\/score-part>`),"").replace(new RegExp(`<part\\b[^>]*\\bid="${id}"[\\s\\S]*?<\/part>`),""); }
+  return x.replace(/<part-group\b[^>]*\/>/g,"").replace(/<part-group\b[^>]*>[\s\S]*?<\/part-group>/g,""); }
+function partsInit(key,x){ PARTS=readParts(x); partKey="fit-part:"+key; part=localStorage.getItem(partKey)||"all"; const sel=$("#partSel");
+  if(PARTS.length<2){ sel.hidden=true; part="all"; return; }
+  sel.innerHTML=`<option value="all">All parts</option>`+PARTS.map(q=>`<option value="${q.id}">Only ${q.name.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</option>`).join("");
+  if(!PARTS.some(q=>q.id===part)) part="all"; sel.value=part; sel.hidden=false; }
 function trPrep(){ /* set the engine options and the (re-clefed) MusicXML for the current choice */
   if(!tk) return; const {it,sp}=trState();
   const nm=it[1].replace(/ \(.*\)|, .*/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
   const clefify=x=>!x||!it[3]||/<staves>\s*[2-9]/.test(x)?x:x.replace(/<clef\b[^>]*>[\s\S]*?<\/clef>/g,CLEF[it[3]]).replace(/<part-name([^>]*)>[\s\S]*?<\/part-name>/,`<part-name$1>${nm}</part-name>`);
-  tk.setOptions({transpose:sp.s}); if(!ZIP){ XO=clefify(XOs); XU=XUs?clefify(XUs):null; } loaded=null; trUI(); }
+  tk.setOptions({transpose:sp.s}); if(!ZIP){ XO=clefify(pickPart(XOs)); XU=XUs?clefify(pickPart(XUs)):null; } loaded=null; trUI(); }
 function trApply(){ trPrep(); loadFor(view); layout(true); }
 function trUI(){ const {it,ao,oct,sp}=trState(); const names=minor?MIN:MAJ, kn=Math.abs(sp.f)<=7?names[sp.f+7]+(minor?" minor":" major"):"";
   $("#trKey").textContent=(kn||"Key")+(TR.semi?` (${TR.semi>0?"+":""}${TR.semi})`:"");
@@ -209,6 +222,7 @@ function trInit(key,xml){ trKey=key; try{ TR=Object.assign({semi:0,oct:null},JSO
   $("#trInst").innerHTML=INST.map(([id,n])=>`<option value="${id}"${id===inst?" selected":""}>${n}</option>`).join("");
   $("#trBtn").hidden=false; }
 $("#trBtn").onclick=()=>{ stopPlay(); trUI(); $("#trPanel").hidden=false; clearTimeout(hideT); };
+$("#partSel").onchange=e=>{ stopPlay(); part=e.target.value; try{localStorage.setItem(partKey,part)}catch(_){} trInit(trKey, pickPart(XOs)); trPrep(); loadFor(view); page=1; layout(false); $("#scroller").scrollTop=0; showBar(); };
 $("#trDone").onclick=()=>{ $("#trPanel").hidden=true; showBar(); };
 $("#trPanel").addEventListener("click",e=>{ if(e.target.id==="trPanel"){ $("#trPanel").hidden=true; showBar(); } });
 $("#trInst").onchange=e=>{ inst=e.target.value; TR.oct=null; trSave(); trApply(); };
@@ -257,13 +271,20 @@ $("#rot").onclick=()=>setRot(rot+1);
 function showRep(){ $("#repLbl").textContent=cont?" Continuous":" Repeats as printed"; $("#rep").firstChild.textContent=cont?"→":"↺"; $("#rep").setAttribute("aria-pressed",cont); }
 $("#rep").onclick=()=>{ cont=!cont; try{localStorage.setItem("fit-cont",cont?"1":"0")}catch(e){} showRep(); if(tk){ loadFor(view); page=1; layout(false); $("#scroller").scrollTop=0; } };
 $("#play").onclick=()=>(playing||counting)?stopPlay():startPlay(); $("#cdBtn").onclick=()=>setCd(cdi+1); $("#slow").onclick=()=>setSpd(spd-1); $("#fast").onclick=()=>setSpd(spd+1);
-function fitAll(){ // biggest size at which the whole piece fits one screen
+function fitAll(){ // biggest size at which the whole piece fits on one screen (grows short pieces, shrinks long ones)
   if(!tk) return; if(view!=="pages") setView("pages");
-  for(let z=zoom; scale()>18; z-=2){ zoom=z; layout(false); if(pages===1) break; }
-  try{localStorage.setItem("fit-zoom",zoom)}catch(e){}
+  zoom=90-autoScale(); layout(false);
+  while(pages>1&&scale()>18){ zoom-=2; layout(false); }
+  try{ if(zkey) localStorage.setItem(zkey,zoom); }catch(e){}  // remembered for this score only
 }
+function saveZoom(){ try{ if(zkey) localStorage.removeItem(zkey); localStorage.setItem("fit-zoom2",zoom); }catch(e){} }
+/* first opening of a score: if it is short, make it as big as the screen allows (capped so a few bars don't become huge) */
+function fitsScreen(){ return view==="pages"?pages===1:$("#score").scrollHeight<=VH(); }
+function autoFill(){ if(!tk||!fitsScreen()) return; const cap=Math.min(90,autoScale()+30);
+  while(fitsScreen()&&scale()<cap){ zoom+=2; layout(false); }
+  if(!fitsScreen()){ zoom-=2; layout(false); } }
 $("#all").onclick=fitAll;
-function setZoom(d){ zoom+=d; try{localStorage.setItem("fit-zoom",zoom)}catch(e){} layout(true); }
+function setZoom(d){ zoom+=d; saveZoom(); layout(true); }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 $("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
 $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
@@ -340,9 +361,9 @@ async function start(){
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!ZIP) XO=clean(xml); loaded=null;
-    XOs=XO; XUs=XU; trInit(vk||(lid?"l:"+lid:"")||xid||src||title, XOs); trPrep();
+    XOs=XO; XUs=XU; const sk=vk||(lid?"l:"+lid:"")||xid||src||title; zkey="fit-zoom:"+sk; const zs=localStorage.getItem(zkey); if(zs!==null) zoom=+zs; partsInit(sk, XOs); trInit(sk, pickPart(XOs)); trPrep();
     if(!loadFor(view)) return fail();
-    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setupInk("ink:fit:"+(vk||(lid?"l:"+lid:"")||xid||src||title)); setView(view); showBar(); barSpace(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setupInk("ink:fit:"+(vk||(lid?"l:"+lid:"")||xid||src||title)); setView(view); if(zs===null) autoFill(); showBar(); barSpace(); wake();
   }catch(e){ fail(); }
 }
 </script>

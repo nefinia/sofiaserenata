@@ -2,7 +2,7 @@
    - The app itself (pages, viewers, notation engine) is stored on install and refreshed in the background.
    - Locked score files (vault/*.bin) are stored as they're fetched; Vault.warm() fetches them all after sign-in.
    - PDFs opened from Google Drive and the MIDI instrument sounds are kept once used, so they also work offline later. */
-const V = "scores-v3";
+const V = "scores-v4";
 const SHELL = ["./", "index.html", "fit.html", "view.html", "vault.js", "ink.js",
   "lib/verovio-toolkit-wasm.js", "lib/pdf.min.js", "lib/pdf.worker.min.js", "lib/tone.js", "lib/magenta-core.js", "lib/midi-player.min.js",
   "vault/keys.json", "vault/index.json", "../assets/js/display.js", "../icon.svg", "../icon-32.png", "../apple-touch-icon.png"];
