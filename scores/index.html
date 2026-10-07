@@ -156,6 +156,16 @@
     @media (prefers-reduced-motion:reduce){dialog#sheet[open]{animation:none}}
     footer{text-align:center;color:var(--soft);font-size:14px;padding:26px 22px;margin-top:40px;border-top:1px solid var(--line)}
     footer a{color:var(--soft)}
+  
+    /* small screens (phones, iPad upright): links fold into a menu button */
+    .menu-btn{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font-size:20px;line-height:1;cursor:pointer;padding:0}
+    .menu-btn:hover{border-color:var(--rose);color:var(--rose)}
+    @media (max-width:900px){
+      .top{position:sticky;top:0;z-index:50}
+      .menu-btn{display:inline-flex}
+      .menu.open{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;align-items:stretch;gap:0;background:#fbf7f1;border-bottom:1px solid var(--line);box-shadow:0 10px 24px rgba(59,48,54,.08);padding:6px 0 10px}
+      .menu.open a{display:block;padding:13px max(24px,env(safe-area-inset-left));font-size:16px}
+    }
   </style>
 <script src="../assets/js/display.js"></script>
   <link rel="icon" type="image/svg+xml" href="../icon.svg" />
@@ -166,7 +176,7 @@
 <header class="top">
   <div class="wrap top-in">
     <a class="brand" href="../"><img class="brand-icon" src="../icon.svg" alt="" aria-hidden="true" />Sofia Gallego</a>
-    <nav class="menu" aria-label="Sections">
+    <nav class="menu" id="siteMenu" aria-label="Sections">
       <a href="../#videos" data-t="navVideos">Videos</a>
       <a href="../#services" data-t="navServices">Packages</a>
       <a href="../#repertoire" data-t="navRep">Repertoire</a>
@@ -175,6 +185,7 @@
       <a href="./" aria-current="page" data-t="navScores">Scores</a>
     </nav>
     <div class="top-right">
+    <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="siteMenu">☰</button>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="enBtn" aria-pressed="true">EN</button>
       <button type="button" id="frBtn" aria-pressed="false">FR</button>
@@ -401,6 +412,17 @@ $$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===mode
 { const u=(new URLSearchParams(location.search).get("lang")||"").toLowerCase(); let sv=""; try{sv=localStorage.getItem("lang")||""}catch(_){}
   setLang(T[u]?u:T[sv]?sv:/^fr/i.test(navigator.language||"")?"fr":"en"); }
 showUser();
+</script>
+<script>
+/* menu button for small screens */
+(()=>{const b=document.getElementById("menuBtn"),m=document.querySelector(".top .menu"); if(!b||!m) return;
+  const set=o=>{m.classList.toggle("open",o); b.setAttribute("aria-expanded",o); b.textContent=o?"✕":"☰";};
+  b.addEventListener("click",e=>{e.stopPropagation(); set(!m.classList.contains("open"));});
+  m.addEventListener("click",e=>{ if(e.target.closest("a")) set(false); });
+  document.addEventListener("click",e=>{ if(!e.target.closest(".top")) set(false); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") set(false); });
+  addEventListener("resize",()=>{ if(innerWidth>900) set(false); });
+})();
 </script>
 </body>
 </html>
