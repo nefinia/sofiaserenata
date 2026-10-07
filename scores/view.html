@@ -109,7 +109,7 @@ async function toggleFs(){
 $("#fs").onclick=toggleFs;
 /* keep the screen awake while a score is open */
 let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
-document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ wake(); if(doc){ busy=false; render(); } } });
 
 async function load(){
   let url;
