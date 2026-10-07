@@ -48,7 +48,9 @@ body:not(.pages) .ponly{display:none}
   <div class="seg" role="group" aria-label="Size">
     <button type="button" id="zout" title="Smaller (−)">A−</button>
     <button type="button" id="zin" title="Bigger (+)">A+</button>
+    <button type="button" id="all" title="Shrink until the whole score fits on one screen">Fit all</button>
   </div>
+  <button type="button" id="gap" title="Space between lines (G)">↕<span class="lbl" id="gapLbl"> Normal</span></button>
   <button type="button" id="prev" class="ponly" title="Previous (← / Page Up)">‹</button>
   <span id="pg" class="ponly">–</span>
   <button type="button" id="next" class="ponly" title="Next (→ / Page Down / space)">›</button>
@@ -63,14 +65,16 @@ const P=new URLSearchParams(location.search);
 const xid=P.get("x"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id");
 document.title=title; $("#title").textContent=title;
 let tk=null, page=1, pages=1, view=localStorage.getItem("fit-view")||"pages";
-let zoom=+(localStorage.getItem("fit-zoom")||0);   // user offset from the automatic size
+let zoom=+(localStorage.getItem("fit-zoom")||0);
+const GAPS=[["Normal",8,30],["Compact",3,12],["Tight",0,4]];   // name, verovio spacingSystem, page margins
+let gap=+(localStorage.getItem("fit-gap")||0)%GAPS.length;   // user offset from the automatic size
 function autoScale(){ return Math.round(Math.max(24,Math.min(60,innerWidth/14,innerHeight/12))); }
 function scale(){ return Math.max(18,Math.min(90,autoScale()+zoom)); }
 function layout(keepRatio){
   if(!tk) return;
   const ratio=pages>1?(page-1)/(pages-1):0, s=scale(), k=100/s;
-  const opts={scale:s,pageWidth:Math.round(innerWidth*k),pageMarginLeft:40,pageMarginRight:40,pageMarginTop:view==="pages"?60:30,pageMarginBottom:30,
-    breaks:"auto",footer:"none",header:"auto",spacingSystem:6,spacingStaff:4,svgViewBox:true,svgRemoveXlink:true};
+  const opts={scale:s,pageWidth:Math.round(innerWidth*k),pageMarginLeft:40,pageMarginRight:40,pageMarginTop:view==="pages"?Math.max(GAPS[gap][2],20)+20:GAPS[gap][2],pageMarginBottom:GAPS[gap][2],
+    breaks:"auto",footer:"none",header:"auto",spacingSystem:GAPS[gap][1],spacingStaff:4,svgViewBox:true,svgRemoveXlink:true};
   if(view==="pages"){ opts.pageHeight=Math.round(innerHeight*k); opts.adjustPageHeight=false; }
   else { opts.pageHeight=60000; opts.adjustPageHeight=true; }
   tk.setOptions(opts); tk.redoLayout();
@@ -85,6 +89,14 @@ function draw(){
 function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
 function setView(v){ view=v; try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===v)); page=1; layout(false); scrollTo(0,0); }
+function setGap(g){ gap=g%GAPS.length; try{localStorage.setItem("fit-gap",gap)}catch(e){} $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#gap").title="Space between lines: "+GAPS[gap][0]+" (G)"; layout(true); }
+$("#gap").onclick=()=>setGap(gap+1);
+function fitAll(){ // biggest size at which the whole piece fits one screen
+  if(!tk) return; if(view!=="pages") setView("pages");
+  for(let z=zoom; scale()>18; z-=2){ zoom=z; layout(false); if(pages===1) break; }
+  try{localStorage.setItem("fit-zoom",zoom)}catch(e){}
+}
+$("#all").onclick=fitAll;
 function setZoom(d){ zoom+=d; try{localStorage.setItem("fit-zoom",zoom)}catch(e){} layout(true); }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 $("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
@@ -100,7 +112,7 @@ addEventListener("keydown",e=>{
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
   } else if(k==="PageDown"||k===" "){ e.preventDefault(); scrollBy({top:innerHeight*0.85,behavior:"smooth"}); return; }
   else if(k==="PageUp"){ e.preventDefault(); scrollBy({top:-innerHeight*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs();
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1);
 });
 let sx=null; addEventListener("touchstart",e=>{ if(e.touches.length===1) sx=e.touches[0].clientX; },{passive:true});
 addEventListener("touchend",e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
@@ -120,7 +132,7 @@ async function start(){
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!tk.loadData(xml)) return fail();
-    $("#msg").remove(); setView(view); showBar(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
 </script>
