@@ -325,7 +325,7 @@ function openScore(id){
   let a="";
   if(s.k) a+=`<a class="act primary" data-rec href="fit.html?v=12&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
   s.f.forEach(([_,v],j)=>{ const id=pid(s,j); if(id) a+=`<a class="act${s.k?"":" primary"}" data-rec href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}"><span>${esc(t.viewPdf)}${v?" · "+esc(v):""}</span><small>${esc(t.pdfNote)}</small></a>`; });
-  if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.c==="solo"?t.hintSolo:s.c==="gig"?t.hintGig:t.hint)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
+  if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.i==="vc"?t.hint:s.i==="vn"?t.hintSolo:t.hintGig)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
   if(!a) a=`<p class="s-lock">${esc(t.onreq)}</p>`;
   const drive=s.f.map(([_,v],j)=>pid(s,j)?`<a href="https://drive.google.com/file/d/${pid(s,j)}/view" target="_blank" rel="noopener" data-rec>${esc(t.drive)}${v?" · "+esc(v):""}</a>`:"").join("");
   openPanel(h+`<div class="acts">${a}</div>`+(drive?`<p class="s-drive">${drive}</p>`:""));
