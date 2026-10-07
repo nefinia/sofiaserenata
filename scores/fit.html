@@ -38,6 +38,8 @@ button:disabled{opacity:.4}
 body:not(.pages) .ponly{display:none}
 #msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
 #msg a{color:#8a6a2a}
+#cd{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;font:600 min(40vw,40vh)/1 system-ui,sans-serif;color:rgba(40,40,40,.28);pointer-events:none}
+#cd[hidden]{display:none}
 #menuBtn{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:4;width:44px;height:44px;min-width:44px;padding:0;border-radius:12px;border:0;background:rgba(40,40,40,.72);color:#fff;font-size:20px;line-height:44px;backdrop-filter:blur(6px)}
 @media (max-width:520px){.lbl{display:none}}
 </style>
@@ -46,11 +48,12 @@ body:not(.pages) .ponly{display:none}
 <div id="app">
 <div id="msg">Loading the score…</div>
 <div id="rotor"><div id="scroller"><div id="score"></div></div>
+<div id="cd" hidden aria-live="assertive"></div>
 <div class="zone" id="zl" aria-hidden="true"></div>
 <div class="zone" id="zr" aria-hidden="true"></div></div>
 <div id="bar">
   <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
-  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v10</span>
+  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v11</span>
   <div class="seg" role="group" aria-label="Layout">
     <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
     <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
@@ -71,6 +74,7 @@ body:not(.pages) .ponly{display:none}
     <span id="spd" style="padding:0 8px;color:var(--muted);align-self:center">1</span>
     <button type="button" id="fast" title="Faster">+</button>
   </div>
+  <button type="button" id="cdBtn" title="Countdown before Play">⏱<span class="lbl" id="cdLbl"> 3 s</span></button>
   <button type="button" id="rep" title="Repeats: written out in order (continuous) or as printed" hidden>→<span class="lbl" id="repLbl"> Continuous</span></button>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
@@ -110,8 +114,18 @@ function tick(t){ if(!playing) return; const sc=$("#scroller");
   lastT=t;
   if(sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1){ stopPlay(); return; }
   requestAnimationFrame(tick); }
-function startPlay(){ if(!tk) return; if(view!=="scroll") setView("scroll"); playing=true; lastT=0; acc=0; $("#play").innerHTML='❚❚<span class="lbl"> Pause</span>'; $("#play").setAttribute("aria-pressed","true"); $("#bar").classList.add("hide"); requestAnimationFrame(tick); }
-function stopPlay(){ playing=false; $("#play").innerHTML='▶<span class="lbl"> Play</span>'; $("#play").setAttribute("aria-pressed","false"); }
+/* countdown before Play, to pick up the instrument */
+const DELAYS=[0,2,3,5];
+let cdi=+(localStorage.getItem("fit-cd")??2)%DELAYS.length, counting=null;
+function showCd(){ $("#cdLbl").textContent=" "+DELAYS[cdi]+" s"; $("#cdBtn").title="Countdown before Play: "+(DELAYS[cdi]?DELAYS[cdi]+" seconds":"off"); }
+function setCd(i){ cdi=i%DELAYS.length; try{localStorage.setItem("fit-cd",cdi)}catch(e){} showCd(); }
+function startPlay(){ if(!tk||playing||counting) return; if(view!=="scroll") setView("scroll");
+  $("#play").innerHTML='❚❚<span class="lbl"> Pause</span>'; $("#play").setAttribute("aria-pressed","true"); $("#bar").classList.add("hide");
+  let n=DELAYS[cdi]; if(!n) return beginPlay();
+  const o=$("#cd"); o.hidden=false; o.textContent=n;
+  counting=setInterval(()=>{ n--; if(n>0){ o.textContent=n; return; } clearInterval(counting); counting=null; o.hidden=true; beginPlay(); },1000); }
+function beginPlay(){ playing=true; lastT=0; acc=0; $("#play").innerHTML='❚❚<span class="lbl"> Pause</span>'; $("#play").setAttribute("aria-pressed","true"); $("#bar").classList.add("hide"); requestAnimationFrame(tick); }
+function stopPlay(){ if(counting){ clearInterval(counting); counting=null; $("#cd").hidden=true; } playing=false; $("#play").innerHTML='▶<span class="lbl"> Play</span>'; $("#play").setAttribute("aria-pressed","false"); }
 function setSpd(v){ spd=Math.max(0,Math.min(SPEEDS.length-1,v)); try{localStorage.setItem("fit-spd",spd)}catch(e){} showSpd(); }
 function autoScale(){ return Math.round(Math.max(24,Math.min(60,VW()/14,VH()/12))); }
 function scale(){ return Math.max(18,Math.min(90,autoScale()+zoom)); }
@@ -141,7 +155,7 @@ $("#hsp").onclick=()=>setHsp(hsp+1);
 $("#rot").onclick=()=>setRot(rot+1);
 function showRep(){ $("#repLbl").textContent=cont?" Continuous":" Repeats as printed"; $("#rep").firstChild.textContent=cont?"→":"↺"; $("#rep").setAttribute("aria-pressed",cont); }
 $("#rep").onclick=()=>{ cont=!cont; try{localStorage.setItem("fit-cont",cont?"1":"0")}catch(e){} showRep(); if(tk){ loadFor(view); page=1; layout(false); $("#scroller").scrollTop=0; } };
-$("#play").onclick=()=>playing?stopPlay():startPlay(); $("#slow").onclick=()=>setSpd(spd-1); $("#fast").onclick=()=>setSpd(spd+1);
+$("#play").onclick=()=>(playing||counting)?stopPlay():startPlay(); $("#cdBtn").onclick=()=>setCd(cdi+1); $("#slow").onclick=()=>setSpd(spd-1); $("#fast").onclick=()=>setSpd(spd+1);
 function fitAll(){ // biggest size at which the whole piece fits one screen
   if(!tk) return; if(view!=="pages") setView("pages");
   for(let z=zoom; scale()>18; z-=2){ zoom=z; layout(false); if(pages===1) break; }
@@ -154,7 +168,7 @@ $("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
 $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
 $("#zl").onclick=()=>go(-1); $("#zr").onclick=()=>go(1);
 let hideT; function showBar(){ $("#bar").classList.remove("hide"); clearTimeout(hideT); hideT=setTimeout(()=>$("#bar").classList.add("hide"),4000); }
-$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(playing){ stopPlay(); showBar(); return; } ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
+$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(playing||counting){ stopPlay(); showBar(); return; } ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
 $("#bar").addEventListener("pointerdown",showBar);
 addEventListener("keydown",e=>{
   const k=e.key;
@@ -163,7 +177,7 @@ addEventListener("keydown",e=>{
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
   } else if(k==="PageDown"||k===" "){ e.preventDefault(); $("#scroller").scrollBy({top:VH()*0.85,behavior:"smooth"}); return; }
   else if(k==="PageUp"){ e.preventDefault(); $("#scroller").scrollBy({top:-VH()*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if(k==="p"||k==="P") playing?stopPlay():startPlay();
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if(k==="p"||k==="P") (playing||counting)?stopPlay():startPlay();
 });
 const along=t=>{ const d=ROTS[rot][0]; return d===90?t.clientY:d===270?-t.clientY:t.clientX; };
 let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
@@ -222,7 +236,7 @@ async function start(){
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!ZIP) XO=clean(xml); loaded=null;
     if(!loadFor(view)) return fail();
-    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); if(XU){ $("#rep").hidden=false; showRep(); } setView(view); showBar(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
 </script>
