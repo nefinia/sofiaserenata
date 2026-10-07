@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#111111">
 <title>Score</title>
@@ -14,6 +14,9 @@ html,body{margin:0;height:100%;background:var(--paper);color:var(--fg);font:15px
 body.pages{overflow:hidden}
 #score{background:var(--paper);min-height:100%}
 #score svg{display:block;width:100%;height:auto}
+body.pages #score svg{width:100%;height:100%}
+#score{touch-action:pan-y}
+body.pages #score{touch-action:none}
 body.pages #score{position:fixed;inset:0;overflow:hidden}
 .zone{position:fixed;top:0;bottom:0;width:38%;z-index:2;cursor:pointer;display:none}
 body.pages .zone{display:block}
@@ -114,12 +117,24 @@ addEventListener("keydown",e=>{
   else if(k==="PageUp"){ e.preventDefault(); scrollBy({top:-innerHeight*0.85,behavior:"smooth"}); return; }
   if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1);
 });
-let sx=null; addEventListener("touchstart",e=>{ if(e.touches.length===1) sx=e.touches[0].clientX; },{passive:true});
+let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?e.touches[0].clientX:null; },{passive:true});
 addEventListener("touchend",e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
 let rT, lastW=innerWidth, lastH=innerHeight;
 addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)<4&&Math.abs(innerHeight-lastH)<60&&view==="scroll") return; lastW=innerWidth; lastH=innerHeight; layout(true); },200); });
 async function toggleFs(){ const el=document.documentElement; try{ if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){} }
 $("#fs").onclick=toggleFs;
+function relayoutSoon(){ [60,300,800].forEach(t=>setTimeout(()=>{ lastW=innerWidth; lastH=innerHeight; layout(true); },t)); }
+document.addEventListener("fullscreenchange",relayoutSoon); document.addEventListener("webkitfullscreenchange",relayoutSoon);
+if(window.visualViewport) visualViewport.addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>layout(true),250); });
+/* pinch = A- / A+ (instead of browser zoom, which on iPad also exits full screen) */
+let pinch0=null;
+addEventListener("touchstart",e=>{ if(e.touches.length===2){ const [a,b]=e.touches; pinch0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); } },{passive:true});
+addEventListener("touchmove",e=>{ if(e.touches.length>=2) e.preventDefault(); },{passive:false});
+addEventListener("touchend",e=>{ if(pinch0&&e.touches.length<2){ const t=e.changedTouches[0], o=e.touches[0]; pinch0=null; } },{passive:true});
+let lastPinch=1;
+addEventListener("touchmove",e=>{ if(pinch0&&e.touches.length===2){ const [a,b]=e.touches; lastPinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch0; } },{passive:true});
+addEventListener("touchend",e=>{ if(e.touches.length===0&&lastPinch!==1){ const r=lastPinch; lastPinch=1; if(r>1.12) setZoom(Math.min(16,Math.round((r-1)*12))); else if(r<0.88) setZoom(-Math.min(16,Math.round((1-r)*12))); } },{passive:true});
+["gesturestart","gesturechange","gestureend"].forEach(n=>document.addEventListener(n,e=>e.preventDefault(),{passive:false}));
 let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
 
@@ -131,6 +146,7 @@ async function start(){
   try{
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
+    xml=xml.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"");
     if(!tk.loadData(xml)) return fail();
     $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; setView(view); showBar(); wake();
   }catch(e){ fail(); }
