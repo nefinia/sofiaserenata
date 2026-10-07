@@ -13,105 +13,154 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fbf7f1" />
   <title>Score Library — Sofia Gallego</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Same cream/pastel identity as /events */
     :root{--paper:#fbf7f1;--band:#f5ebe6;--card:#fffdf9;--ink:#3b3036;--soft:#62555a;--line:#e8dcd4;--rose:#a8505c;--rose-soft:#f0d3d0;--gold:#c7a15f;
       --display:"Marcellus","Cormorant Garamond","Didot",Georgia,serif;--body:"Jost","Avenir Next","Segoe UI",system-ui,sans-serif;color-scheme:light}
     *{box-sizing:border-box}
-    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-weight:400;font-size:17px;line-height:1.6}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
     a{color:var(--rose)}
-    a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+    :focus-visible{outline:2px solid var(--rose);outline-offset:3px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    .wrap{max-width:960px;margin:0 auto;padding-inline:22px;padding-block:56px 64px}
-    .eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose);font-weight:500}
-    h1,h2{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
-    h1{font-size:clamp(2.6rem,7vw,4rem);line-height:1.05;margin-top:8px}
-    .lead{color:var(--soft);max-width:62ch}
-    .top{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+    .wrap{max-width:1180px;margin:0 auto;padding-inline:max(18px,env(safe-area-inset-left))}
+    h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+    [hidden]{display:none!important}
+
+    /* header */
+    .head{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:14px}
+    .head-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+    h1{font-size:clamp(2.1rem,6vw,3.2rem);line-height:1.05}
+    .head-side{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    #userBox{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--soft)}
+    #who{color:var(--ink);font-weight:500}
+    .link{background:none;border:0;padding:4px 0;font:inherit;font-size:15px;color:var(--rose);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
     .lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px}
     .lang button{background:none;border:0;border-radius:999px;padding:4px 10px;font:500 12px var(--body);letter-spacing:.08em;color:var(--soft);cursor:pointer}
     .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-    .notice{background:var(--band);border-radius:18px;padding:16px 20px;margin:26px 0;color:var(--soft)}
-    .notice strong{color:var(--ink);font-weight:500}
-    .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:6px}
-    .chips{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 14px;font:400 14px var(--body);cursor:pointer}
+    .lead{color:var(--soft);max-width:64ch;margin:10px 0 0}
+    .off{color:var(--soft);font-size:14px;margin:6px 0 0}
+    .off:empty{display:none}
+
+    /* sign-in */
+    .lock{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:8px 0 18px}
+    .lk-msg{margin:0 0 10px;color:var(--soft);font-size:15px}
+    .lk-row{display:flex;flex-wrap:wrap;gap:8px}
+    .lk-row input{flex:1 1 160px;min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:16px;color:var(--ink)}
+    .lk-err{margin:8px 0 0;color:var(--rose);font-size:14px}
+    .lk-err:empty{display:none}
+    .btn{font:500 15px var(--body);background:var(--ink);border:1px solid var(--ink);color:var(--paper);border-radius:999px;padding:10px 18px;cursor:pointer;white-space:nowrap;display:inline-block}
+
+    /* sticky tools */
+    .bar{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 0}
+    .bar-row{display:flex;gap:10px;align-items:center}
+    input[type=search]{flex:1 1 auto;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:16px;color:var(--ink)}
+    .seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;background:var(--card)}
+    .seg button{background:none;border:0;border-radius:999px;width:38px;height:34px;display:grid;place-items:center;color:var(--soft);cursor:pointer}
+    .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+    .seg svg{width:18px;height:18px}
+    .chips{display:flex;gap:8px;margin-top:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 13px;font:400 14px var(--body);cursor:pointer}
     .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
     .chip .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
-    input[type=search]{flex:1 1 220px;min-width:0;max-width:320px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;color:var(--ink)}
+    @media (min-width:900px){.chips{flex-wrap:wrap;overflow:visible}}
     .count{color:var(--soft);font-size:14px;margin:12px 0 0;font-variant-numeric:tabular-nums}
-    .group{margin-top:30px}
-    .group h2{font-size:1.9rem;margin-bottom:8px}
-    ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-    li.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line)}
-    .title{font-weight:500}
-    .who{color:var(--soft);font-size:14px}
-    .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-    .pill{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft);background:var(--card)}
+
+    /* score tiles */
+    .group{margin-top:26px}
+    .group h2{font-size:1.6rem;margin-bottom:10px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+    @media (min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}}
+    .tile{display:flex;flex-direction:column;gap:10px;text-align:left;min-height:116px;padding:13px 14px 12px;background:var(--card);border:1px solid var(--line);border-radius:16px;font:inherit;color:var(--ink);cursor:pointer;position:relative}
+    .tile:hover{border-color:var(--soft)}
+    .tile.arr{border-left:4px solid var(--rose-soft)}
+    .tile.arr .t-who::after{content:"  ·  arr. Sofia";color:var(--rose)}
+    html[lang=fr] .tile.arr .t-who::after{content:"  ·  arr. Sofia"}
+    .t-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+    .t-title{font-family:var(--display);font-size:1.16rem;line-height:1.2;overflow-wrap:anywhere}
+    .t-who{color:var(--soft);font-size:13.5px;line-height:1.35}
+    .t-marks{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+    .mk{font-size:11.5px;line-height:1;padding:4px 7px;border-radius:999px;border:1px solid var(--line);color:var(--soft)}
+    .mk.own{background:var(--rose-soft);border-color:var(--rose-soft);color:var(--ink)}
+    .mk.go{border-color:var(--rose);color:var(--rose)}
+    /* list view */
+    .grid.list{display:block;border-top:1px solid var(--line)}
+    .list .tile{flex-direction:row;align-items:center;justify-content:space-between;width:100%;min-height:0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:11px 4px}
+    .list .tile.arr{border-left:0;box-shadow:inset 3px 0 0 var(--rose-soft);padding-left:12px}
+    .list .t-marks{margin-top:0;flex:0 0 auto;flex-wrap:nowrap;justify-content:flex-end}
+    .list .t-title{font-size:1.08rem}
+    /* recently opened */
+    #recent h2{font-size:1.25rem}
+    #recentRow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(152px,180px);gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+    #recentRow .tile{min-height:96px}
+    .empty{color:var(--soft);padding:18px 0}
+
+    /* on this device */
+    #device{margin-top:40px;padding-top:22px;border-top:1px solid var(--line)}
+    .dev-note{color:var(--soft);font-size:15px;margin:0 0 12px;max-width:62ch}
+    #devGrid{margin-top:14px}
+
+    /* score panel */
+    dialog#sheet{border:0;padding:0;width:min(560px,calc(100% - 32px));max-height:min(86vh,760px);border-radius:22px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(59,48,54,.28)}
+    dialog#sheet::backdrop{background:rgba(59,48,54,.38)}
+    #sheetBody{padding:22px 22px 24px;position:relative}
+    .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--band);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+    #sheetBody h3{font-size:1.9rem;line-height:1.1;padding-right:44px}
+    .s-who{color:var(--soft);margin:4px 0 10px}
+    .s-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+    .pill{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--soft)}
     .pill.arr{background:var(--rose-soft);border-color:var(--rose-soft);color:var(--ink)}
-    .side{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-    .side a{font-size:14px;font-weight:500;text-decoration:none;border:1px solid var(--ink);border-radius:999px;padding:6px 14px;color:var(--ink);white-space:nowrap}
-    .side a:hover{background:var(--ink);color:var(--paper)}
-    .side button.listen{font:500 14px var(--body);background:var(--rose);border:1px solid var(--rose);color:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;white-space:nowrap}
-    .side button.listen:hover{filter:brightness(1.08)}
-    .player{grid-column:1/-1;background:var(--band);border-radius:14px;padding:10px 12px;margin-top:4px}
-    .player .hint{font-size:13px;color:var(--soft);margin:6px 2px 0}
+    .acts{display:flex;flex-direction:column;gap:8px}
+    .act{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;min-height:54px;justify-content:center;padding:10px 16px;border-radius:14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:500 16px var(--body);text-align:left;text-decoration:none;cursor:pointer}
+    .act small{font-weight:400;font-size:13px;color:var(--soft)}
+    .act.primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+    .act.primary small{color:#d9cfd2}
+    .act.ghost{background:none}
+    .s-player{background:var(--band);border-radius:14px;padding:10px}
     midi-player{display:block;width:100%}
     midi-player::part(control-panel){background:var(--card);border:1px solid var(--line);border-radius:999px}
     midi-player::part(play-button){background:var(--ink);color:var(--paper)}
-    .side a.midi{border-color:var(--rose);color:var(--rose)}
-    .side a.midi:hover{background:var(--rose);color:#fff}
-    .req{font-size:14px;color:var(--soft)}
-    .empty{color:var(--soft);padding:18px 0}
-    footer{text-align:center;color:var(--soft);font-size:14px;padding:26px 22px;border-top:1px solid var(--line)}
+    .s-lock{color:var(--soft);margin:0 0 12px}
+    .s-drive{margin:14px 0 0;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 16px}
+    .s-drive a{color:var(--soft)}
+    @media (max-width:600px){
+      dialog#sheet{width:100%;max-width:100%;margin:auto 0 0;border-radius:22px 22px 0 0;max-height:88vh}
+      #sheetBody{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+      dialog#sheet[open]{animation:up .22s ease-out}
+    }
+    @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+    @media (prefers-reduced-motion:reduce){dialog#sheet[open]{animation:none}}
+    footer{text-align:center;color:var(--soft);font-size:14px;padding:26px 22px;margin-top:40px;border-top:1px solid var(--line)}
     footer a{color:var(--soft)}
-    .lock{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin:-10px 0 26px}
-    .lk-msg{margin:0 0 10px;color:var(--soft);font-size:15px}
-    .lk-row{display:flex;flex-wrap:wrap;gap:8px}
-    .lk-row input{flex:1 1 160px;min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font:inherit;font-size:15px;color:var(--ink)}
-    .lk-err{margin:8px 0 0;color:var(--rose);font-size:14px;min-height:0}
-    .lk-err:empty{display:none}
-    #signedIn{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:15px}
-    #signedIn[hidden]{display:none}
-    .lk-off{color:var(--soft);font-size:14px}
-    #signedIn .btn{margin-left:auto}
-    .btn{font:500 14px var(--body);background:var(--ink);border:1px solid var(--ink);color:var(--paper);border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap;display:inline-block}
-    .btn.ghost{background:none;color:var(--ink)}
-    .side button.midi{font:500 14px var(--body);background:none;border:1px solid var(--rose);color:var(--rose);border-radius:999px;padding:6px 14px;cursor:pointer}
-    .side button.midi:hover{background:var(--rose);color:#fff}
-    .side button.del{font:500 14px var(--body);background:none;border:1px solid var(--line);color:var(--soft);border-radius:999px;padding:6px 12px;cursor:pointer}
-    body.locked .key{opacity:.55}
-    .dev-note{color:var(--soft);font-size:15px;margin:0 0 12px;max-width:62ch}
-    #devList{margin-top:14px}
-    #devList:empty{display:none}
-    @media (max-width:600px){li.item{grid-template-columns:1fr}.side{justify-content:flex-start}input[type=search]{max-width:none}}
   </style>
 <script src="../assets/js/display.js"></script>
   <link rel="icon" type="image/svg+xml" href="../icon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../icon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png" />
 </head>
-<body>
-<main class="wrap">
-  <div class="top">
-    <div class="eyebrow" data-t="eyebrow">For musicians</div>
-    <div class="lang" role="group" aria-label="Language">
-      <button type="button" id="enBtn" aria-pressed="true">EN</button>
-      <button type="button" id="frBtn" aria-pressed="false">FR</button>
+<body class="locked">
+<header class="head wrap">
+  <div class="head-row">
+    <h1 data-t="h1">Score Library</h1>
+    <div class="head-side">
+      <div id="userBox" hidden><span id="who"></span><button type="button" class="link" id="logout" data-t="signOut">Sign out</button></div>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="enBtn" aria-pressed="true">EN</button>
+        <button type="button" id="frBtn" aria-pressed="false">FR</button>
+      </div>
     </div>
   </div>
-  <h1 data-t="h1">Score Library</h1>
-  <p class="lead" data-t="lead">The sheet music I use for events, for the musicians I perform with. Solo violin arrangements come first, then duets for violin and cello; where there is a MIDI file, you can download it to listen or practise along.</p>
-  <div class="notice" data-t-html="notice"><strong>For rehearsal only.</strong> Sign in to open the scores, listen or download MIDI files. Once you’ve signed in on a device, the library also works offline. Please don't share these scores publicly. If a score doesn't open, ask Sofia.</div>
+  <p class="lead" data-t="lead">The sheet music I use for events, for the musicians I perform with. Tap a score to open it, hear the arrangement or download its MIDI file.</p>
+  <p class="off" id="offLine"></p>
 
   <div class="lock" id="lock">
     <form id="loginForm" autocomplete="on">
-      <p class="lk-msg" data-t="lockMsg">The scores are for the musicians I play with. Sign in to open them.</p>
+      <p class="lk-msg" data-t="lockMsg">For rehearsal only. Sign in to open the scores; please don't share them.</p>
       <div class="lk-row">
         <label class="sr-only" for="lkName" data-t="name">Name</label><input id="lkName" name="username" autocomplete="username" data-p="name" placeholder="Name" required>
         <label class="sr-only" for="lkPw" data-t="password">Password</label><input id="lkPw" name="password" type="password" autocomplete="current-password" data-p="password" placeholder="Password" required>
@@ -119,28 +168,41 @@
       </div>
       <p class="lk-err" id="lkErr" role="alert"></p>
     </form>
-    <div id="signedIn" hidden>
-      <span id="lkWho"></span> <span class="lk-off" id="lkOff"></span>
-      <button type="button" class="btn ghost" id="logout" data-t="signOut">Sign out</button>
-    </div>
   </div>
+</header>
 
-  <div class="tools">
+<div class="bar">
+  <div class="wrap">
+    <div class="bar-row">
+      <label class="sr-only" for="q" data-t="search">Search a score</label>
+      <input type="search" id="q" data-p="search" placeholder="Search a score" enterkeyhint="search">
+      <div class="seg" role="group" aria-label="Layout">
+        <button type="button" id="gridBtn" data-mode="grid" data-a="gridL" aria-label="Grid"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></button>
+        <button type="button" id="listBtn" data-mode="list" data-a="listL" aria-label="List"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="2" y="3" width="16" height="2.4" rx="1.2"/><rect x="2" y="8.8" width="16" height="2.4" rx="1.2"/><rect x="2" y="14.6" width="16" height="2.4" rx="1.2"/></svg></button>
+      </div>
+    </div>
     <div class="chips" id="chips" role="group" aria-label="Filter"></div>
-    <label class="sr-only" for="q" data-t="search">Search a score</label>
-    <input type="search" id="q" data-p="search" placeholder="Search a score">
   </div>
+</div>
+
+<main class="wrap">
   <p class="count" id="count" aria-live="polite"></p>
+  <section class="group" id="recent" hidden>
+    <h2 data-t="recent">Recently opened</h2>
+    <div id="recentRow"></div>
+  </section>
   <div id="groups"></div>
 
-  <section class="group" id="device">
+  <section id="device">
     <h2 data-t="devTitle">On this device</h2>
     <p class="dev-note" data-t="devNote">Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.</p>
     <label class="btn" id="addBtn"><input type="file" id="addFiles" multiple accept=".musicxml,.xml,.mxl,.mid,.midi" hidden><span data-t="addFiles">Add files…</span></label>
-    <ul id="devList"></ul>
+    <div id="devGrid"></div>
   </section>
 </main>
 <footer><a href="../">← <span data-t="back">Back to events</span></a></footer>
+
+<dialog id="sheet" aria-labelledby="sheetTitle"><div id="sheetBody"></div></dialog>
 
 <script src="vault.js"></script>
 <script src="lib/tone.js"></script>
@@ -149,7 +211,6 @@
 <script>
 const CATS={solo:{en:"Solo violin",fr:"Violon seul"},duets:{en:"Violin & cello duets",fr:"Duos violon & violoncelle"},pop:{en:"Pop & film",fr:"Pop & cinéma"},classical:{en:"Classical",fr:"Classique"},voice:{en:"Opera & choral",fr:"Opéra & chœur"},latin:{en:"Tango & chanson",fr:"Tango & chanson"},jewish:{en:"Jewish & klezmer",fr:"Musique juive & klezmer"}};
 const INSTR={vc:{en:"Violin & cello",fr:"Violon & violoncelle"},vn:{en:"Solo violin",fr:"Violon seul"},vnp:{en:"Violin & piano",fr:"Violon & piano"},vp:{en:"Voice & piano",fr:"Voix & piano"},pno:{en:"Piano",fr:"Piano"},lead:{en:"Melody & chords",fr:"Mélodie & accords"},book:{en:"Songbook",fr:"Recueil"},part:{en:"Violin part",fr:"Partie de violon"},score:{en:"Full score",fr:"Conducteur"},trio:{en:"Trio (part)",fr:"Trio (partie)"},voice:{en:"Voice",fr:"Voix"}};
-const VIEWER=true; /* set to true once the Google API key is in view.html */
 const S=[
   {t:"Love Story",a:"Indila",c:"solo",k:"love-story-solo",i:"vn",arr:true,f:[[0]],m:"love-story-solo"},
   {t:"Hallelujah",a:"Leonard Cohen (after Lindsey Stirling)",c:"solo",k:"hallelujah-solo",i:"vn",arr:true,f:[[0]]},
@@ -217,100 +278,154 @@ const S=[
   {t:"Remember",a:"Klezmer (arr. Atie Bernet)",c:"jewish",i:"lead",f:[[0,"1"],[0,"2"]]}
 ];
 const T={
-  en:{eyebrow:"For musicians",h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"The sheet music I use for events, for the musicians I perform with. Solo violin arrangements come first, then duets for violin and cello; where there is a MIDI file, you can download it to listen or practise along.",midiTip:"Download the MIDI file (violin and cello on separate tracks)",listen:"Listen",hide:"Hide",hint:"Violin and cello playback of the arrangement, with the repeats played through.",hintSolo:"Playback of the solo violin line, with the repeats played through.",midiTipSolo:"Download the MIDI file (solo violin line)",
-    notice:"<strong>For rehearsal only.</strong> Sign in to open the scores, listen or download MIDI files. Once you’ve signed in on a device, the library also works offline. Please don't share these scores publicly. If a score doesn't open, ask Sofia.",
-    search:"Search a score",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",score:"Score",view:"View",fit:"Fit to screen",onreq:"Ask Sofia",arr:"arr. Sofia Gallego",back:"Back to events",lockMsg:"The scores are for the musicians I play with. Sign in to open them.",name:"Name",password:"Password",signIn:"Sign in",signOut:"Sign out",signing:"Opening…",errName:"No login with that name.",errPw:"Wrong password.",errNet:"Can’t reach the website. Sign in once while online.",who:n=>"Signed in as "+n,offOk:n=>"· "+n+" files saved for offline use",offWait:"· saving for offline use…",devTitle:"On this device",devNote:"Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.",addFiles:"Add files…",remove:"Remove",listenL:"Listen"},
-  fr:{eyebrow:"Pour les musiciens",h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Les partitions que j'utilise pour les événements, pour les musiciens avec qui je joue. Les arrangements pour violon seul sont en premier, puis les duos violon-violoncelle ; quand il y a un fichier MIDI, vous pouvez le télécharger pour écouter ou travailler.",midiTip:"Télécharger le fichier MIDI (violon et violoncelle sur des pistes séparées)",listen:"Écouter",hide:"Masquer",hint:"Lecture violon et violoncelle de l’arrangement, reprises comprises.",hintSolo:"Lecture de la ligne de violon seul, reprises comprises.",midiTipSolo:"Télécharger le fichier MIDI (ligne de violon seul)",
-    notice:"<strong>Pour les répétitions uniquement.</strong> Connectez-vous pour ouvrir les partitions, écouter ou télécharger les fichiers MIDI. Une fois connecté·e sur un appareil, la bibliothèque fonctionne aussi hors ligne. Merci de ne pas diffuser ces partitions. Si une partition ne s’ouvre pas, demandez à Sofia.",
-    search:"Chercher une partition",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",score:"Partition",view:"Afficher",fit:"Adapté à l’écran",onreq:"Demander à Sofia",arr:"arr. Sofia Gallego",back:"Retour aux événements",lockMsg:"Ces partitions sont pour les musiciens avec qui je joue. Connectez-vous pour les ouvrir.",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",errName:"Aucun accès à ce nom.",errPw:"Mot de passe incorrect.",errNet:"Le site est injoignable. Connectez-vous une première fois en ligne.",who:n=>"Connectée en tant que "+n,offOk:n=>"· "+n+" fichiers disponibles hors ligne",offWait:"· enregistrement pour l’usage hors ligne…",devTitle:"Sur cet appareil",devNote:"Ajoutez vos propres fichiers MusicXML (.musicxml, .xml, .mxl) ou MIDI. Ils restent uniquement sur cet appareil et fonctionnent sans internet.",addFiles:"Ajouter des fichiers…",remove:"Retirer",listenL:"Écouter"}
+  en:{h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"The sheet music I use for events, for the musicians I perform with. Tap a score to open it, hear the arrangement or download its MIDI file.",
+    lockMsg:"For rehearsal only. Sign in to open the scores; please don't share them.",name:"Name",password:"Password",signIn:"Sign in",signOut:"Sign out",signing:"Opening…",
+    errName:"No login with that name.",errPw:"Wrong password.",errNet:"Can’t reach the website. Sign in once while online.",offOk:n=>n+" files saved on this device for offline use.",offWait:"Saving the scores for offline use…",
+    search:"Search a score",gridL:"Grid",listL:"List",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",recent:"Recently opened",
+    mFit:"Fit",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Close",lockOne:"Sign in to open this score.",
+    fit:"Fit to screen",fitNote:"Reflows to your screen · Play scrolls by itself",viewPdf:"View PDF",pdfNote:"Full screen, turn pages with a tap or pedal",drive:"Open in Google Drive",
+    listen:"Listen",hide:"Stop",hint:"Violin and cello, with the repeats played through",hintSolo:"Solo violin line, with the repeats played through",dlMidi:"Download MIDI",onreq:"No score file yet. Ask Sofia.",
+    devTitle:"On this device",devNote:"Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.",addFiles:"Add files…",remove:"Remove from this device",localNote:"Only on this device",back:"Back to events"},
+  fr:{h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Les partitions que j’utilise pour les événements, pour les musiciens avec qui je joue. Touchez une partition pour l’ouvrir, écouter l’arrangement ou télécharger son fichier MIDI.",
+    lockMsg:"Pour les répétitions uniquement. Connectez-vous pour ouvrir les partitions ; merci de ne pas les diffuser.",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",
+    errName:"Aucun accès à ce nom.",errPw:"Mot de passe incorrect.",errNet:"Le site est injoignable. Connectez-vous une première fois en ligne.",offOk:n=>n+" fichiers enregistrés sur cet appareil pour l’usage hors ligne.",offWait:"Enregistrement des partitions pour l’usage hors ligne…",
+    search:"Chercher une partition",gridL:"Grille",listL:"Liste",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",recent:"Ouvertes récemment",
+    mFit:"Écran",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Fermer",lockOne:"Connectez-vous pour ouvrir cette partition.",
+    fit:"Adapté à l’écran",fitNote:"S’adapte à votre écran · Lecture qui défile toute seule",viewPdf:"Voir le PDF",pdfNote:"Plein écran, pages tournées d’un geste ou à la pédale",drive:"Ouvrir dans Google Drive",
+    listen:"Écouter",hide:"Arrêter",hint:"Violon et violoncelle, reprises comprises",hintSolo:"Ligne de violon seul, reprises comprises",dlMidi:"Télécharger le MIDI",onreq:"Pas encore de fichier. Demandez à Sofia.",
+    devTitle:"Sur cet appareil",devNote:"Ajoutez vos propres fichiers MusicXML (.musicxml, .xml, .mxl) ou MIDI. Ils restent uniquement sur cet appareil et fonctionnent sans internet.",addFiles:"Ajouter des fichiers…",remove:"Retirer de cet appareil",localNote:"Uniquement sur cet appareil",back:"Retour aux événements"}
 };
-let lang="en",cat="all";
-const $=s=>document.querySelector(s);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const CK=Object.keys(CATS);
+/* arrangements made for one client (Supertramp) go to the end of their section */
+const later=s=>/Supertramp/.test(s.a)?1:0;
+const LIB=S.map((s,o)=>({...s,id:s.c+"|"+s.t,o})).sort((a,b)=>CK.indexOf(a.c)-CK.indexOf(b.c)||later(a)-later(b)||a.o-b.o);
+const BY=Object.fromEntries(LIB.map(s=>[s.id,s]));
+const SF="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus";
+let lang="en", cat="all", mode=ls.get("lib-mode","grid"), me=null, PDFS=null, offN=null, cur=null;
+const pid=(s,j)=>PDFS&&PDFS[s.id]?PDFS[s.id][j]:"";
+const L=()=>T[lang];
+
+/* ---------- recently opened ---------- */
+const recent=()=>{try{return JSON.parse(ls.get("lib-recent","[]"))}catch(e){return[]}};
+function addRecent(id){ ls.set("lib-recent",JSON.stringify([id,...recent().filter(x=>x!==id)].slice(0,8))); }
+
+/* ---------- tiles ---------- */
+function marks(s){ const m=[];
+  if(s.k) m.push(`<span class="mk go">${esc(L().mFit)}</span>`); if(s.f.length) m.push(`<span class="mk">PDF${s.f.length>1?" ×"+s.f.length:""}</span>`); if(s.m) m.push(`<span class="mk">MIDI</span>`); return m.join(""); }
+const tile=s=>`<button type="button" class="tile${s.arr?" arr":""}" data-id="${esc(s.id)}"><span class="t-main"><span class="t-title">${esc(s.t)}</span><span class="t-who">${esc(s.a)}</span></span><span class="t-marks">${marks(s)}</span></button>`;
 function chips(){
-  $("#chips").innerHTML=["all",...Object.keys(CATS)].map(k=>`<button class="chip" type="button" data-k="${k}" aria-pressed="${k===cat}">${esc(k==="all"?T[lang].all:CATS[k][lang])}<span class="n">${k==="all"?S.length:S.filter(s=>s.c===k).length}</span></button>`).join("");
+  $("#chips").innerHTML=["all",...CK].map(k=>`<button class="chip" type="button" data-k="${k}" aria-pressed="${k===cat}">${esc(k==="all"?L().all:CATS[k][lang])}<span class="n">${k==="all"?LIB.length:LIB.filter(s=>s.c===k).length}</span></button>`).join("");
 }
 function render(){
   const q=norm($("#q").value.trim());
-  const hits=S.filter(s=>(cat==="all"||s.c===cat)&&(!q||norm(s.t+" "+s.a).includes(q)));
-  $("#count").textContent=T[lang].count(hits.length,S.length);
-  $("#groups").innerHTML=Object.keys(CATS).map(k=>{
-    const rows=hits.filter(s=>s.c===k); if(!rows.length) return "";
-    return `<section class="group"><h2>${esc(CATS[k][lang])}</h2><ul>${rows.map(s=>{
-      const pills=[s.i?`<span class="pill">${esc(INSTR[s.i][lang])}</span>`:"",s.arr?`<span class="pill arr">${esc(T[lang].arr)}</span>`:""].join("");
-      const links=(s.k?`<a class="view fit key" href="fit.html?v=11&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}">${esc(T[lang].fit)}</a>`:"")+(s.f.length?s.f.map(([_,v],j)=>{const id=pid(s,j); return (VIEWER?`<a class="view key" href="${id?`view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}`:"#"}">${esc(T[lang].view)}${v?" · "+esc(v):""}</a>`:"")+`<a class="key" href="${id?`https://drive.google.com/file/d/${id}/view`:"#"}" target="_blank" rel="noopener">${esc(T[lang].score)}${v&&!VIEWER?" · "+esc(v):""}</a>`}).join(""):`<span class="req">${esc(T[lang].onreq)}</span>`)
-        +(s.m?`<button type="button" class="listen key" data-m="${s.m}" data-solo="${s.c==="solo"?1:""}" aria-expanded="false">▶ ${esc(T[lang].listen)}</button><button type="button" class="midi key" data-dl="${s.m}" title="${esc(s.c==="solo"?T[lang].midiTipSolo:T[lang].midiTip)}">MIDI</button>`:"");
-      return `<li class="item"><div><div class="title">${esc(s.t)}</div><div class="who">${esc(s.a)}</div>${pills?`<div class="meta">${pills}</div>`:""}</div><div class="side">${links}</div>${s.m?`<div class="player" id="pl-${s.m}" hidden></div>`:""}</li>`;
-    }).join("")}</ul></section>`;
-  }).join("")||`<p class="empty">${esc(T[lang].empty)}</p>`;
+  const hits=LIB.filter(s=>(cat==="all"||s.c===cat)&&(!q||norm(s.t+" "+s.a).includes(q)));
+  $("#count").textContent=L().count(hits.length,LIB.length);
+  $("#groups").innerHTML=CK.map(k=>{ const rows=hits.filter(s=>s.c===k); if(!rows.length) return "";
+    return `<section class="group"><h2>${esc(CATS[k][lang])}</h2><div class="grid ${mode}">${rows.map(tile).join("")}</div></section>`; }).join("")||`<p class="empty">${esc(L().empty)}</p>`;
+  const r=recent().map(id=>BY[id]).filter(Boolean);
+  $("#recent").hidden=!r.length||!!q||cat!=="all";
+  $("#recentRow").innerHTML=r.map(tile).join("");
 }
+function setMode(m){ mode=m; ls.set("lib-mode",m); $$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m)); render(); renderDevice(); }
+
+/* ---------- score panel ---------- */
+const sheet=$("#sheet");
+function openPanel(html){ $("#sheetBody").innerHTML=`<button type="button" class="x" data-close aria-label="${esc(L().close)}">×</button>`+html; if(!sheet.open) sheet.showModal(); }
+function openScore(id){
+  const s=BY[id]; if(!s) return; cur=s; const t=L();
+  let h=`<h3 id="sheetTitle">${esc(s.t)}</h3><p class="s-who">${esc(s.a)}</p><div class="s-pills">${s.i?`<span class="pill">${esc(INSTR[s.i][lang])}</span>`:""}${s.arr?`<span class="pill arr">${esc(t.arr)}</span>`:""}</div>`;
+  if(!me){ h+=`<p class="s-lock">${esc(t.lockOne)}</p><button type="button" class="act primary" data-signin>${esc(t.signIn)}</button>`; return openPanel(h); }
+  let a="";
+  if(s.k) a+=`<a class="act primary" data-rec href="fit.html?v=11&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
+  s.f.forEach(([_,v],j)=>{ const id=pid(s,j); if(id) a+=`<a class="act${s.k?"":" primary"}" data-rec href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}"><span>${esc(t.viewPdf)}${v?" · "+esc(v):""}</span><small>${esc(t.pdfNote)}</small></a>`; });
+  if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.c==="solo"?t.hintSolo:t.hint)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
+  if(!a) a=`<p class="s-lock">${esc(t.onreq)}</p>`;
+  const drive=s.f.map(([_,v],j)=>pid(s,j)?`<a href="https://drive.google.com/file/d/${pid(s,j)}/view" target="_blank" rel="noopener" data-rec>${esc(t.drive)}${v?" · "+esc(v):""}</a>`:"").join("");
+  openPanel(h+`<div class="acts">${a}</div>`+(drive?`<p class="s-drive">${drive}</p>`:""));
+}
+async function openLocal(id){
+  const r=(await Vault.localList()).find(x=>x.id===id); if(!r) return; cur=null; const t=L(), name=r.name.replace(/\.[^.]+$/,"");
+  let a=r.type==="midi"
+    ?`<button type="button" class="act primary" data-listen="local:${r.id}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span></button><div class="s-player" hidden></div>`
+    :`<a class="act primary" href="fit.html?v=11&l=${r.id}&t=${encodeURIComponent(name)}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
+  a+=`<button type="button" class="act ghost" data-del="${r.id}"><span>${esc(t.remove)}</span></button>`;
+  openPanel(`<h3 id="sheetTitle">${esc(name)}</h3><p class="s-who">${esc(t.localNote)}</p><div class="s-pills"><span class="pill">${r.type==="midi"?"MIDI":"MusicXML"}</span></div><div class="acts">${a}</div>`);
+}
+function stopPlayers(){ $$("#sheet midi-player").forEach(mp=>{ try{ if(mp.playing) mp.stop(); }catch(_){} }); }
+sheet.addEventListener("close",()=>{ stopPlayers(); $("#sheetBody").innerHTML=""; });
+sheet.addEventListener("click",async e=>{
+  if(e.target===sheet||e.target.closest("[data-close]")) return sheet.close();
+  if(e.target.closest("[data-signin]")){ sheet.close(); return askLogin(); }
+  if(e.target.closest("[data-rec]")&&cur) addRecent(cur.id);
+  const dl=e.target.closest("[data-dl]");
+  if(dl){ if(cur) addRecent(cur.id); try{ save(await Vault.get("m-"+dl.dataset.dl),dl.dataset.dl+".mid"); }catch(err){ sheet.close(); askLogin(); } return; }
+  const del=e.target.closest("[data-del]");
+  if(del){ await Vault.localDel(del.dataset.del); sheet.close(); return renderDevice(); }
+  const b=e.target.closest("[data-listen]"); if(!b) return;
+  const box=b.nextElementSibling, open=box.hidden, lbl=b.querySelector("span");
+  if(open){
+    if(!box.firstChild){ let src;
+      try{ const k=b.dataset.listen; src=k.startsWith("local:")?URL.createObjectURL(new Blob([(await Vault.localGet(k.slice(6))).data],{type:"audio/midi"})):await Vault.blobUrl(k,"audio/midi"); }
+      catch(err){ sheet.close(); return askLogin(); }
+      box.innerHTML=`<midi-player src="${src}" sound-font="${SF}"></midi-player>`; }
+    box.hidden=false; b.setAttribute("aria-expanded","true"); lbl.textContent="■ "+L().hide; if(cur) addRecent(cur.id);
+    const mp=box.querySelector("midi-player"); setTimeout(()=>{try{mp.start()}catch(_){}} ,400);
+  } else { stopPlayers(); box.hidden=true; b.setAttribute("aria-expanded","false"); lbl.textContent="▶ "+L().listen; }
+});
+document.addEventListener("click",e=>{
+  const t=e.target.closest(".tile"); if(!t) return;
+  if(t.dataset.local) openLocal(t.dataset.local); else openScore(t.dataset.id);
+});
+addEventListener("pageshow",()=>{ if(sheet.open) sheet.close(); render(); });
+
+/* ---------- sign-in ---------- */
+function askLogin(){ const f=$("#lkName"); $("#lock").scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>(f.value?$("#lkPw"):f).focus(),300); }
+function save(u8,name){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([u8],{type:"audio/midi"})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000); }
+function offText(){ $("#offLine").textContent=!me?"":offN===null?L().offWait:offN?L().offOk(offN):""; }
+async function showUser(){
+  me=await Vault.user(); document.body.classList.toggle("locked",!me);
+  $("#lock").hidden=!!me; $("#userBox").hidden=!me; PDFS=null;
+  if(me){ $("#who").textContent=me.charAt(0).toUpperCase()+me.slice(1); try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){}
+    offN=null; offText(); const n=await Vault.warm(); offN=n?n.length:0; }
+  offText(); render();
+}
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault(); const b=e.target.querySelector("button"); $("#lkErr").textContent=""; b.disabled=true; b.textContent=L().signing;
+  try{ await Vault.login($("#lkName").value,$("#lkPw").value); $("#lkPw").value=""; await showUser(); }
+  catch(err){ $("#lkErr").textContent=err.message==="name"?L().errName:err.message==="password"?L().errPw:L().errNet; }
+  b.disabled=false; b.textContent=L().signIn;
+});
+$("#logout").addEventListener("click",async()=>{ await Vault.logout(); await showUser(); });
+
+/* ---------- files imported on this device ---------- */
+async function renderDevice(){
+  const list=await Vault.localList();
+  $("#devGrid").innerHTML=list.length?`<div class="grid ${mode}">${list.map(r=>`<button type="button" class="tile" data-local="${r.id}"><span class="t-main"><span class="t-title">${esc(r.name.replace(/\.[^.]+$/,""))}</span></span><span class="t-marks"><span class="mk${r.type==="midi"?"":" go"}">${r.type==="midi"?"MIDI":esc(L().mFit)}</span></span></button>`).join("")}</div>`:"";
+}
+$("#addFiles").addEventListener("change",async e=>{ for(const f of e.target.files){ if(/\.(musicxml|xml|mxl|midi?)$/i.test(f.name)) await Vault.localAdd(f); } e.target.value=""; renderDevice(); });
+
+/* ---------- language, filters ---------- */
 function setLang(l){
-  lang=l; document.documentElement.lang=l; document.title=T[l].title;
-  document.querySelectorAll("[data-t]").forEach(el=>{const v=T[l][el.dataset.t]; if(typeof v==="string") el.textContent=v;});
-  document.querySelectorAll("[data-t-html]").forEach(el=>{el.innerHTML=T[l][el.dataset.tHtml];});
-  document.querySelectorAll("[data-p]").forEach(el=>el.setAttribute("placeholder",T[l][el.dataset.p]));
+  lang=l; document.documentElement.lang=l; document.title=L().title;
+  $$("[data-t]").forEach(el=>{const v=L()[el.dataset.t]; if(typeof v==="string") el.textContent=v;});
+  $$("[data-p]").forEach(el=>el.setAttribute("placeholder",L()[el.dataset.p]));
+  $$("[data-a]").forEach(el=>el.setAttribute("aria-label",L()[el.dataset.a]));
   $("#enBtn").setAttribute("aria-pressed",l==="en"); $("#frBtn").setAttribute("aria-pressed",l==="fr");
-  chips(); render(); if(window.Vault){ showUser(); renderDevice(); }
+  chips(); render(); renderDevice(); offText();
 }
 $("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; cat=b.dataset.k; chips(); render();});
 $("#q").addEventListener("input",render);
-const SF="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus";
-document.addEventListener("click",async e=>{
-  const lk=e.target.closest(".key"); if(lk&&!me){ e.preventDefault(); return askLogin(); }
-  const dl=e.target.closest("button[data-dl]"); if(dl){ try{ save(await Vault.get("m-"+dl.dataset.dl),dl.dataset.dl+".mid"); }catch(err){ askLogin(); } return; }
-  const b=e.target.closest("button.listen"); if(!b) return;
-  const box=document.getElementById("pl-"+b.dataset.m); const open=box.hidden;
-  document.querySelectorAll(".player").forEach(p=>{ if(p!==box){ const mp=p.querySelector("midi-player"); if(mp&&mp.playing) mp.stop(); p.hidden=true; } });
-  document.querySelectorAll("button.listen").forEach(x=>{ if(x!==b){ x.setAttribute("aria-expanded","false"); x.textContent="▶ "+T[lang].listen; } });
-  if(open){
-    if(!box.firstChild){ let src; try{ src=b.dataset.local?await localUrl(b.dataset.local):await Vault.blobUrl("m-"+b.dataset.m,"audio/midi"); }catch(err){ return askLogin(); }
-      box.innerHTML=`<midi-player src="${src}" sound-font="${SF}"></midi-player>`+(b.dataset.local?"":`<p class="hint">${esc(b.dataset.solo?T[lang].hintSolo:T[lang].hint)}</p>`); }
-    box.hidden=false; b.setAttribute("aria-expanded","true"); b.textContent="■ "+T[lang].hide;
-    const mp=box.querySelector("midi-player"); setTimeout(()=>{try{mp.start()}catch(_){}} ,400);
-  } else {
-    const mp=box.querySelector("midi-player"); if(mp&&mp.playing) mp.stop();
-    box.hidden=true; b.setAttribute("aria-expanded","false"); b.textContent="▶ "+T[lang].listen;
-  }
-});
-/* ---------- sign-in (vault) ---------- */
-let me=null, PDFS=null;
-const pid=(s,j)=>PDFS&&PDFS[s.c+"|"+s.t]?PDFS[s.c+"|"+s.t][j]:"";
-function askLogin(){ const f=$("#lkName"); $("#lock").scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>(f.value?$("#lkPw"):f).focus(),300); }
-function save(u8,name){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([u8],{type:"audio/midi"})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000); }
-async function showUser(){
-  me=await Vault.user(); document.body.classList.toggle("locked",!me);
-  $("#loginForm").hidden=!!me; $("#signedIn").hidden=!me;
-  const had=!!PDFS; PDFS=null; if(me){ try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){} }
-  if(had||PDFS) render();
-  if(me){ $("#lkWho").textContent=T[lang].who(me.charAt(0).toUpperCase()+me.slice(1)); $("#lkOff").textContent=T[lang].offWait;
-    const n=await Vault.warm(); $("#lkOff").textContent=n?T[lang].offOk(n.length):""; }
-}
-$("#loginForm").addEventListener("submit",async e=>{
-  e.preventDefault(); const b=e.target.querySelector("button"); $("#lkErr").textContent=""; b.disabled=true; b.textContent=T[lang].signing;
-  try{ await Vault.login($("#lkName").value,$("#lkPw").value); $("#lkPw").value=""; await showUser(); }
-  catch(err){ $("#lkErr").textContent=err.message==="name"?T[lang].errName:err.message==="password"?T[lang].errPw:T[lang].errNet; }
-  b.disabled=false; b.textContent=T[lang].signIn;
-});
-$("#logout").addEventListener("click",async()=>{ await Vault.logout(); document.querySelectorAll(".player").forEach(p=>{p.innerHTML="";p.hidden=true;}); await showUser(); });
-
-/* ---------- files imported on this device ---------- */
-const localUrl=async id=>{ const r=await Vault.localGet(id); return URL.createObjectURL(new Blob([r.data],{type:"audio/midi"})); };
-async function renderDevice(){
-  const list=await Vault.localList();
-  $("#devList").innerHTML=list.map(r=>{
-    const act=r.type==="midi"
-      ?`<button type="button" class="listen" data-m="dev-${r.id}" data-local="${r.id}" aria-expanded="false">▶ ${esc(T[lang].listenL)}</button>`
-      :`<a class="view fit" href="fit.html?v=11&l=${r.id}&t=${encodeURIComponent(r.name.replace(/\.[^.]+$/,""))}">${esc(T[lang].fit)}</a>`;
-    return `<li class="item"><div><div class="title">${esc(r.name.replace(/\.[^.]+$/,""))}</div><div class="meta"><span class="pill">${r.type==="midi"?"MIDI":"MusicXML"}</span></div></div><div class="side">${act}<button type="button" class="del" data-del="${r.id}">${esc(T[lang].remove)}</button></div>${r.type==="midi"?`<div class="player" id="pl-dev-${r.id}" hidden></div>`:""}</li>`;
-  }).join("");
-}
-$("#addFiles").addEventListener("change",async e=>{ for(const f of e.target.files){ if(/\.(musicxml|xml|mxl|midi?)$/i.test(f.name)) await Vault.localAdd(f); } e.target.value=""; renderDevice(); });
-$("#devList").addEventListener("click",async e=>{ const d=e.target.closest("[data-del]"); if(d){ await Vault.localDel(d.dataset.del); renderDevice(); } });
-
+$$("[data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
+addEventListener("keydown",e=>{ if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){ e.preventDefault(); $("#q").focus(); } });
 $("#enBtn").addEventListener("click",()=>setLang("en"));
 $("#frBtn").addEventListener("click",()=>setLang("fr"));
+$$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===mode));
 setLang(/^fr/i.test(navigator.language||"")?"fr":"en");
+showUser();
 </script>
 </body>
 </html>
