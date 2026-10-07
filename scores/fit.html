@@ -9,7 +9,7 @@
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <style>
 :root{--bg:#141414;--bar:rgba(20,20,20,.9);--fg:#f2efe8;--muted:#a8a29a;--accent:#c9a46a;--paper:#fffdf8}
-*{box-sizing:border-box}
+*{box-sizing:border-box;touch-action:manipulation}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
 #app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;transform-origin:0 0;background:var(--paper)}
 #scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
@@ -18,6 +18,8 @@ body.pages #scroller{overflow:hidden}
 #score svg{display:block;width:100%;height:auto}
 body.pages #score svg{width:100%;height:100%}
 #score{touch-action:pan-y}
+#scroller,#scroller *{touch-action:pan-y}
+body.pages #scroller,body.pages #scroller *{touch-action:none}
 body.pages #score{touch-action:none}
 body.pages #score{position:absolute;inset:0;overflow:hidden}
 .zone{position:absolute;top:0;bottom:0;width:38%;z-index:2;cursor:pointer;display:none}
@@ -87,7 +89,8 @@ const HSP=[["Normal",0.25,0.6],["Compact",0.17,0.5],["Tight",0.11,0.42]];   // n
 let hsp=+(localStorage.getItem("fit-hsp")||0)%HSP.length;   // user offset from the automatic size
 const ROTS=[[0,"Upright"],[90,"Turned ↻"],[270,"Turned ↺"]];
 let rot=+(localStorage.getItem("fit-rot")||0)%ROTS.length;
-const SW=()=>Math.round(window.visualViewport?visualViewport.width:innerWidth), SH=()=>Math.round(window.visualViewport?visualViewport.height:innerHeight);
+/* screen size that browser zoom can't distort: layout width + visible height at zoom 1 */
+const SW=()=>document.documentElement.clientWidth||innerWidth, SH=()=>Math.round(window.visualViewport?visualViewport.height*visualViewport.scale:innerHeight);
 const VW=()=>ROTS[rot][0]?SH():SW(), VH=()=>ROTS[rot][0]?SW():SH();
 function applyRot(){ const a=$("#app"), d=ROTS[rot][0];
   a.style.width=VW()+"px"; a.style.height=VH()+"px";
@@ -174,6 +177,11 @@ addEventListener("touchend",e=>{ if(pinch0&&e.touches.length<2){ const t=e.chang
 let lastPinch=1;
 addEventListener("touchmove",e=>{ if(pinch0&&e.touches.length===2){ const [a,b]=e.touches; lastPinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch0; } },{passive:true});
 addEventListener("touchend",e=>{ if(e.touches.length===0&&lastPinch!==1){ const r=lastPinch; lastPinch=1; if(r>1.12) setZoom(Math.min(16,Math.round((r-1)*12))); else if(r<0.88) setZoom(-Math.min(16,Math.round((1-r)*12))); } },{passive:true});
+let lastTap=0;
+document.addEventListener("touchend",e=>{ if(e.touches.length||e.changedTouches.length!==1) return; const now=Date.now();
+  if(now-lastTap<350){ e.preventDefault(); const t=e.changedTouches[0], el=document.elementFromPoint(t.clientX,t.clientY); if(el) el.dispatchEvent(new MouseEvent("click",{bubbles:true,clientX:t.clientX,clientY:t.clientY})); }
+  lastTap=now; },{passive:false});
+document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
 ["gesturestart","gesturechange","gestureend"].forEach(n=>document.addEventListener(n,e=>e.preventDefault(),{passive:false}));
 let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
