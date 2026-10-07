@@ -10,18 +10,20 @@
 <style>
 :root{--bg:#141414;--bar:rgba(20,20,20,.9);--fg:#f2efe8;--muted:#a8a29a;--accent:#c9a46a;--paper:#fffdf8}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
-body.pages{overflow:hidden}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
+#app{position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;transform-origin:0 0;background:var(--paper)}
+#scroller{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch}
+body.pages #scroller{overflow:hidden}
 #score{background:var(--paper);min-height:100%}
 #score svg{display:block;width:100%;height:auto}
 body.pages #score svg{width:100%;height:100%}
 #score{touch-action:pan-y}
 body.pages #score{touch-action:none}
-body.pages #score{position:fixed;inset:0;overflow:hidden}
-.zone{position:fixed;top:0;bottom:0;width:38%;z-index:2;cursor:pointer;display:none}
+body.pages #score{position:absolute;inset:0;overflow:hidden}
+.zone{position:absolute;top:0;bottom:0;width:38%;z-index:2;cursor:pointer;display:none}
 body.pages .zone{display:block}
 #zl{left:0}#zr{right:0}
-#bar{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--bar);backdrop-filter:blur(6px);transition:opacity .25s,transform .25s}
+#bar{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--bar);backdrop-filter:blur(6px);transition:opacity .25s,transform .25s}
 #bar.hide{opacity:0;transform:translateY(-100%);pointer-events:none}
 #title{flex:1 1 140px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
 button{font:inherit;color:var(--fg);background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:6px 10px;cursor:pointer;min-height:38px;min-width:38px}
@@ -30,15 +32,16 @@ button:disabled{opacity:.4}
 .seg{display:inline-flex}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0}
 #pg{min-width:52px;text-align:center;color:var(--muted)}
 body:not(.pages) .ponly{display:none}
-#msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
+#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
 #msg a{color:#8a6a2a}
-#menuBtn{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:4;opacity:.55;background:#2a2a2a}
+#menuBtn{position:absolute;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:4;opacity:.55;background:#2a2a2a}
 @media (max-width:520px){.lbl{display:none}}
 </style>
 </head>
 <body class="pages">
+<div id="app">
 <div id="msg">Loading the score…</div>
-<div id="score"></div>
+<div id="scroller"><div id="score"></div></div>
 <div class="zone" id="zl" aria-hidden="true"></div>
 <div class="zone" id="zr" aria-hidden="true"></div>
 <div id="bar">
@@ -58,9 +61,11 @@ body:not(.pages) .ponly{display:none}
   <button type="button" id="prev" class="ponly" title="Previous (← / Page Up)">‹</button>
   <span id="pg" class="ponly">–</span>
   <button type="button" id="next" class="ponly" title="Next (→ / Page Down / space)">›</button>
+  <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
 </div>
 <button type="button" id="menuBtn" title="Menu" aria-label="Show menu">☰</button>
+</div>
 
 <script>
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
@@ -74,14 +79,22 @@ const GAPS=[["Normal",8,30],["Compact",3,12],["Tight",0,4]];   // name, verovio 
 let gap=+(localStorage.getItem("fit-gap")||0)%GAPS.length;
 const HSP=[["Normal",0.25,0.6],["Compact",0.17,0.5],["Tight",0.11,0.42]];   // name, spacingLinear, spacingNonLinear (lower = long notes take less room)
 let hsp=+(localStorage.getItem("fit-hsp")||0)%HSP.length;   // user offset from the automatic size
-function autoScale(){ return Math.round(Math.max(24,Math.min(60,innerWidth/14,innerHeight/12))); }
+const ROTS=[[0,"Upright"],[90,"Turned ↻"],[270,"Turned ↺"]];
+let rot=+(localStorage.getItem("fit-rot")||0)%ROTS.length;
+const VW=()=>ROTS[rot][0]?innerHeight:innerWidth, VH=()=>ROTS[rot][0]?innerWidth:innerHeight;
+function applyRot(){ const a=$("#app"), d=ROTS[rot][0];
+  a.style.width=VW()+"px"; a.style.height=VH()+"px";
+  a.style.transform=d===90?`translateX(${innerWidth}px) rotate(90deg)`:d===270?`translateY(${innerHeight}px) rotate(-90deg)`:"none";
+  $("#rotLbl").textContent=" "+ROTS[rot][1]; }
+function setRot(r){ rot=r%ROTS.length; try{localStorage.setItem("fit-rot",rot)}catch(e){} applyRot(); layout(true); }
+function autoScale(){ return Math.round(Math.max(24,Math.min(60,VW()/14,VH()/12))); }
 function scale(){ return Math.max(18,Math.min(90,autoScale()+zoom)); }
 function layout(keepRatio){
-  if(!tk) return;
+  if(!tk) return; applyRot();
   const ratio=pages>1?(page-1)/(pages-1):0, s=scale(), k=100/s;
-  const opts={scale:s,pageWidth:Math.round(innerWidth*k),pageMarginLeft:40,pageMarginRight:40,pageMarginTop:view==="pages"?Math.max(GAPS[gap][2],20)+20:GAPS[gap][2],pageMarginBottom:GAPS[gap][2],
+  const opts={scale:s,pageWidth:Math.round(VW()*k),pageMarginLeft:40,pageMarginRight:40,pageMarginTop:view==="pages"?Math.max(GAPS[gap][2],20)+20:GAPS[gap][2],pageMarginBottom:GAPS[gap][2],
     breaks:"auto",footer:"none",header:"auto",spacingSystem:GAPS[gap][1],spacingLinear:HSP[hsp][1],spacingNonLinear:HSP[hsp][2],spacingStaff:4,svgViewBox:true,svgRemoveXlink:true};
-  if(view==="pages"){ opts.pageHeight=Math.round(innerHeight*k); opts.adjustPageHeight=false; }
+  if(view==="pages"){ opts.pageHeight=Math.round(VH()*k); opts.adjustPageHeight=false; }
   else { opts.pageHeight=60000; opts.adjustPageHeight=true; }
   tk.setOptions(opts); tk.redoLayout();
   pages=tk.getPageCount();
@@ -94,11 +107,12 @@ function draw(){
 }
 function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
 function setView(v){ view=v; try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
-  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===v)); page=1; layout(false); scrollTo(0,0); }
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===v)); page=1; layout(false); $("#scroller").scrollTop=0; }
 function setGap(g){ gap=g%GAPS.length; try{localStorage.setItem("fit-gap",gap)}catch(e){} $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#gap").title="Space between lines: "+GAPS[gap][0]+" (G)"; layout(true); }
 $("#gap").onclick=()=>setGap(gap+1);
 function setHsp(h){ hsp=h%HSP.length; try{localStorage.setItem("fit-hsp",hsp)}catch(e){} $("#hspLbl").textContent=" "+HSP[hsp][0]; $("#hsp").title="Space between notes: "+HSP[hsp][0]+" (H)"; layout(true); }
 $("#hsp").onclick=()=>setHsp(hsp+1);
+$("#rot").onclick=()=>setRot(rot+1);
 function fitAll(){ // biggest size at which the whole piece fits one screen
   if(!tk) return; if(view!=="pages") setView("pages");
   for(let z=zoom; scale()>18; z-=2){ zoom=z; layout(false); if(pages===1) break; }
@@ -118,12 +132,13 @@ addEventListener("keydown",e=>{
   if(view==="pages"){
     if(["ArrowRight","PageDown"," ","ArrowDown","Enter"].includes(k)){e.preventDefault();go(1);return}
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
-  } else if(k==="PageDown"||k===" "){ e.preventDefault(); scrollBy({top:innerHeight*0.85,behavior:"smooth"}); return; }
-  else if(k==="PageUp"){ e.preventDefault(); scrollBy({top:-innerHeight*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1);
+  } else if(k==="PageDown"||k===" "){ e.preventDefault(); $("#scroller").scrollBy({top:VH()*0.85,behavior:"smooth"}); return; }
+  else if(k==="PageUp"){ e.preventDefault(); $("#scroller").scrollBy({top:-VH()*0.85,behavior:"smooth"}); return; }
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1);
 });
-let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?e.touches[0].clientX:null; },{passive:true});
-addEventListener("touchend",e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
+const along=t=>{ const d=ROTS[rot][0]; return d===90?t.clientY:d===270?-t.clientY:t.clientX; };
+let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
+addEventListener("touchend",e=>{ if(sx===null) return; const dx=along(e.changedTouches[0])-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
 let rT, lastW=innerWidth, lastH=innerHeight;
 addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)<4&&Math.abs(innerHeight-lastH)<60&&view==="scroll") return; lastW=innerWidth; lastH=innerHeight; layout(true); },200); });
 async function toggleFs(){ const el=document.documentElement; try{ if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){} }
