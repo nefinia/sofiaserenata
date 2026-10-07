@@ -61,6 +61,12 @@ body:not(.pages) .ponly{display:none}
   <button type="button" id="prev" class="ponly" title="Previous (← / Page Up)">‹</button>
   <span id="pg" class="ponly">–</span>
   <button type="button" id="next" class="ponly" title="Next (→ / Page Down / space)">›</button>
+  <div class="seg" role="group" aria-label="Auto-scroll">
+    <button type="button" id="play" title="Scroll down by itself (P)">▶<span class="lbl"> Play</span></button>
+    <button type="button" id="slow" title="Slower">−</button>
+    <span id="spd" style="padding:0 8px;color:var(--muted);align-self:center">1</span>
+    <button type="button" id="fast" title="Faster">+</button>
+  </div>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
 </div>
@@ -87,6 +93,18 @@ function applyRot(){ const a=$("#app"), d=ROTS[rot][0];
   a.style.transform=d===90?`translateX(${innerWidth}px) rotate(90deg)`:d===270?`translateY(${innerHeight}px) rotate(-90deg)`:"none";
   $("#rotLbl").textContent=" "+ROTS[rot][1]; }
 function setRot(r){ rot=r%ROTS.length; try{localStorage.setItem("fit-rot",rot)}catch(e){} applyRot(); layout(true); }
+/* auto-scroll */
+const SPEEDS=[6,9,13,18,24,32,42,55,72,95];   // pixels per second
+let spd=+(localStorage.getItem("fit-spd")||3), playing=false, lastT=0, acc=0;
+function showSpd(){ $("#spd").textContent=spd+1; }
+function tick(t){ if(!playing) return; const sc=$("#scroller");
+  if(lastT){ acc+=SPEEDS[spd]*(t-lastT)/1000; const n=Math.floor(acc); if(n){ sc.scrollTop+=n; acc-=n; } }
+  lastT=t;
+  if(sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1){ stopPlay(); return; }
+  requestAnimationFrame(tick); }
+function startPlay(){ if(!tk) return; if(view!=="scroll") setView("scroll"); playing=true; lastT=0; acc=0; $("#play").innerHTML='❚❚<span class="lbl"> Pause</span>'; $("#play").setAttribute("aria-pressed","true"); $("#bar").classList.add("hide"); requestAnimationFrame(tick); }
+function stopPlay(){ playing=false; $("#play").innerHTML='▶<span class="lbl"> Play</span>'; $("#play").setAttribute("aria-pressed","false"); }
+function setSpd(v){ spd=Math.max(0,Math.min(SPEEDS.length-1,v)); try{localStorage.setItem("fit-spd",spd)}catch(e){} showSpd(); }
 function autoScale(){ return Math.round(Math.max(24,Math.min(60,VW()/14,VH()/12))); }
 function scale(){ return Math.max(18,Math.min(90,autoScale()+zoom)); }
 function layout(keepRatio){
@@ -113,6 +131,7 @@ $("#gap").onclick=()=>setGap(gap+1);
 function setHsp(h){ hsp=h%HSP.length; try{localStorage.setItem("fit-hsp",hsp)}catch(e){} $("#hspLbl").textContent=" "+HSP[hsp][0]; $("#hsp").title="Space between notes: "+HSP[hsp][0]+" (H)"; layout(true); }
 $("#hsp").onclick=()=>setHsp(hsp+1);
 $("#rot").onclick=()=>setRot(rot+1);
+$("#play").onclick=()=>playing?stopPlay():startPlay(); $("#slow").onclick=()=>setSpd(spd-1); $("#fast").onclick=()=>setSpd(spd+1);
 function fitAll(){ // biggest size at which the whole piece fits one screen
   if(!tk) return; if(view!=="pages") setView("pages");
   for(let z=zoom; scale()>18; z-=2){ zoom=z; layout(false); if(pages===1) break; }
@@ -125,7 +144,7 @@ $("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
 $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
 $("#zl").onclick=()=>go(-1); $("#zr").onclick=()=>go(1);
 let hideT; function showBar(){ $("#bar").classList.remove("hide"); clearTimeout(hideT); hideT=setTimeout(()=>$("#bar").classList.add("hide"),4000); }
-$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(view==="pages") ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
+$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(playing){ stopPlay(); showBar(); return; } ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
 $("#bar").addEventListener("pointerdown",showBar);
 addEventListener("keydown",e=>{
   const k=e.key;
@@ -134,7 +153,7 @@ addEventListener("keydown",e=>{
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
   } else if(k==="PageDown"||k===" "){ e.preventDefault(); $("#scroller").scrollBy({top:VH()*0.85,behavior:"smooth"}); return; }
   else if(k==="PageUp"){ e.preventDefault(); $("#scroller").scrollBy({top:-VH()*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1);
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if(k==="p"||k==="P") playing?stopPlay():startPlay();
 });
 const along=t=>{ const d=ROTS[rot][0]; return d===90?t.clientY:d===270?-t.clientY:t.clientX; };
 let sx=null; addEventListener("touchstart",e=>{ sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
@@ -168,7 +187,7 @@ async function start(){
     tk.setOptions({scale:scale(),breaks:"auto"});
     xml=xml.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"");
     if(!tk.loadData(xml)) return fail();
-    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; setView(view); showBar(); wake();
+    $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
 </script>
