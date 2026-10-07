@@ -11,8 +11,8 @@
 :root{--bg:#141414;--bar:rgba(20,20,20,.9);--fg:#f2efe8;--muted:#a8a29a;--accent:#c9a46a;--paper:#fffdf8}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
-#app{position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;transform-origin:0 0;background:var(--paper)}
-#scroller{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch}
+#app{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;overflow:hidden;transform-origin:0 0;background:var(--paper)}
+#scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 body.pages #scroller{overflow:hidden}
 #score{background:var(--paper);min-height:100%}
 #score svg{display:block;width:100%;height:auto}
@@ -34,7 +34,7 @@ button:disabled{opacity:.4}
 body:not(.pages) .ponly{display:none}
 #msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
 #msg a{color:#8a6a2a}
-#menuBtn{position:absolute;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:4;opacity:.55;background:#2a2a2a}
+#menuBtn{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:4;width:44px;height:44px;min-width:44px;padding:0;border-radius:12px;border:0;background:rgba(40,40,40,.72);color:#fff;font-size:20px;line-height:44px;backdrop-filter:blur(6px)}
 @media (max-width:520px){.lbl{display:none}}
 </style>
 </head>
@@ -87,10 +87,11 @@ const HSP=[["Normal",0.25,0.6],["Compact",0.17,0.5],["Tight",0.11,0.42]];   // n
 let hsp=+(localStorage.getItem("fit-hsp")||0)%HSP.length;   // user offset from the automatic size
 const ROTS=[[0,"Upright"],[90,"Turned ↻"],[270,"Turned ↺"]];
 let rot=+(localStorage.getItem("fit-rot")||0)%ROTS.length;
-const VW=()=>ROTS[rot][0]?innerHeight:innerWidth, VH=()=>ROTS[rot][0]?innerWidth:innerHeight;
+const SW=()=>Math.round(window.visualViewport?visualViewport.width:innerWidth), SH=()=>Math.round(window.visualViewport?visualViewport.height:innerHeight);
+const VW=()=>ROTS[rot][0]?SH():SW(), VH=()=>ROTS[rot][0]?SW():SH();
 function applyRot(){ const a=$("#app"), d=ROTS[rot][0];
   a.style.width=VW()+"px"; a.style.height=VH()+"px";
-  a.style.transform=d===90?`translateX(${innerWidth}px) rotate(90deg)`:d===270?`translateY(${innerHeight}px) rotate(-90deg)`:"none";
+  a.style.transform=d===90?`translateX(${SW()}px) rotate(90deg)`:d===270?`translateY(${SH()}px) rotate(-90deg)`:"none";
   $("#rotLbl").textContent=" "+ROTS[rot][1]; }
 function setRot(r){ rot=r%ROTS.length; try{localStorage.setItem("fit-rot",rot)}catch(e){} applyRot(); layout(true); }
 /* auto-scroll */
@@ -178,6 +179,7 @@ let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
 
 function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
+applyRot();
 async function start(){
   const url=src||(xid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(xid)}?alt=media&key=${API_KEY}`:null);
   if(!url){ $("#msg").textContent="No score selected."; return; }
