@@ -50,6 +50,7 @@ button[aria-pressed="true"]{background:var(--accent);color:#1a1a1a;border-color:
 </div>
 <div id="hint">Tap left / right to turn · tap the middle for the menu · works with page-turner pedals</div>
 
+<script src="vault.js"></script>
 <script src="lib/pdf.min.js"></script>
 <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
 <script>
@@ -126,7 +127,7 @@ async function load(){
     $("#msg").innerHTML=`This score couldn't be loaded here.<br><br>`+(id?`<a href="https://drive.google.com/file/d/${encodeURIComponent(id)}/view">Open it in Google Drive</a>`:"");
   }
 }
-load();
+(async()=>{ if(window.Vault && !(await Vault.user())){ $("#msg").innerHTML='This score is locked.<br><br><a href="./">Sign in on the library page</a>'; return; } load(); })();
 </script>
 </body>
 </html>
