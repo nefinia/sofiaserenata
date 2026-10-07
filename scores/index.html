@@ -15,7 +15,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#fbf7f1" />
   <title>Score Library — Sofia Gallego</title>
-  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="A working library of arrangements for violin and voice, written for live performance. Scores adapt to the screen, play along and stay available offline. Open to musicians on request." />
+  <link rel="canonical" href="https://sofiaserenata.com/scores/" />
+  <meta property="og:title" content="Score Library — Sofia Gallego" />
+  <meta property="og:description" content="A working library of arrangements for violin and voice, written for live performance. Open to musicians on request." />
+  <meta property="og:url" content="https://sofiaserenata.com/scores/" />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -49,6 +54,9 @@
     /* sign-in */
     .lock{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:8px 0 18px}
     .lk-msg{margin:0 0 10px;color:var(--soft);font-size:15px}
+    .lk-h{font-family:var(--display);font-weight:400;font-size:20px;margin:0 0 4px}
+    .lk-req{margin:10px 0 0;font-size:15px}
+    body.locked .bar,body.locked main{display:none}
     .lk-row{display:flex;flex-wrap:wrap;gap:8px}
     .lk-row input{flex:1 1 160px;min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:16px;color:var(--ink)}
     .lk-err{margin:8px 0 0;color:var(--rose);font-size:14px}
@@ -155,18 +163,20 @@
       </div>
     </div>
   </div>
-  <p class="lead" data-t="lead">The sheet music I use for events, for the musicians I perform with. Tap a score to open it, hear the arrangement or download its MIDI file.</p>
+  <p class="lead" data-t="lead">A working library of arrangements for violin and voice, written for live performance. Each score adapts to the screen, can play along, and stays available offline. Access is open to musicians on request.</p>
   <p class="off" id="offLine"></p>
 
   <div class="lock" id="lock">
     <form id="loginForm" autocomplete="on">
-      <p class="lk-msg" data-t="lockMsg">For rehearsal only. Sign in to open the scores; please don't share them.</p>
+      <h2 class="lk-h" data-t="lockH">Musicians' access</h2>
+      <p class="lk-msg" data-t="lockMsg">For the musicians I perform with. Sign in to open the library; please don't share the scores.</p>
       <div class="lk-row">
         <label class="sr-only" for="lkName" data-t="name">Name</label><input id="lkName" name="username" autocomplete="username" data-p="name" placeholder="Name" required>
         <label class="sr-only" for="lkPw" data-t="password">Password</label><input id="lkPw" name="password" type="password" autocomplete="current-password" data-p="password" placeholder="Password" required>
         <button type="submit" class="btn" data-t="signIn">Sign in</button>
       </div>
       <p class="lk-err" id="lkErr" role="alert"></p>
+      <p class="lk-req"><a id="reqLink" href="mailto:contact@sofiaserenata.com?subject=Score%20library%20access" data-t="req">Request access</a></p>
     </form>
   </div>
 </header>
@@ -211,83 +221,19 @@
 <script>
 const CATS={solo:{en:"Solo violin",fr:"Violon seul"},duets:{en:"Violin & cello duets",fr:"Duos violon & violoncelle"},pop:{en:"Pop & film",fr:"Pop & cinéma"},classical:{en:"Classical",fr:"Classique"},voice:{en:"Opera & choral",fr:"Opéra & chœur"},latin:{en:"Tango & chanson",fr:"Tango & chanson"},jewish:{en:"Jewish & klezmer",fr:"Musique juive & klezmer"}};
 const INSTR={vc:{en:"Violin & cello",fr:"Violon & violoncelle"},vn:{en:"Solo violin",fr:"Violon seul"},vnp:{en:"Violin & piano",fr:"Violon & piano"},vp:{en:"Voice & piano",fr:"Voix & piano"},pno:{en:"Piano",fr:"Piano"},lead:{en:"Melody & chords",fr:"Mélodie & accords"},book:{en:"Songbook",fr:"Recueil"},part:{en:"Violin part",fr:"Partie de violon"},score:{en:"Full score",fr:"Conducteur"},trio:{en:"Trio (part)",fr:"Trio (partie)"},voice:{en:"Voice",fr:"Voix"}};
-const S=[
-  {t:"Love Story",a:"Indila",c:"solo",k:"love-story-solo",i:"vn",arr:true,f:[[0]],m:"love-story-solo"},
-  {t:"Hallelujah",a:"Leonard Cohen (after Lindsey Stirling)",c:"solo",k:"hallelujah-solo",i:"vn",arr:true,f:[[0]]},
-  {t:"The Logical Song",a:"Supertramp",c:"solo",k:"the-logical-song-solo",i:"vn",arr:true,f:[[0],[0,"two violins"]],m:"the-logical-song-solo"},
-  {t:"Breakfast in America",a:"Supertramp",c:"solo",k:"breakfast-in-america-solo",i:"vn",arr:true,f:[[0]],m:"breakfast-in-america-solo"},
-  {t:"School",a:"Supertramp",c:"solo",k:"school-solo",i:"vn",arr:true,f:[[0]],m:"school-solo"},
-  {t:"Creep",a:"Radiohead",c:"solo",k:"creep-solo",i:"vn",arr:true,f:[[0]],m:"creep-solo"},
-  {t:"Don't Stop Believin'",a:"Journey",c:"solo",k:"dont-stop-believin-solo",i:"vn",arr:true,f:[[0]],m:"dont-stop-believin-solo"},
-  {t:"Toxic",a:"Britney Spears",c:"solo",k:"toxic-solo",i:"vn",arr:true,f:[[0]]},
-  {t:"Despacito",a:"Luis Fonsi",c:"solo",k:"despacito-solo",i:"vn",arr:true,f:[[0]]},
-  {t:"School",a:"Supertramp",c:"duets",i:"vc",arr:true,f:[[0],[0,"simplified cello"]],m:"school"},
-  {t:"The Logical Song",a:"Supertramp",c:"duets",i:"vc",arr:true,f:[[0],[0,"simplified cello"]],m:"the-logical-song"},
-  {t:"Breakfast in America",a:"Supertramp",c:"duets",i:"vc",arr:true,f:[[0],[0,"simplified cello"]],m:"breakfast-in-america"},
-  {t:"Despacito",a:"Luis Fonsi",c:"duets",i:"vc",f:[[0,"4 pp."],[0,"5 pp."],[0,"simplified cello"]]},
-  {t:"Wildest Dreams",a:"Taylor Swift",c:"duets",i:"vc",f:[[0]]},
-  {t:"Toxic",a:"Britney Spears",c:"duets",i:"vc",f:[[0]]},
-  {t:"Shallow",a:"Lady Gaga & Bradley Cooper",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"Don't Stop Believin'",a:"Journey",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"Back in Black",a:"AC/DC",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"Libertango",a:"Astor Piazzolla",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"Let It Be",a:"The Beatles",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"Eine kleine Nachtmusik",a:"W. A. Mozart",c:"duets",i:"vc",f:[[0]]},
-  {t:"All of Me",a:"John Legend (arr. Hannah Stater)",c:"duets",i:"vc",f:[[0]]},
-  {t:"Hallelujah",a:"Leonard Cohen (arr. Renê Victor)",c:"duets",i:"vc",f:[[0]]},
-  {t:"Canon in D",a:"Johann Pachelbel (arr. Maurício Luz)",c:"duets",i:"vc",f:[[0],[0,"simplified cello"]]},
-  {t:"12 Easy Duets",a:"W. A. Mozart",c:"duets",i:"vc",f:[[0]]},
-  {t:"Someone Like You",a:"Adele",c:"pop",i:"vn",f:[[0]]},
-  {t:"Kiss from a Rose",a:"Seal",c:"pop",i:"vn",f:[[0]]},
-  {t:"Die a Happy Man",a:"Thomas Rhett",c:"pop",i:"vn",f:[[0]]},
-  {t:"Summertime Sadness",a:"Lana Del Rey",c:"pop",i:"vp",f:[[0]]},
-  {t:"Chandelier",a:"Sia",c:"pop",i:"lead",f:[[0]]},
-  {t:"Shallow",a:"Lady Gaga & Bradley Cooper",c:"pop",i:"pno",f:[[0,"v1"],[0,"v2"]]},
-  {t:"Ain't No Sunshine",a:"Bill Withers",c:"pop",i:null,f:[[0]]},
-  {t:"It's OK",a:"Nightbirde",c:"pop",i:"pno",f:[[0]]},
-  {t:"The Godfather — Love Theme",a:"Nino Rota",c:"pop",i:"vn",f:[[0]]},
-  {t:"Requiem for a Dream",a:"Clint Mansell",c:"pop",i:"vnp",f:[[0,"vn+pno"],[0,"vn+pno+fl"]]},
-  {t:"The Beatles 1962–1974",a:"The Beatles",c:"pop",i:"book",f:[[0]]},
-  {t:"Eine kleine Nachtmusik",a:"W. A. Mozart",c:"classical",i:"vnp",f:[[0,"3 pp."],[0,"violin part · 3 pp."]]},
-  {t:"Prelude, Cello Suite No. 1",a:"J. S. Bach",c:"classical",i:"vn",f:[[0]]},
-  {t:"Clair de Lune",a:"Claude Debussy",c:"classical",i:"vn",f:[[0]]},
-  {t:"Nocturne No. 20 in C♯ minor",a:"Frédéric Chopin",c:"classical",i:"vn",f:[[0]]},
-  {t:"Adagio in G minor",a:"Albinoni / Giazotto",c:"classical",i:"pno",f:[[0]]},
-  {t:"Spring Sonata, Op. 24 — I. Allegro",a:"Ludwig van Beethoven",c:"classical",i:"part",f:[[0]]},
-  {t:"Caprice in A minor",a:"Niccolò Paganini",c:"classical",i:"vn",f:[[0]]},
-  {t:"Sonata in D minor, K. 32 “Aria”",a:"Domenico Scarlatti",c:"classical",i:"pno",f:[[0]]},
-  {t:"London Trios Nos. 1–4",a:"Joseph Haydn",c:"classical",i:"trio",f:[[0]]},
-  {t:"Grand Sonata",a:"Nicolas-Charles Bochsa",c:"classical",i:"part",f:[[0]]},
-  {t:"Greensleeves (Celtic)",a:"Traditional",c:"classical",i:"vnp",f:[[0]]},
-  {t:"Habanera — Carmen",a:"Georges Bizet",c:"voice",i:"vp",f:[[0]]},
-  {t:"Non più mesta — La Cenerentola",a:"Gioachino Rossini",c:"voice",i:"vp",f:[[0]]},
-  {t:"Messiah",a:"George Frideric Handel",c:"voice",i:"score",f:[[0]]},
-  {t:"Et resurrexit",a:"Claudio Monteverdi",c:"voice",i:"voice",f:[[0]]},
-  {t:"Por una cabeza",a:"Carlos Gardel",c:"latin",i:null,f:[[0]]},
-  {t:"Alfonsina y el mar",a:"Ariel Ramírez",c:"latin",i:null,f:[[0]]},
-  {t:"La Foule",a:"Édith Piaf (A. Cabral)",c:"latin",i:"lead",f:[[0]]},
-  {t:"Omen",a:"Lipa Schmeltzer",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Yomam Volayla",a:"Lipa Schmeltzer",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Asher Yotzar",a:"Lipa Schmeltzer",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Carry On",a:"Lipa Schmeltzer",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Kain",a:"The Chevra (Eli Gerstner)",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Shalom",a:"The Chevra (Eli Gerstner)",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Hagomel",a:"Dovid Gabay (Yossi Green)",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Ahalela",a:"Ari Goldwag",c:"jewish",i:"lead",f:[[0]]},
-  {t:"Yehuda Green songbook",a:"Yehuda Green",c:"jewish",i:"book",f:[[0]]},
-  {t:"Remember",a:"Klezmer (arr. Atie Bernet)",c:"jewish",i:"lead",f:[[0,"1"],[0,"2"]]}
-];
+/* the song list is stored encrypted (vault/c-catalog) and only loaded after sign-in */
+let S=[];
 const T={
-  en:{h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"The sheet music I use for events, for the musicians I perform with. Tap a score to open it, hear the arrangement or download its MIDI file.",
-    lockMsg:"For rehearsal only. Sign in to open the scores; please don't share them.",name:"Name",password:"Password",signIn:"Sign in",signOut:"Sign out",signing:"Opening…",
+  en:{h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"A working library of arrangements for violin and voice, written for live performance. Each score adapts to the screen, can play along, and stays available offline. Access is open to musicians on request.",
+    lockH:"Musicians' access",lockMsg:"For the musicians I perform with. Sign in to open the library; please don't share the scores.",req:"Request access",name:"Name",password:"Password",signIn:"Sign in",signOut:"Sign out",signing:"Opening…",
     errName:"No login with that name.",errPw:"Wrong password.",errNet:"Can’t reach the website. Sign in once while online.",offOk:n=>n+" files saved on this device for offline use.",offWait:"Saving the scores for offline use…",syncAgain:"Sign out and in again to keep your drawings in sync across devices.",
     search:"Search a score",gridL:"Grid",listL:"List",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",recent:"Recently opened",
     mFit:"Fit",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Close",lockOne:"Sign in to open this score.",
     fit:"Fit to screen",fitNote:"Reflows to your screen · Play scrolls by itself",viewPdf:"View PDF",pdfNote:"Full screen, turn pages with a tap or pedal",drive:"Open in Google Drive",
     listen:"Listen",hide:"Stop",hint:"Violin and cello, with the repeats played through",hintSolo:"Solo violin line, with the repeats played through",dlMidi:"Download MIDI",onreq:"No score file yet. Ask Sofia.",
     devTitle:"On this device",devNote:"Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.",addFiles:"Add files…",remove:"Remove from this device",localNote:"Only on this device",back:"Back to events"},
-  fr:{h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Les partitions que j’utilise pour les événements, pour les musiciens avec qui je joue. Touchez une partition pour l’ouvrir, écouter l’arrangement ou télécharger son fichier MIDI.",
-    lockMsg:"Pour les répétitions uniquement. Connectez-vous pour ouvrir les partitions ; merci de ne pas les diffuser.",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",
+  fr:{h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Une bibliothèque de travail d’arrangements pour violon et voix, pensés pour le jeu en direct. Chaque partition s’adapte à l’écran, peut être écoutée et reste disponible hors ligne. L’accès est ouvert aux musiciens sur demande.",
+    lockH:"Accès musiciens",lockMsg:"Pour les musiciens avec qui je joue. Connectez-vous pour ouvrir la bibliothèque ; merci de ne pas diffuser les partitions.",req:"Demander un accès",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",
     errName:"Aucun accès à ce nom.",errPw:"Mot de passe incorrect.",errNet:"Le site est injoignable. Connectez-vous une première fois en ligne.",offOk:n=>n+" fichiers enregistrés sur cet appareil pour l’usage hors ligne.",offWait:"Enregistrement des partitions pour l’usage hors ligne…",syncAgain:"Déconnectez-vous puis reconnectez-vous pour synchroniser vos annotations entre appareils.",
     search:"Chercher une partition",gridL:"Grille",listL:"Liste",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",recent:"Ouvertes récemment",
     mFit:"Écran",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Fermer",lockOne:"Connectez-vous pour ouvrir cette partition.",
@@ -300,10 +246,10 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
 const CK=Object.keys(CATS);
-/* arrangements made for one client (Supertramp) go to the end of their section */
-const later=s=>/Supertramp/.test(s.a)?1:0;
-const LIB=S.map((s,o)=>({...s,id:s.c+"|"+s.t,o})).sort((a,b)=>CK.indexOf(a.c)-CK.indexOf(b.c)||later(a)-later(b)||a.o-b.o);
-const BY=Object.fromEntries(LIB.map(s=>[s.id,s]));
+/* arrangements made for one client go to the end of their section */
+const later=s=>s.late?1:0;
+let LIB=[], BY={};
+function setCatalog(a){ S=a||[]; LIB=S.map((s,o)=>({...s,id:s.c+"|"+s.t,o})).sort((a,b)=>CK.indexOf(a.c)-CK.indexOf(b.c)||later(a)-later(b)||a.o-b.o); BY=Object.fromEntries(LIB.map(s=>[s.id,s])); }
 const SF="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus";
 let lang="en", cat="all", mode=ls.get("lib-mode","grid"), me=null, PDFS=null, offN=null, cur=null;
 const pid=(s,j)=>PDFS&&PDFS[s.id]?PDFS[s.id][j]:"";
@@ -389,10 +335,10 @@ let syncOff=false;
 function offText(){ $("#offLine").textContent=!me?"":(offN===null?L().offWait:offN?L().offOk(offN):"")+(syncOff?" "+L().syncAgain:""); }
 async function showUser(){
   me=await Vault.user(); document.body.classList.toggle("locked",!me);
-  $("#lock").hidden=!!me; $("#userBox").hidden=!me; PDFS=null;
-  if(me){ $("#who").textContent=me.charAt(0).toUpperCase()+me.slice(1); try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){}
+  $("#lock").hidden=!!me; $("#userBox").hidden=!me; PDFS=null; setCatalog([]);
+  if(me){ $("#who").textContent=me.charAt(0).toUpperCase()+me.slice(1); try{ setCatalog(JSON.parse(await Vault.text("c-catalog"))); }catch(e){} try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){}
     offN=null; offText(); const n=await Vault.warm(); offN=n?n.length:0; syncOff=!(await Vault.syncOn()); }
-  offText(); render();
+  offText(); chips(); render(); renderDevice();
 }
 $("#loginForm").addEventListener("submit",async e=>{
   e.preventDefault(); const b=e.target.querySelector("button"); $("#lkErr").textContent=""; b.disabled=true; b.textContent=L().signing;
@@ -415,7 +361,7 @@ function setLang(l){
   $$("[data-t]").forEach(el=>{const v=L()[el.dataset.t]; if(typeof v==="string") el.textContent=v;});
   $$("[data-p]").forEach(el=>el.setAttribute("placeholder",L()[el.dataset.p]));
   $$("[data-a]").forEach(el=>el.setAttribute("aria-label",L()[el.dataset.a]));
-  $("#enBtn").setAttribute("aria-pressed",l==="en"); $("#frBtn").setAttribute("aria-pressed",l==="fr");
+  $("#reqLink").href="mailto:contact@sofiaserenata.com?subject="+encodeURIComponent(l==="fr"?"Accès à la bibliothèque de partitions":"Score library access"); $("#enBtn").setAttribute("aria-pressed",l==="en"); $("#frBtn").setAttribute("aria-pressed",l==="fr");
   chips(); render(); renderDevice(); offText();
 }
 $("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; cat=b.dataset.k; chips(); render();});

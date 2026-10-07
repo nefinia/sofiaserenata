@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /scores/
+Disallow: /scores/vault/
+Disallow: /scores/lib/
+Disallow: /scores/fit.html
+Disallow: /scores/view.html
 
 Sitemap: https://sofiaserenata.com/sitemap.xml
