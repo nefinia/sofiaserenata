@@ -40,14 +40,22 @@ export async function nameId(name) {
   const h = await S.digest("SHA-256", enc.encode("sofiaserenata:" + name.trim().toLowerCase()));
   return Buffer.from(h).toString("hex").slice(0, 32);
 }
-async function pwKey(pw, salt) {
-  const base = await S.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
-  return S.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt, iterations: ROUNDS }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+/* one PBKDF2 run gives 96 bytes: [0..32) seals the vault key, [32..64) is the sync token (only its hash "v" is published),
+   [64..96) encrypts that login's synced drawings (used in the browser only) */
+async function pwBits(pw, salt) {
+  const base = await S.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  return new Uint8Array(await S.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt, iterations: ROUNDS }, base, 768));
 }
+async function pwKey(pw, salt, bits) {
+  bits = bits || await pwBits(pw, salt);
+  return S.importKey("raw", bits.slice(0, 32), { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+}
+const syncV = async bits => Buffer.from(await S.digest("SHA-256", bits.slice(32, 64))).toString("hex");
 async function seal(privJwk, name, pw) {
   const salt = C.getRandomValues(new Uint8Array(16)), iv = C.getRandomValues(new Uint8Array(12));
-  const c = await S.encrypt({ name: "AES-GCM", iv }, await pwKey(pw, salt), enc.encode(JSON.stringify(privJwk)));
-  return { n: await nameId(name), s: b64(salt), i: b64(iv), c: b64(c), r: ROUNDS };
+  const bits = await pwBits(pw, salt);
+  const c = await S.encrypt({ name: "AES-GCM", iv }, await pwKey(pw, salt, bits), enc.encode(JSON.stringify(privJwk)));
+  return { n: await nameId(name), s: b64(salt), i: b64(iv), c: b64(c), r: ROUNDS, v: await syncV(bits) };
 }
 async function openPriv(name, pw) {
   const keys = readJSON("keys.json", { logins: [] });
@@ -113,6 +121,11 @@ try {
     const id = await nameId(a[0]), keys = readJSON("keys.json");
     const before = keys.logins.length; keys.logins = keys.logins.filter(x => x.n !== id); writeJSON("keys.json", keys);
     console.log(before === keys.logins.length ? "No such login." : "Login removed. Logins now: " + keys.logins.length);
+  } else if (cmd === "add-sync") {   // give an existing login its sync check value
+    const [name, pw] = a; await openPriv(name, pw);
+    const keys = readJSON("keys.json");
+    const id = await nameId(name), e = keys.logins.find(x => x.n === id);
+    e.v = await syncV(await pwBits(pw, ub64(e.s))); writeJSON("keys.json", keys); console.log("Sync enabled for that login.");
   } else if (cmd === "logins") {
     console.log(readJSON("keys.json", { logins: [] }).logins.length, "login(s)");
   } else if (cmd === "lock") {

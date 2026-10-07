@@ -14,7 +14,7 @@
             hint, onEnter(), onExit(), panBy(dy) } — frames are in container coordinates */
     const C = o.container;
     let data = {}; try { data = JSON.parse(localStorage.getItem(o.store) || "{}"); } catch (e) {}
-    const save = () => { try { localStorage.setItem(o.store, JSON.stringify(data)); } catch (e) {} };
+    const save = () => { try { localStorage.setItem(o.store, JSON.stringify(data)); } catch (e) {} if (window.Vault && Vault.note) Vault.note(o.store); };
 
     const svg = document.createElementNS(NS, "svg");
     svg.setAttribute("class", "ink-layer");
@@ -56,7 +56,7 @@
     const frameAt = (x, y) => {
       let best = -1, bd = 1e9;
       frames.forEach((f, i) => {
-        const pad = o.mode === "bar" ? f.h * 1.3 : 0;
+        const pad = o.mode === "bar" ? f.h * 2 : 0;
         if (x >= f.x && x <= f.x + f.w && y >= f.y - pad && y <= f.y + f.h + pad) { const d = Math.abs(y - (f.y + f.h / 2)); if (d < bd) { bd = d; best = i; } }
       });
       return best < 0 ? null : best;
@@ -157,7 +157,9 @@
 
     function enter() { on = true; cap.style.display = "block"; pal.hidden = false; syncPal(); o.onEnter && o.onEnter(); render(); }
     function exit() { on = false; sel = null; selKey = null; cur = null; cap.style.display = "none"; pal.hidden = true; o.onExit && o.onExit(); render(); }
-    return { layer: svg, render, enter, exit, get active() { return on; }, get count() { return Object.values(data).reduce((n, l) => n + l.length, 0); } };
+    function reload() { try { data = JSON.parse(localStorage.getItem(o.store) || "{}"); } catch (e) {} undo = []; render(); }
+    addEventListener("vault-sync", e => { if (e.detail.includes(o.store) && !cur) reload(); });
+    return { layer: svg, render, enter, exit, reload, get active() { return on; }, get count() { return Object.values(data).reduce((n, l) => n + l.length, 0); } };
   }
   window.Ink = { create };
 })();

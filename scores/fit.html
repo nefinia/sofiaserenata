@@ -199,7 +199,9 @@ function trUI(){ const {it,ao,oct,sp}=trState(); const names=minor?MIN:MAJ, kn=M
   $("#trNote").textContent=it[0]==="asis"?"":`Written for ${it[1].toLowerCase()}${it[2]?" (transposing instrument)":""}, ${it[3]==="F4"?"bass clef":it[3]==="C3"?"alto clef":it[3]==="G2-8"?"tenor (octave) clef":"treble clef"}, octave chosen to fit its range.`;
   const changed=it[0]!=="asis"||TR.semi||TR.oct; $("#trLbl").textContent=" "+(changed?(it[0]!=="asis"?it[1].replace(/ \(.*\)| in .*|,.*/,""):"")+(TR.semi?(it[0]!=="asis"?" ":"")+(TR.semi>0?"+":"")+TR.semi:""):"Transpose");
   $("#trBtn").setAttribute("aria-pressed",!!changed); }
-function trSave(){ try{ localStorage.setItem("tr:"+trKey,JSON.stringify(TR)); localStorage.setItem("tr-inst",inst); }catch(e){} }
+function trSave(){ try{ localStorage.setItem("tr:"+trKey,JSON.stringify(TR)); localStorage.setItem("tr-inst",inst); }catch(e){} if(window.Vault){ Vault.note("tr:"+trKey); Vault.note("tr-inst"); } }
+addEventListener("vault-sync",e=>{ if(!trKey||!(e.detail.includes("tr:"+trKey)||e.detail.includes("tr-inst"))) return;
+  try{ TR=Object.assign({semi:0,oct:null},JSON.parse(localStorage.getItem("tr:"+trKey)||"{}")); }catch(_){} inst=localStorage.getItem("tr-inst")||"asis"; $("#trInst").value=inst; trApply(); });
 function trInit(key,xml){ trKey=key; try{ TR=Object.assign({semi:0,oct:null},JSON.parse(localStorage.getItem("tr:"+key)||"{}")); }catch(e){}
   if(xml){ const m=xml.match(/<fifths>\s*(-?\d+)\s*<\/fifths>/); f0=m?+m[1]:0; minor=/<mode>\s*minor\s*<\/mode>/.test(xml);
     const ST={C:0,D:2,E:4,F:5,G:7,A:9,B:11}; pitches=[]; const re=/<pitch>\s*<step>([A-G])<\/step>\s*(?:<alter>\s*(-?[\d.]+)\s*<\/alter>\s*)?<octave>(\d)<\/octave>/g; let r;

@@ -280,7 +280,7 @@ const S=[
 const T={
   en:{h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"The sheet music I use for events, for the musicians I perform with. Tap a score to open it, hear the arrangement or download its MIDI file.",
     lockMsg:"For rehearsal only. Sign in to open the scores; please don't share them.",name:"Name",password:"Password",signIn:"Sign in",signOut:"Sign out",signing:"Opening…",
-    errName:"No login with that name.",errPw:"Wrong password.",errNet:"Can’t reach the website. Sign in once while online.",offOk:n=>n+" files saved on this device for offline use.",offWait:"Saving the scores for offline use…",
+    errName:"No login with that name.",errPw:"Wrong password.",errNet:"Can’t reach the website. Sign in once while online.",offOk:n=>n+" files saved on this device for offline use.",offWait:"Saving the scores for offline use…",syncAgain:"Sign out and in again to keep your drawings in sync across devices.",
     search:"Search a score",gridL:"Grid",listL:"List",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",recent:"Recently opened",
     mFit:"Fit",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Close",lockOne:"Sign in to open this score.",
     fit:"Fit to screen",fitNote:"Reflows to your screen · Play scrolls by itself",viewPdf:"View PDF",pdfNote:"Full screen, turn pages with a tap or pedal",drive:"Open in Google Drive",
@@ -288,7 +288,7 @@ const T={
     devTitle:"On this device",devNote:"Add your own MusicXML (.musicxml, .xml, .mxl) or MIDI files. They stay on this device only and work without internet.",addFiles:"Add files…",remove:"Remove from this device",localNote:"Only on this device",back:"Back to events"},
   fr:{h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Les partitions que j’utilise pour les événements, pour les musiciens avec qui je joue. Touchez une partition pour l’ouvrir, écouter l’arrangement ou télécharger son fichier MIDI.",
     lockMsg:"Pour les répétitions uniquement. Connectez-vous pour ouvrir les partitions ; merci de ne pas les diffuser.",name:"Nom",password:"Mot de passe",signIn:"Se connecter",signOut:"Se déconnecter",signing:"Ouverture…",
-    errName:"Aucun accès à ce nom.",errPw:"Mot de passe incorrect.",errNet:"Le site est injoignable. Connectez-vous une première fois en ligne.",offOk:n=>n+" fichiers enregistrés sur cet appareil pour l’usage hors ligne.",offWait:"Enregistrement des partitions pour l’usage hors ligne…",
+    errName:"Aucun accès à ce nom.",errPw:"Mot de passe incorrect.",errNet:"Le site est injoignable. Connectez-vous une première fois en ligne.",offOk:n=>n+" fichiers enregistrés sur cet appareil pour l’usage hors ligne.",offWait:"Enregistrement des partitions pour l’usage hors ligne…",syncAgain:"Déconnectez-vous puis reconnectez-vous pour synchroniser vos annotations entre appareils.",
     search:"Chercher une partition",gridL:"Grille",listL:"Liste",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",recent:"Ouvertes récemment",
     mFit:"Écran",arrShort:"arr. Sofia",arr:"arr. Sofia Gallego",close:"Fermer",lockOne:"Connectez-vous pour ouvrir cette partition.",
     fit:"Adapté à l’écran",fitNote:"S’adapte à votre écran · Lecture qui défile toute seule",viewPdf:"Voir le PDF",pdfNote:"Plein écran, pages tournées d’un geste ou à la pédale",drive:"Ouvrir dans Google Drive",
@@ -385,12 +385,13 @@ addEventListener("pageshow",()=>{ if(sheet.open) sheet.close(); render(); });
 /* ---------- sign-in ---------- */
 function askLogin(){ const f=$("#lkName"); $("#lock").scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>(f.value?$("#lkPw"):f).focus(),300); }
 function save(u8,name){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([u8],{type:"audio/midi"})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000); }
-function offText(){ $("#offLine").textContent=!me?"":offN===null?L().offWait:offN?L().offOk(offN):""; }
+let syncOff=false;
+function offText(){ $("#offLine").textContent=!me?"":(offN===null?L().offWait:offN?L().offOk(offN):"")+(syncOff?" "+L().syncAgain:""); }
 async function showUser(){
   me=await Vault.user(); document.body.classList.toggle("locked",!me);
   $("#lock").hidden=!!me; $("#userBox").hidden=!me; PDFS=null;
   if(me){ $("#who").textContent=me.charAt(0).toUpperCase()+me.slice(1); try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){}
-    offN=null; offText(); const n=await Vault.warm(); offN=n?n.length:0; }
+    offN=null; offText(); const n=await Vault.warm(); offN=n?n.length:0; syncOff=!(await Vault.syncOn()); }
   offText(); render();
 }
 $("#loginForm").addEventListener("submit",async e=>{
