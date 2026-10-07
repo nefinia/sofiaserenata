@@ -82,7 +82,7 @@ body:not(.pages) .ponly{display:none}
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
 const $=s=>document.querySelector(s);
 const P=new URLSearchParams(location.search);
-const xid=P.get("x"), uid=P.get("u"), usrc=P.get("usrc"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id");
+const xid=P.get("x"), uid=P.get("u"), usrc=P.get("usrc"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id"), vk=P.get("k"), lid=P.get("l");
 document.title=title; $("#title").textContent=title;
 let tk=null, page=1, pages=1, view=localStorage.getItem("fit-view")||"pages";
 let zoom=+(localStorage.getItem("fit-zoom")||0);
@@ -196,24 +196,37 @@ document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==
 let XO=null, XU=null, loaded=null;
 function clean(x){ return x.replace(/<credit[\s\S]*?<\/credit>/g,"").replace(/<page-layout>[\s\S]*?<\/page-layout>/g,"").replace(/<system-layout>[\s\S]*?<\/system-layout>/g,"").replace(/<staff-layout[\s\S]*?<\/staff-layout>/g,"").replace(/<print[^>]*\/>/g,"").replace(/<print[\s\S]*?<\/print>/g,"").replace(/<part-abbreviation[^>]*>[\s\S]*?<\/part-abbreviation>/g,"").replace(/<part-abbreviation-display>[\s\S]*?<\/part-abbreviation-display>/g,""); }
 let cont=(localStorage.getItem("fit-cont")||"1")==="1";
-function loadFor(v){ const want=(cont&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
+let ZIP=null;
+function loadFor(v){ if(ZIP){ if(loaded==="z") return true; loaded="z"; return tk.loadZipDataBuffer(ZIP); } const want=(cont&&XU)?"u":"o"; if(loaded===want) return true; loaded=want; return tk.loadData(want==="u"?XU:XO); }
 function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
 applyRot();
 async function start(){
-  const url=src||(xid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(xid)}?alt=media&key=${API_KEY}`:null);
-  if(!url){ $("#msg").textContent="No score selected."; return; }
-  let xml; try{ const r=await fetch(url); if(!r.ok) throw 0; xml=await r.text(); }catch(e){ return fail(); }
-  const uurl=usrc||(uid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(uid)}?alt=media&key=${API_KEY}`:null);
-  if(uurl){ try{ const r=await fetch(uurl); if(r.ok) XU=clean(await r.text()); }catch(e){} }
+  let xml;
+  if(vk){ /* encrypted library (vault) */
+    try{ xml=await Vault.text("x-"+vk); }
+    catch(e){ $("#msg").innerHTML=e.message==="locked"?'This score is locked.<br><br><a href="./">Sign in on the library page</a>':"This score isn't available yet."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); return; }
+    try{ XU=clean(await Vault.text("u-"+vk)); }catch(e){}
+  } else if(lid){ /* imported on this device */
+    const rec=await Vault.localGet(lid).catch(()=>null);
+    if(!rec){ $("#msg").innerHTML='This score is no longer on this device.<br><br><a href="./">Back to the library</a>'; return; }
+    if(rec.type==="mxl") ZIP=rec.data; else xml=new TextDecoder().decode(rec.data);
+  } else {
+    const url=src||(xid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(xid)}?alt=media&key=${API_KEY}`:null);
+    if(!url){ $("#msg").textContent="No score selected."; return; }
+    try{ const r=await fetch(url); if(!r.ok) throw 0; xml=await r.text(); }catch(e){ return fail(); }
+    const uurl=usrc||(uid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(uid)}?alt=media&key=${API_KEY}`:null);
+    if(uurl){ try{ const r=await fetch(uurl); if(r.ok) XU=clean(await r.text()); }catch(e){} }
+  }
   try{
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
-    XO=clean(xml); loaded=null;
+    if(!ZIP) XO=clean(xml); loaded=null;
     if(!loadFor(view)) return fail();
     $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); if(XU){ $("#rep").hidden=false; showRep(); } setView(view); showBar(); wake();
   }catch(e){ fail(); }
 }
 </script>
+<script src="vault.js"></script>
 <script src="lib/verovio-toolkit-wasm.js"></script>
 <script>verovio.module.onRuntimeInitialized=start;</script>
 </body>

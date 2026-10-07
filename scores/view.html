@@ -51,6 +51,7 @@ button[aria-pressed="true"]{background:var(--accent);color:#1a1a1a;border-color:
 <div id="hint">Tap left / right to turn · tap the middle for the menu · works with page-turner pedals</div>
 
 <script src="lib/pdf.min.js"></script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
 <script>
 /* Google API key, restricted to this website and to the Drive API (read-only, public files). */
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
@@ -118,7 +119,7 @@ async function load(){
   else if(id){ $("#msg").innerHTML=`The viewer isn't connected to Google Drive yet.<br><br><a href="https://drive.google.com/file/d/${encodeURIComponent(id)}/view">Open the score in Google Drive</a>`; return; }
   else { $("#msg").textContent="No score selected."; return; }
   try{
-    doc=await pdfjsLib.getDocument({url}).promise;
+    doc=await pdfjsLib.getDocument({url,disableRange:true,disableStream:true}).promise;
     $("#msg").textContent=""; setMode(mode); showBar(); wake();
     setTimeout(()=>$("#hint").style.opacity=0,5000);
   }catch(e){

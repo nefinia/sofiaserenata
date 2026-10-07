@@ -1,0 +1,19 @@
+{
+ "about": "MusicXML files to lock from Google Drive. Add a line \"x-<slug>\": \"<drive file id>\" (or u-<slug> for the version with repeats written out); the GitHub automation locks it on the next push.",
+ "files": {
+  "x-love-story-solo": "1xErYOt6XUKQqi8KSSEWC8V5R6TlnPxzS",
+  "x-hallelujah-solo": "1h4_hlZ6QqLm0Dk1xAudpjH96wlqbrAcw",
+  "x-the-logical-song-solo": "1PMgB9P8__psrp8w7kBdeHPXT8p_BMk7b",
+  "u-the-logical-song-solo": "1Rct_UoZYttyILDgzrLtBun91RxBiINix",
+  "x-breakfast-in-america-solo": "1lE-4z0Isggzrt3ddF-wUh5I8WvXaswlZ",
+  "u-breakfast-in-america-solo": "1d-_K03BIgdZalpkA3PjK4PsrIksirs8x",
+  "x-school-solo": "1QGSNMA06Tam7y691vUiqYmlhl77YiYMI",
+  "u-school-solo": "1mjYFDUqSh5s0n7EAqMupOl4Uvhr9TfZ0",
+  "x-creep-solo": "1bgu4E9tGcvLCG-VnjgGCZRTKCtRYfiDL",
+  "x-dont-stop-believin-solo": "1fgKXyTAv9QYHAYWQFtyS91NrdT9-NQxP",
+  "u-dont-stop-believin-solo": "1jIynF7iktEzdnRMCqo_OmZqKAgMazRUU",
+  "x-toxic-solo": "1MhjpO0hvu3ceqTtvttWHcLk42YpoYBUa",
+  "u-toxic-solo": "1ppvwIzNMGm3K1xGru4DTHniGren47PmZ",
+  "x-despacito-solo": "11Ybd2AoLAVGnK2DOlZX_6_Yb0kz3xY3K"
+ }
+}

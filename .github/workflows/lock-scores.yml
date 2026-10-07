@@ -1,0 +1,27 @@
+name: Lock scores
+# Fetches the MusicXML files listed in scores/vault/sources.json from Google Drive,
+# encrypts them with the vault's public key (no password needed) and commits the locked files.
+on:
+  push:
+    branches: [main]
+    paths: ["scores/vault/sources.json", "tools/vault.mjs", ".github/workflows/lock-scores.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/vault.mjs fetch
+      - name: Commit locked files
+        run: |
+          git config user.name "Sofia Serenata bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scores/vault
+          if git diff --cached --quiet; then echo "Nothing new"; exit 0; fi
+          git commit -m "Lock new scores"
+          git push
