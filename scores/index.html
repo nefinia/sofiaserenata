@@ -45,6 +45,7 @@
     .menu{display:flex;gap:22px;align-items:center}
     .menu a{color:var(--ink);text-decoration:none;font-size:14px;letter-spacing:.06em}
     .menu a:hover,.menu a[aria-current]{color:var(--rose)}
+    .top-right{display:flex;align-items:center;gap:14px}
     @media (max-width:900px){.menu a{display:none}}
     @media (max-width:560px){.brand{font-size:1.3rem}}
     .head{padding-top:24px;padding-bottom:14px}
@@ -173,9 +174,11 @@
       <a href="../#contact" data-t="navContact">Contact</a>
       <a href="./" aria-current="page" data-t="navScores">Scores</a>
     </nav>
+    <div class="top-right">
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="enBtn" aria-pressed="true">EN</button>
       <button type="button" id="frBtn" aria-pressed="false">FR</button>
+    </div>
     </div>
   </div>
 </header>
