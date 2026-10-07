@@ -106,6 +106,7 @@
 <script>
 const CATS={solo:{en:"Solo violin",fr:"Violon seul"},duets:{en:"Violin & cello duets",fr:"Duos violon & violoncelle"},pop:{en:"Pop & film",fr:"Pop & cinéma"},classical:{en:"Classical",fr:"Classique"},voice:{en:"Opera & choral",fr:"Opéra & chœur"},latin:{en:"Tango & chanson",fr:"Tango & chanson"},jewish:{en:"Jewish & klezmer",fr:"Musique juive & klezmer"}};
 const INSTR={vc:{en:"Violin & cello",fr:"Violon & violoncelle"},vn:{en:"Solo violin",fr:"Violon seul"},vnp:{en:"Violin & piano",fr:"Violon & piano"},vp:{en:"Voice & piano",fr:"Voix & piano"},pno:{en:"Piano",fr:"Piano"},lead:{en:"Melody & chords",fr:"Mélodie & accords"},book:{en:"Songbook",fr:"Recueil"},part:{en:"Violin part",fr:"Partie de violon"},score:{en:"Full score",fr:"Conducteur"},trio:{en:"Trio (part)",fr:"Trio (partie)"},voice:{en:"Voice",fr:"Voix"}};
+const VIEWER=false; /* set to true once the Google API key is in view.html */
 const S=[
   {t:"Love Story",a:"Indila",c:"solo",i:"vn",arr:true,f:[["1Rvoc0rxosE1NuVNTgboI-KRWHgFCgO6W"]],m:"love-story-solo"},
   {t:"Hallelujah",a:"Leonard Cohen (after Lindsey Stirling)",c:"solo",i:"vn",arr:true,f:[["11bERA9dakfBwYJwv9ziTmIbxrBlsxpE4"]]},
@@ -175,10 +176,10 @@ const S=[
 const T={
   en:{eyebrow:"For musicians",h1:"Score Library",title:"Score Library — Sofia Gallego",lead:"The sheet music I use for events, for the musicians I perform with. Solo violin arrangements come first, then duets for violin and cello; where there is a MIDI file, you can download it to listen or practise along.",midiTip:"Download the MIDI file (violin and cello on separate tracks)",listen:"Listen",hide:"Hide",hint:"Violin and cello playback of the arrangement, with the repeats played through.",hintSolo:"Playback of the solo violin line, with the repeats played through.",midiTipSolo:"Download the MIDI file (solo violin line)",
     notice:"<strong>For rehearsal only.</strong> “Score” opens the PDF in Google Drive and “Listen” plays the arrangement here. Please don't share these scores publicly. If a score doesn't open, ask Sofia.",
-    search:"Search a score",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",score:"Score",onreq:"Ask Sofia",arr:"arr. Sofia Gallego",back:"Back to events"},
+    search:"Search a score",all:"All",count:(n,m)=>n===m?m+" scores":n+" of "+m+" scores",empty:"No score matches that search.",score:"Score",view:"View",onreq:"Ask Sofia",arr:"arr. Sofia Gallego",back:"Back to events"},
   fr:{eyebrow:"Pour les musiciens",h1:"Bibliothèque de partitions",title:"Partitions — Sofia Gallego",lead:"Les partitions que j'utilise pour les événements, pour les musiciens avec qui je joue. Les arrangements pour violon seul sont en premier, puis les duos violon-violoncelle ; quand il y a un fichier MIDI, vous pouvez le télécharger pour écouter ou travailler.",midiTip:"Télécharger le fichier MIDI (violon et violoncelle sur des pistes séparées)",listen:"Écouter",hide:"Masquer",hint:"Lecture violon et violoncelle de l’arrangement, reprises comprises.",hintSolo:"Lecture de la ligne de violon seul, reprises comprises.",midiTipSolo:"Télécharger le fichier MIDI (ligne de violon seul)",
     notice:"<strong>Pour les répétitions uniquement.</strong> « Partition » ouvre le PDF dans Google Drive et « Écouter » joue l’arrangement ici. Merci de ne pas diffuser ces partitions. Si une partition ne s’ouvre pas, demandez à Sofia.",
-    search:"Chercher une partition",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",score:"Partition",onreq:"Demander à Sofia",arr:"arr. Sofia Gallego",back:"Retour aux événements"}
+    search:"Chercher une partition",all:"Tout",count:(n,m)=>n===m?m+" partitions":n+" sur "+m+" partitions",empty:"Aucune partition ne correspond.",score:"Partition",view:"Afficher",onreq:"Demander à Sofia",arr:"arr. Sofia Gallego",back:"Retour aux événements"}
 };
 let lang="en",cat="all";
 const $=s=>document.querySelector(s);
@@ -195,7 +196,7 @@ function render(){
     const rows=hits.filter(s=>s.c===k); if(!rows.length) return "";
     return `<section class="group"><h2>${esc(CATS[k][lang])}</h2><ul>${rows.map(s=>{
       const pills=[s.i?`<span class="pill">${esc(INSTR[s.i][lang])}</span>`:"",s.arr?`<span class="pill arr">${esc(T[lang].arr)}</span>`:""].join("");
-      const links=(s.f.length?s.f.map(([id,v])=>`<a href="https://drive.google.com/file/d/${id}/view" target="_blank" rel="noopener">${esc(T[lang].score)}${v?" · "+esc(v):""}</a>`).join(""):`<span class="req">${esc(T[lang].onreq)}</span>`)
+      const links=(s.f.length?s.f.map(([id,v])=>(VIEWER?`<a class="view" href="view.html?id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}">${esc(T[lang].view)}${v?" · "+esc(v):""}</a>`:"")+`<a href="https://drive.google.com/file/d/${id}/view" target="_blank" rel="noopener">${esc(T[lang].score)}${v&&!VIEWER?" · "+esc(v):""}</a>`).join(""):`<span class="req">${esc(T[lang].onreq)}</span>`)
         +(s.m?`<button type="button" class="listen" data-m="${s.m}" data-solo="${s.c==="solo"?1:""}" aria-expanded="false">▶ ${esc(T[lang].listen)}</button><a class="midi" href="midi/${s.m}.mid" download title="${esc(s.c==="solo"?T[lang].midiTipSolo:T[lang].midiTip)}">MIDI</a>`:"");
       return `<li class="item"><div><div class="title">${esc(s.t)}</div><div class="who">${esc(s.a)}</div>${pills?`<div class="meta">${pills}</div>`:""}</div><div class="side">${links}</div>${s.m?`<div class="player" id="pl-${s.m}" hidden></div>`:""}</li>`;
     }).join("")}</ul></section>`;
