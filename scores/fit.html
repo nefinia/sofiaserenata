@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#111111">
+<title>Score</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#141414;--bar:rgba(20,20,20,.9);--fg:#f2efe8;--muted:#a8a29a;--accent:#c9a46a;--paper:#fffdf8}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
+body.pages{overflow:hidden}
+#score{background:var(--paper);min-height:100%}
+#score svg{display:block;width:100%;height:auto}
+body.pages #score{position:fixed;inset:0;overflow:hidden}
+.zone{position:fixed;top:0;bottom:0;width:38%;z-index:2;cursor:pointer;display:none}
+body.pages .zone{display:block}
+#zl{left:0}#zr{right:0}
+#bar{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--bar);backdrop-filter:blur(6px);transition:opacity .25s,transform .25s}
+#bar.hide{opacity:0;transform:translateY(-100%);pointer-events:none}
+#title{flex:1 1 140px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+button{font:inherit;color:var(--fg);background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:6px 10px;cursor:pointer;min-height:38px;min-width:38px}
+button[aria-pressed="true"]{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+button:disabled{opacity:.4}
+.seg{display:inline-flex}.seg button{border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0}
+#pg{min-width:52px;text-align:center;color:var(--muted)}
+body:not(.pages) .ponly{display:none}
+#msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
+#msg a{color:#8a6a2a}
+#menuBtn{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:4;opacity:.55;background:#2a2a2a}
+@media (max-width:520px){.lbl{display:none}}
+</style>
+</head>
+<body class="pages">
+<div id="msg">Loading the score…</div>
+<div id="score"></div>
+<div class="zone" id="zl" aria-hidden="true"></div>
+<div class="zone" id="zr" aria-hidden="true"></div>
+<div id="bar">
+  <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
+  <div id="title">Score</div>
+  <div class="seg" role="group" aria-label="Layout">
+    <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
+    <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
+  </div>
+  <div class="seg" role="group" aria-label="Size">
+    <button type="button" id="zout" title="Smaller (−)">A−</button>
+    <button type="button" id="zin" title="Bigger (+)">A+</button>
+  </div>
+  <button type="button" id="prev" class="ponly" title="Previous (← / Page Up)">‹</button>
+  <span id="pg" class="ponly">–</span>
+  <button type="button" id="next" class="ponly" title="Next (→ / Page Down / space)">›</button>
+  <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
+</div>
+<button type="button" id="menuBtn" title="Menu" aria-label="Show menu">☰</button>
+
+<script>
+const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
+const $=s=>document.querySelector(s);
+const P=new URLSearchParams(location.search);
+const xid=P.get("x"), src=P.get("src"), title=P.get("t")||"Score", pdf=P.get("id");
+document.title=title; $("#title").textContent=title;
+let tk=null, page=1, pages=1, view=localStorage.getItem("fit-view")||"pages";
+let zoom=+(localStorage.getItem("fit-zoom")||0);   // user offset from the automatic size
+function autoScale(){ return Math.round(Math.max(24,Math.min(60,innerWidth/14,innerHeight/12))); }
+function scale(){ return Math.max(18,Math.min(90,autoScale()+zoom)); }
+function layout(keepRatio){
+  if(!tk) return;
+  const ratio=pages>1?(page-1)/(pages-1):0, s=scale(), k=100/s;
+  const opts={scale:s,pageWidth:Math.round(innerWidth*k),pageMarginLeft:40,pageMarginRight:40,pageMarginTop:view==="pages"?60:30,pageMarginBottom:30,
+    breaks:"auto",footer:"none",header:"auto",spacingSystem:6,spacingStaff:4,svgViewBox:true,svgRemoveXlink:true};
+  if(view==="pages"){ opts.pageHeight=Math.round(innerHeight*k); opts.adjustPageHeight=false; }
+  else { opts.pageHeight=60000; opts.adjustPageHeight=true; }
+  tk.setOptions(opts); tk.redoLayout();
+  pages=tk.getPageCount();
+  page=keepRatio?Math.max(1,Math.min(pages,1+Math.round(ratio*(pages-1)))):Math.min(page,pages);
+  draw();
+}
+function draw(){
+  if(view==="pages"){ $("#score").innerHTML=tk.renderToSVG(page); $("#pg").textContent=page+" / "+pages; $("#prev").disabled=page<=1; $("#next").disabled=page>=pages; }
+  else { let h=""; for(let i=1;i<=pages;i++) h+=tk.renderToSVG(i); $("#score").innerHTML=h; }
+}
+function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
+function setView(v){ view=v; try{localStorage.setItem("fit-view",v)}catch(e){} document.body.classList.toggle("pages",v==="pages");
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===v)); page=1; layout(false); scrollTo(0,0); }
+function setZoom(d){ zoom+=d; try{localStorage.setItem("fit-zoom",zoom)}catch(e){} layout(true); }
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+$("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
+$("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
+$("#zl").onclick=()=>go(-1); $("#zr").onclick=()=>go(1);
+let hideT; function showBar(){ $("#bar").classList.remove("hide"); clearTimeout(hideT); hideT=setTimeout(()=>$("#bar").classList.add("hide"),4000); }
+$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(view==="pages") ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
+$("#bar").addEventListener("pointerdown",showBar);
+addEventListener("keydown",e=>{
+  const k=e.key;
+  if(view==="pages"){
+    if(["ArrowRight","PageDown"," ","ArrowDown","Enter"].includes(k)){e.preventDefault();go(1);return}
+    if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
+  } else if(k==="PageDown"||k===" "){ e.preventDefault(); scrollBy({top:innerHeight*0.85,behavior:"smooth"}); return; }
+  else if(k==="PageUp"){ e.preventDefault(); scrollBy({top:-innerHeight*0.85,behavior:"smooth"}); return; }
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs();
+});
+let sx=null; addEventListener("touchstart",e=>{ if(e.touches.length===1) sx=e.touches[0].clientX; },{passive:true});
+addEventListener("touchend",e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
+let rT, lastW=innerWidth, lastH=innerHeight;
+addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)<4&&Math.abs(innerHeight-lastH)<60&&view==="scroll") return; lastW=innerWidth; lastH=innerHeight; layout(true); },200); });
+async function toggleFs(){ const el=document.documentElement; try{ if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){} }
+$("#fs").onclick=toggleFs;
+let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
+
+function fail(){ $("#msg").innerHTML="This score couldn't be shown here."+(pdf?`<br><br><a href="view.html?id=${encodeURIComponent(pdf)}&t=${encodeURIComponent(title)}">Open the PDF instead</a>`:""); }
+async function start(){
+  const url=src||(xid?`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(xid)}?alt=media&key=${API_KEY}`:null);
+  if(!url){ $("#msg").textContent="No score selected."; return; }
+  let xml; try{ const r=await fetch(url); if(!r.ok) throw 0; xml=await r.text(); }catch(e){ return fail(); }
+  try{
+    tk=new verovio.toolkit();
+    tk.setOptions({scale:scale(),breaks:"auto"});
+    if(!tk.loadData(xml)) return fail();
+    $("#msg").remove(); setView(view); showBar(); wake();
+  }catch(e){ fail(); }
+}
+</script>
+<script src="lib/verovio-toolkit-wasm.js"></script>
+<script>verovio.module.onRuntimeInitialized=start;</script>
+</body>
+</html>
