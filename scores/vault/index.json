@@ -1,7 +1,8 @@
 {
  "files": {
-  "c-catalog": "2dd91a9d186e8370345bad77",
-  "c-pdfs": "c6a0d6dea899387cc60eba83",
+  "c-catalog": "2e9cce00cf5588a5ccfb431c",
+  "c-pdfs": "7b7753904b7f60aa83773d4a",
+  "m-air-on-the-g-string-solo": "8fb5483b8f7c70d626cb2401",
   "m-besame-mucho-gig": "dc0dad81ea0368a85e081fc6",
   "m-bolero-gig": "523cfac3244dc03c06fe5c26",
   "m-breakfast-in-america-solo": "0c02f545ebc24515fbbedd3d",
@@ -34,8 +35,10 @@
   "m-the-logical-song-solo": "29a5bbcae4e6dc184005a25c",
   "m-the-logical-song": "a67a75acd5e98ae036923f5a",
   "m-viva-la-vida-gig": "68f109a26166d946c74577c4",
+  "m-wedding-march-solo": "26c4b649700118965ae2849a",
   "m-what-a-wonderful-world-gig": "f82cb9241f4938d381e2d487",
   "m-wildest-dreams-gig": "d5ff604caa0c0e0bc6e5e175",
+  "u-air-on-the-g-string-solo": "31923260a04605df4e8359c4",
   "u-besame-mucho-gig": "48027f5e7eb02136a7a3082f",
   "u-breakfast-in-america-solo": "fc78a641109d6ad3c8ee3e40",
   "u-celtic-greensleeves-gig": "7bfa2c5992348fcc2e947183",
@@ -53,6 +56,8 @@
   "u-somewhere-over-the-rainbow-gig": "8ac18a4f7ff9c3cf5e229fe0",
   "u-the-logical-song-solo": "303d01a0381dc303cab27f5e",
   "u-toxic-solo": "7c34b9defde3b930499fbca5",
+  "u-wedding-march-solo": "24dc40d8fbad90c46227e82c",
+  "x-air-on-the-g-string-solo": "504f58b0528c8606acbb0518",
   "x-besame-mucho-gig": "94d78e6181f0b5f2e147f8ba",
   "x-bolero-gig": "b34a6ccbe6c34ccb7b652ded",
   "x-breakfast-in-america-solo": "c1053907f675027cf320bd78",
@@ -85,6 +90,7 @@
   "x-the-logical-song-solo": "c6df5ce48a4e79b4ab3fda6f",
   "x-toxic-solo": "b1901f00f4bb6d55aa89b188",
   "x-viva-la-vida-gig": "b11a029398d0060816e590f7",
+  "x-wedding-march-solo": "ceb8cd3772fe6a35a569dd2e",
   "x-what-a-wonderful-world-gig": "7b42bddc43ec98bb767f61cc",
   "x-wildest-dreams-gig": "8da0754872fb7d9ab0081035"
  }
