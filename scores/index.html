@@ -323,7 +323,7 @@ function openScore(id){
   let h=`<h3 id="sheetTitle">${esc(s.t)}</h3><p class="s-who">${esc(s.a)}</p><div class="s-pills">${s.i?`<span class="pill">${esc(INSTR[s.i][lang])}</span>`:""}${s.arr?`<span class="pill arr">${esc(t.arr)}</span>`:""}</div>`;
   if(!me){ h+=`<p class="s-lock">${esc(t.lockOne)}</p><button type="button" class="act primary" data-signin>${esc(t.signIn)}</button>`; return openPanel(h); }
   let a="";
-  if(s.k) a+=`<a class="act primary" data-rec href="fit.html?v=12&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
+  if(s.k) a+=`<a class="act primary" data-rec href="fit.html?v=13&k=${s.k}&t=${encodeURIComponent(s.t)}${pid(s,0)?"&id="+pid(s,0):""}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
   s.f.forEach(([_,v],j)=>{ const id=pid(s,j); if(id) a+=`<a class="act${s.k?"":" primary"}" data-rec href="view.html?v=7&id=${id}&t=${encodeURIComponent(s.t+(v?" · "+v:""))}&a=${encodeURIComponent(s.a)}"><span>${esc(t.viewPdf)}${v?" · "+esc(v):""}</span><small>${esc(t.pdfNote)}</small></a>`; });
   if(s.m) a+=`<button type="button" class="act" data-listen="m-${s.m}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span><small>${esc(s.i==="vc"?t.hint:s.i==="vn"?t.hintSolo:t.hintGig)}</small></button><div class="s-player" hidden></div><button type="button" class="act ghost" data-dl="${s.m}"><span>${esc(t.dlMidi)}</span></button>`;
   if(!a) a=`<p class="s-lock">${esc(t.onreq)}</p>`;
@@ -334,7 +334,7 @@ async function openLocal(id){
   const r=(await Vault.localList()).find(x=>x.id===id); if(!r) return; cur=null; const t=L(), name=r.name.replace(/\.[^.]+$/,"");
   let a=r.type==="midi"
     ?`<button type="button" class="act primary" data-listen="local:${r.id}" aria-expanded="false"><span>▶ ${esc(t.listen)}</span></button><div class="s-player" hidden></div>`
-    :`<a class="act primary" href="fit.html?v=12&l=${r.id}&t=${encodeURIComponent(name)}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
+    :`<a class="act primary" href="fit.html?v=13&l=${r.id}&t=${encodeURIComponent(name)}"><span>${esc(t.fit)}</span><small>${esc(t.fitNote)}</small></a>`;
   a+=`<button type="button" class="act ghost" data-del="${r.id}"><span>${esc(t.remove)}</span></button>`;
   openPanel(`<h3 id="sheetTitle">${esc(name)}</h3><p class="s-who">${esc(t.localNote)}</p><div class="s-pills"><span class="pill">${r.type==="midi"?"MIDI":"MusicXML"}</span></div><div class="acts">${a}</div>`);
 }

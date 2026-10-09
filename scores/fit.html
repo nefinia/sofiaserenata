@@ -58,6 +58,18 @@ body:not(.pages) .ponly{display:none}
 .trfoot{display:flex;gap:8px;justify-content:flex-end}
 .trfoot button{font-size:15px}
 #partSel{font:inherit;color:var(--fg);background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:6px 8px;min-height:36px;max-width:11em}
+#edPal{position:absolute;left:0;right:0;bottom:0;z-index:7;background:rgba(28,28,28,.96);color:var(--fg);padding:8px max(10px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;box-shadow:0 -6px 20px rgba(0,0,0,.3)}
+#edPal[hidden]{display:none}
+#edPal .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#edPal button{min-width:44px;min-height:44px;font-size:18px;padding:4px 10px}
+#edPal button.on{background:var(--accent);color:#1a1a1a;border-color:var(--accent)}
+#edPal .sep{width:10px}
+#edMsg{font-size:13px;color:var(--muted);min-height:18px}
+#edMsg b{color:var(--fg)}
+#edDone{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600;margin-left:auto}
+#score g.ed-sel,#score g.ed-sel *{fill:#d0402f!important;stroke:#d0402f}
+body.editing .zone{display:none}
+body.editing #score{padding-bottom:190px}
 #trDone{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
 @media (max-width:520px){.lbl{display:none}}
 </style>
@@ -79,7 +91,7 @@ body:not(.pages) .ponly{display:none}
 <div class="zone" id="zr" aria-hidden="true"></div></div>
 <div id="bar">
   <a href="./" style="text-decoration:none"><button type="button" title="Back to the library">←</button></a>
-  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v14</span>
+  <div id="title">Score</div><span id="ver" style="color:var(--muted);font-size:12px">v15</span>
   <div class="seg" role="group" aria-label="Layout">
     <button type="button" data-view="pages" title="Turn pages (tap or pedal)">Pages</button>
     <button type="button" data-view="scroll" title="One long scrolling page">Scroll</button>
@@ -104,14 +116,30 @@ body:not(.pages) .ponly{display:none}
   <button type="button" id="rep" title="Repeats: written out in order (continuous) or as printed" hidden>→<span class="lbl" id="repLbl"> Continuous</span></button>
   <select id="partSel" title="Show every part, or only the one you play" aria-label="Part to show" hidden></select>
   <button type="button" id="trBtn" title="Transpose for another instrument or key (T)" hidden>♯<span class="lbl" id="trLbl"> Transpose</span></button>
-  <button type="button" id="inkBtn" title="Draw on the score (D)">✎<span class="lbl"> Draw</span></button>
+  <button type="button" id="edBtn" title="Correct notes (E)">✎<span class="lbl" id="edLbl"> Edit</span></button>
+  <button type="button" id="inkBtn" title="Draw on the score (D)">✍︎<span class="lbl"> Draw</span></button>
   <button type="button" id="rot" title="Rotate the score (R) — for a monitor standing upright that doesn't rotate by itself">⟳<span class="lbl" id="rotLbl"> Upright</span></button>
   <button type="button" id="fs" title="Full screen (F)">⛶<span class="lbl"> Full screen</span></button>
+</div>
+<div id="edPal" hidden role="toolbar" aria-label="Correct notes">
+  <div class="row">
+    <button type="button" data-ed="prev" title="Previous note (←)">‹</button><button type="button" data-ed="next" title="Next note (→)">›</button><span class="sep"></span>
+    <button type="button" data-ed="up" title="Up a step (↑)">▲</button><button type="button" data-ed="down" title="Down a step (↓)">▼</button><span class="sep"></span>
+    <button type="button" data-ed="sharp" title="Sharp">♯</button><button type="button" data-ed="flat" title="Flat">♭</button><button type="button" data-ed="natural" title="Natural">♮</button><span class="sep"></span>
+    <button type="button" data-ed="rest" title="Make it a rest (Delete)">𝄽</button><button type="button" data-ed="tie" title="Tie to the next note (T)">⁀</button>
+  </div>
+  <div class="row">
+    <button type="button" data-ty="whole" title="Whole (7)">𝅝</button><button type="button" data-ty="half" title="Half (6)">𝅗𝅥</button><button type="button" data-ty="quarter" title="Quarter (5)">♩</button><button type="button" data-ty="eighth" title="Eighth (4)">♪</button><button type="button" data-ty="16th" title="Sixteenth (3)">𝅘𝅥𝅯</button><button type="button" data-ed="dot" title="Dotted (.)">·</button><span class="sep"></span>
+    <button type="button" data-ed="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button type="button" data-ed="reset" title="Remove all your corrections to this score">Reset</button>
+    <button type="button" id="edDone" data-ed="done" title="Done (Esc)">Done</button>
+  </div>
+  <div id="edMsg" aria-live="polite"></div>
 </div>
 <button type="button" id="menuBtn" title="Menu" aria-label="Show menu">☰</button>
 </div>
 
 <script src="ink.js"></script>
+<script src="edit.js"></script>
 <script>
 const API_KEY="AIzaSyBBSNHHAweVUTKnF_R7UlKpH9bhgyLypIo";
 const $=s=>document.querySelector(s);
@@ -258,6 +286,7 @@ function draw(){
   if(view==="pages"){ $("#score").innerHTML=tk.renderToSVG(page); $("#pg").textContent=page+" / "+pages; $("#prev").disabled=page<=1; $("#next").disabled=page>=pages; }
   else { let h=""; for(let i=1;i<=pages;i++) h+=tk.renderToSVG(i); $("#score").innerHTML=h; }
   if(ink) $("#score").appendChild(ink.layer);
+  edMark();
   requestAnimationFrame(inkRender);
 }
 function go(d){ if(view!=="pages"||!tk) return; const n=page+d; if(n<1||n>pages) return; page=n; draw(); }
@@ -290,20 +319,21 @@ $("#zin").onclick=()=>setZoom(+4); $("#zout").onclick=()=>setZoom(-4);
 $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
 $("#zl").onclick=()=>go(-1); $("#zr").onclick=()=>go(1);
 let hideT; function showBar(){ $("#bar").classList.remove("hide"); clearTimeout(hideT); hideT=setTimeout(()=>$("#bar").classList.add("hide"),4000); }
-$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",()=>{ if(playing||counting){ stopPlay(); showBar(); return; } ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
+$("#menuBtn").onclick=showBar; $("#score").addEventListener("click",e=>{ if(edOn) return edTap(e); if(playing||counting){ stopPlay(); showBar(); return; } ($("#bar").classList.contains("hide")?showBar():$("#bar").classList.add("hide")); });
 $("#bar").addEventListener("pointerdown",showBar);
 addEventListener("keydown",e=>{
+  if(edOn) return edKey(e);
   const k=e.key;
   if(view==="pages"){
     if(["ArrowRight","PageDown"," ","ArrowDown","Enter"].includes(k)){e.preventDefault();go(1);return}
     if(["ArrowLeft","PageUp","ArrowUp","Backspace"].includes(k)){e.preventDefault();go(-1);return}
   } else if(k==="PageDown"||k===" "){ e.preventDefault(); $("#scroller").scrollBy({top:VH()*0.85,behavior:"smooth"}); return; }
   else if(k==="PageUp"){ e.preventDefault(); $("#scroller").scrollBy({top:-VH()*0.85,behavior:"smooth"}); return; }
-  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if((k==="t"||k==="T")&&tk) $("#trBtn").click(); else if((k==="d"||k==="D")&&ink) ink.active?ink.exit():ink.enter(); else if(k==="p"||k==="P") (playing||counting)?stopPlay():startPlay();
+  if(k==="+"||k==="=") setZoom(4); else if(k==="-") setZoom(-4); else if(k==="f"||k==="F") toggleFs(); else if(k==="g"||k==="G") setGap(gap+1); else if(k==="h"||k==="H") setHsp(hsp+1); else if(k==="r"||k==="R") setRot(rot+1); else if((k==="t"||k==="T")&&tk) $("#trBtn").click(); else if((k==="d"||k==="D")&&ink) ink.active?ink.exit():ink.enter(); else if(k==="p"||k==="P") (playing||counting)?stopPlay():startPlay(); else if((k==="e"||k==="E")&&tk&&!ZIP) edEnter();
 });
 const along=t=>{ const d=ROTS[rot][0]; return d===90?t.clientY:d===270?-t.clientY:t.clientX; };
 let sx=null; addEventListener("touchstart",e=>{ if(ink&&ink.active){ sx=null; return; } sx=e.touches.length===1?along(e.touches[0]):null; },{passive:true});
-addEventListener("touchend",e=>{ if(sx===null) return; const dx=along(e.changedTouches[0])-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
+addEventListener("touchend",e=>{ if(sx===null||edOn) return; const dx=along(e.changedTouches[0])-sx; sx=null; if(Math.abs(dx)>60) go(dx<0?1:-1); },{passive:true});
 let rT, lastW=innerWidth, lastH=innerHeight;
 addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)<4&&Math.abs(innerHeight-lastH)<60&&view==="scroll") return; lastW=innerWidth; lastH=innerHeight; layout(true); },200); });
 async function toggleFs(){ const el=document.documentElement; try{ if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){} }
@@ -327,6 +357,75 @@ document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
 ["gesturestart","gesturechange","gestureend"].forEach(n=>document.addEventListener(n,e=>e.preventDefault(),{passive:false}));
 let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
+
+/* ---------- corrections (edit.js): replayed on the original file, saved per score and synced like drawings ---------- */
+let XO0=null, XU0=null, edKey0="", edOps=[], edOn=false, edPrevView=null, edSel=null, edPrevCont=null, edResetArm=0;
+function edLoad(){ try{ edOps=JSON.parse(localStorage.getItem(edKey0)||"[]"); }catch(e){ edOps=[]; } edBadge(); }
+function edSave(){ try{ edOps.length?localStorage.setItem(edKey0,JSON.stringify(edOps)):localStorage.removeItem(edKey0); }catch(e){} if(window.Vault&&Vault.note) Vault.note(edKey0); edBadge(); }
+function edBadge(){ $("#edLbl").textContent=edOps.length?" Edit •":" Edit"; $("#edBtn").title=edOps.length?`Correct notes (E) — ${edOps.length} correction${edOps.length>1?"s":""} on this device`:"Correct notes (E)"; }
+function edBuild(){ const r=ScoreEdit.apply(XO0,edOps); XOs=r.xml; XUs=edOps.length?(XU0?ScoreEdit.unroll(XOs):null):XU0; return r.errs; }
+function edRefresh(){ trPrep(); loaded=null; loadFor(view); layout(false); edGo(); }
+function edBase(id){ return id?id.split("~")[0]:id; }
+function edMark(){ if(!edOn) return; document.querySelectorAll("#score .ed-sel").forEach(e=>e.classList.remove("ed-sel")); if(!edSel) return;
+  document.querySelectorAll("#score g.note, #score g.rest").forEach(g=>{ if(edBase(g.id)===edSel) g.classList.add("ed-sel"); }); }
+function edGo(){ if(!edSel||!tk) return edMark(); let pid=0; try{ pid=tk.getPageWithElement(edSel); }catch(e){}
+  if(view==="pages"&&pid&&pid!==page){ page=pid; draw(); } else edMark();
+  const el=document.querySelector("#score .ed-sel"); if(el&&view==="scroll"){ const r=el.getBoundingClientRect(); if(r.top<80||r.bottom>VH()-170) el.scrollIntoView({block:"center"}); }
+  edShow(); }
+const NAMES={whole:"whole",half:"half",quarter:"quarter","eighth":"eighth","16th":"16th","32nd":"32nd"};
+function edShow(msg){ const i=edSel?ScoreEdit.info(XOs,edSel):null;
+  document.querySelectorAll("#edPal [data-ty]").forEach(b=>b.classList.toggle("on",!!i&&b.dataset.ty===i.ty));
+  document.querySelector('#edPal [data-ed="dot"]').classList.toggle("on",!!i&&i.dt>0);
+  document.querySelector('#edPal [data-ed="tie"]').classList.toggle("on",!!i&&i.tie);
+  const acc=i&&!i.rest?(i.a===1?"♯":i.a===-1?"♭":i.a===2?"𝄪":i.a===-2?"𝄫":""):"";
+  $("#edMsg").innerHTML=(msg?`<b>${msg}</b> · `:"")+(i?(i.rest?"Rest":`${i.s}${acc}${i.o}`)+` · ${NAMES[i.ty]||i.ty}${i.dt?" dotted":""}${i.tup?" · triplet":""}`:"Tap a note to correct it.")
+    +(edOps.length?` · ${edOps.length} correction${edOps.length>1?"s":""} — kept for your login only`:""); }
+function edEnter(){ if(edOn||!tk||ZIP) return; stopPlay(); if(ink&&ink.active) ink.exit();
+  edOn=true; document.body.classList.add("editing"); $("#edBtn").setAttribute("aria-pressed","true");
+  edPrevCont=cont; edPrevView=view; if(cont&&XUs){ cont=false; loaded=null; }
+  if(view!=="scroll") setView("scroll"); else { loadFor(view); layout(true); }
+  clearTimeout(hideT); $("#bar").classList.add("hide"); $("#menuBtn").hidden=true; $("#edPal").hidden=false;
+  if(!edSel){ const g=document.querySelector("#score g.note, #score g.rest"); edSel=g?edBase(g.id):null; }
+  edGo(); }
+function edExit(){ if(!edOn) return; edOn=false; document.body.classList.remove("editing"); $("#edBtn").setAttribute("aria-pressed","false");
+  document.querySelectorAll("#score .ed-sel").forEach(e=>e.classList.remove("ed-sel")); $("#edPal").hidden=true; $("#menuBtn").hidden=false;
+  if(edPrevCont!==null&&edPrevCont!==cont){ cont=edPrevCont; loaded=null; }
+  if(edPrevView&&edPrevView!==view) setView(edPrevView); else { loadFor(view); layout(true); }
+  if(XUs){ $("#rep").hidden=false; showRep(); } showBar(); }
+function edTap(e){ /* nearest note or rest to the tap (noteheads are small on a touchscreen) */
+  let best=null, bd=1e9; const x=e.clientX, y=e.clientY;
+  document.querySelectorAll("#score g.note, #score g.rest").forEach(g=>{ const r=g.getBoundingClientRect(); if(!r.width&&!r.height) return;
+    const dx=Math.max(r.left-x,0,x-r.right), dy=Math.max(r.top-y,0,y-r.bottom), d=dx*dx+dy*dy*1.5; if(d<bd){ bd=d; best=g; } });
+  if(!best||bd>60*60) return; edSel=edBase(best.id); edMark(); edShow(); }
+function edDo(op){ if(!edSel) return edShow("Tap a note first");
+  edOps.push(op); const errs=edBuild();
+  const bad=errs[errs.length-1]; if(bad){ edOps.pop(); edBuild(); return edShow(bad==="bar"?"Not enough room left in this bar":bad==="tuplet"?"Can’t change the rhythm inside a triplet":bad==="tie"?"The next note must be the same pitch to tie":"Couldn’t do that"); }
+  edSave(); edRefresh(); }
+function edAct(a){ const i=edSel?ScoreEdit.info(XOs,edSel):null;
+  if(a==="done") return edExit();
+  if(a==="undo"){ if(!edOps.length) return edShow("Nothing to undo"); edOps.pop(); edBuild(); edSave(); if(edSel&&!ScoreEdit.info(XOs,edSel)) edSel=null; return edRefresh(); }
+  if(a==="reset"){ if(!edOps.length) return edShow("No corrections on this score"); if(Date.now()-edResetArm>4000){ edResetArm=Date.now(); return edShow("Tap Reset again to remove all corrections"); }
+    edResetArm=0; edOps=[]; edBuild(); edSave(); return edRefresh(); }
+  if(a==="prev"||a==="next"){ const ids=[...new Set([...document.querySelectorAll("#score g.note, #score g.rest")].map(g=>edBase(g.id)))]; let k=ids.indexOf(edSel); k=k<0?0:Math.max(0,Math.min(ids.length-1,k+(a==="next"?1:-1))); edSel=ids[k]; return edGo(); }
+  if(!i) return edShow("Tap a note first");
+  if(a==="up"||a==="down"){ const d=a==="up"?1:-1;
+    if(i.rest){ const ids=ScoreEdit.order(XOs); let k=ids.indexOf(edSel), from=null; while(--k>=0){ const j=ScoreEdit.info(XOs,ids[k]); if(j&&!j.rest){ from=j; break; } }
+      const s=from?from.s:"B", o=from?from.o:4; return edDo({t:"p",id:edSel,s,o,a:ScoreEdit.keyAlter(i.ctx.fifths,s),acc:null}); }
+    return edDo({t:"p",id:edSel,...ScoreEdit.stepPitch(i,d)}); }
+  if(a==="sharp"||a==="flat"||a==="natural"){ if(i.rest) return edShow("Rests don’t take accidentals"); return edDo({t:"p",id:edSel,...ScoreEdit.withAcc(i,a==="sharp"?1:a==="flat"?-1:0)}); }
+  if(a==="rest"){ if(i.rest) return edShow("Already a rest"); return edDo({t:"r",id:edSel}); }
+  if(a==="tie"){ if(i.rest) return edShow("Rests can’t be tied"); return edDo({t:"tie",id:edSel}); }
+  if(a==="dot") return edDo({t:"d",id:edSel,ty:i.ty,dt:i.dt?0:1});
+}
+document.querySelectorAll("#edPal [data-ed]").forEach(b=>b.addEventListener("click",()=>edAct(b.dataset.ed)));
+document.querySelectorAll("#edPal [data-ty]").forEach(b=>b.addEventListener("click",()=>{ const i=edSel?ScoreEdit.info(XOs,edSel):null; if(!i) return edShow("Tap a note first"); edDo({t:"d",id:edSel,ty:b.dataset.ty,dt:0}); }));
+$("#edBtn").onclick=()=>edOn?edExit():edEnter();
+function edKey(e){ const k=e.key, mod=e.metaKey||e.ctrlKey;
+  const map={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"prev",ArrowRight:"next",Delete:"rest",Backspace:"rest",Escape:"done",".":"dot",t:"tie",T:"tie"};
+  if(mod&&(k==="z"||k==="Z")){ e.preventDefault(); return edAct("undo"); }
+  if(map[k]){ e.preventDefault(); return edAct(map[k]); }
+  const ty={"3":"16th","4":"eighth","5":"quarter","6":"half","7":"whole"}[k]; if(ty){ e.preventDefault(); const b=document.querySelector(`#edPal [data-ty="${ty}"]`); if(b) b.click(); } }
+addEventListener("vault-sync",e=>{ if(!edKey0||edOn||!e.detail.includes(edKey0)) return; edLoad(); edBuild(); if(tk) edRefresh(); });
 
 /* print-only layout and repeated instrument names removed; "unrolled" version (repeats written out) used for Scroll / Play */
 let XO=null, XU=null, loaded=null;
@@ -361,7 +460,8 @@ async function start(){
     tk=new verovio.toolkit();
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!ZIP) XO=clean(xml); loaded=null;
-    XOs=XO; XUs=XU; const sk=vk||(lid?"l:"+lid:"")||xid||src||title; zkey="fit-zoom:"+sk; const zs=localStorage.getItem(zkey); if(zs!==null) zoom=+zs; partsInit(sk, XOs); trInit(sk, pickPart(XOs)); trPrep();
+    const sk=vk||(lid?"l:"+lid:"")||xid||src||title;
+    if(!ZIP){ XO0=ScoreEdit.prepare(XO); XU0=XU; edKey0="ed:"+sk; edLoad(); edBuild(); } else { XOs=XO; XUs=XU; $("#edBtn").hidden=true; } zkey="fit-zoom:"+sk; const zs=localStorage.getItem(zkey); if(zs!==null) zoom=+zs; partsInit(sk, XOs); trInit(sk, pickPart(XOs)); trPrep();
     if(!loadFor(view)) return fail();
     $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setupInk("ink:fit:"+(vk||(lid?"l:"+lid:"")||xid||src||title)); setView(view); if(zs===null) autoFill(); showBar(); barSpace(); wake();
   }catch(e){ fail(); }
