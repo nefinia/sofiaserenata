@@ -31,7 +31,7 @@ for (const [slug, city] of Object.entries(CITIES)) {
   h = h.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(t.pageTitle)}</title>`);
   h = h.replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(t.pageDescription)}$2`);
   h = h.replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
-  h = h.replace(/(<link rel="alternate" hreflang="(?:en|fr|es)" href=")[^"]*(")/g, (_, a, b) => a + url + "?lang=" + _.match(/hreflang="(\w+)"/)[1] + b);
+  h = h.replace(/(<link rel="alternate" hreflang="(?:en|fr|es|de)" href=")[^"]*(")/g, (_, a, b) => a + url + "?lang=" + _.match(/hreflang="(\w+)"/)[1] + b);
   h = h.replace(/(<link rel="alternate" hreflang="x-default" href=")[^"]*(")/, `$1${url}$2`);
   h = h.replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(t.pageTitle.split(" | ")[0])}$2`);
   h = h.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(t.pageDescription)}$2`);

@@ -19,13 +19,14 @@
   <link rel="alternate" hreflang="en" href="https://sofiaserenata.com/brussels/?lang=en">
   <link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/brussels/?lang=fr">
   <link rel="alternate" hreflang="es" href="https://sofiaserenata.com/brussels/?lang=es">
+  <link rel="alternate" hreflang="de" href="https://sofiaserenata.com/brussels/?lang=de">
   <link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/brussels/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Violoniste et chanteuse lyrique pour événements à Bruxelles">
   <meta property="og:description" content="Chant lyrique et violon pour mariages, soirées d’entreprise et événements privés à Bruxelles. Basée à Paris, je me rends régulièrement à Bruxelles. Répertoire classique, chansons françaises et pop internationale.">
   <meta property="og:url" content="https://sofiaserenata.com/brussels/">
   <meta property="og:image" content="https://sofiaserenata.com/sofia-violin-eiffel.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://sofiaserenata.com/brussels/#music","name":"Sofia Gallego · Violin & Voice","alternateName":["Sofia Gallego, violoniste et chanteuse","Sofia Gallego, violinista y cantante"],"description":"Chant lyrique et violon pour mariages, soirées d’entreprise et événements privés à Bruxelles. Basée à Paris, je me rends régulièrement à Bruxelles. Répertoire classique, chansons françaises et pop internationale.","url":"https://sofiaserenata.com/brussels/","image":"https://sofiaserenata.com/sofia-violin-eiffel.jpg","email":"contact@sofiaserenata.com","areaServed":[{"@type":"City","name":"Paris"},{"@type":"AdministrativeArea","name":"Île-de-France"},{"@type":"City","name":"Brussels"}],"address":{"@type":"PostalAddress","addressLocality":"Paris","addressCountry":"FR"},"founder":{"@type":"Person","@id":"https://sofiagallego.com/#sofia-gallego","name":"Sofia Gallego"},"knowsLanguage":["fr","en","es","it","de"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Violinist for wedding ceremonies"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Lyric singer for weddings"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for cocktails and receptions"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for corporate events"}}],"sameAs":["https://www.instagram.com/sofiagallego.events/","https://www.gigheaven.com/members/sofia-paris.html","https://linkaband.com/sofia-gallego","https://sofiagallego.com/"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://sofiaserenata.com/brussels/#music","name":"Sofia Gallego · Violin & Voice","alternateName":["Sofia Gallego, violoniste et chanteuse","Sofia Gallego, violinista y cantante","Sofia Gallego, Geigerin und Sängerin"],"description":"Chant lyrique et violon pour mariages, soirées d’entreprise et événements privés à Bruxelles. Basée à Paris, je me rends régulièrement à Bruxelles. Répertoire classique, chansons françaises et pop internationale.","url":"https://sofiaserenata.com/brussels/","image":"https://sofiaserenata.com/sofia-violin-eiffel.jpg","email":"contact@sofiaserenata.com","areaServed":[{"@type":"City","name":"Paris"},{"@type":"AdministrativeArea","name":"Île-de-France"},{"@type":"City","name":"Brussels"}],"address":{"@type":"PostalAddress","addressLocality":"Paris","addressCountry":"FR"},"founder":{"@type":"Person","@id":"https://sofiagallego.com/#sofia-gallego","name":"Sofia Gallego"},"knowsLanguage":["fr","en","es","it","de"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Violinist for wedding ceremonies"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Lyric singer for weddings"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for cocktails and receptions"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for corporate events"}}],"sameAs":["https://www.instagram.com/sofiagallego.events/","https://www.gigheaven.com/members/sofia-paris.html","https://linkaband.com/sofia-gallego","https://sofiagallego.com/"]}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -80,6 +81,8 @@
     .lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px}
     .lang button{background:none;border:0;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--soft);cursor:pointer}
     .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+    @media (max-width:560px){.top-in{gap:8px}.top-right{gap:8px}.lang button{padding:4px 6px;letter-spacing:.02em}}
+    @media (max-width:420px){.top-in,.top-right{gap:6px}.brand{font-size:1.1rem}.lang{gap:0;padding:2px}.lang button{font-size:11px;padding:4px 4px;letter-spacing:0}#menuBtn{width:34px}}
 
     /* Hero */
     .hero{padding-block:96px 88px;text-align:center;position:relative;overflow:hidden;
@@ -257,6 +260,7 @@
       <button type="button" id="enBtn" aria-pressed="true">EN</button>
       <button type="button" id="frBtn" aria-pressed="false">FR</button>
       <button type="button" id="esBtn" aria-pressed="false">ES</button>
+      <button type="button" id="deBtn" aria-pressed="false">DE</button>
     </div>
     </div>
   </div>
@@ -460,14 +464,14 @@ const VIDEOS=[["FSFwsav9XY0", "O mio babbino caro"],["BD9RXGT6QyI", "Por ti vola
 
 /* ---------- Repertoire (y = YouTube id of a reference recording) ---------- */
 const CATS={
-  classical:{en:"Classical & sacred",fr:"Classique & sacré",es:"Clásica y sacra"},
-  chanson:{en:"French chanson",fr:"Chanson française",es:"Chanson francesa"},
-  pop:{en:"Pop & love songs",fr:"Pop & chansons d'amour",es:"Pop y canciones de amor"},
-  rock:{en:"Rock & alternative",fr:"Rock & alternatif",es:"Rock y alternativo"},
-  latin:{en:"Latin & Italian",fr:"Latino & italien",es:"Latina e italiana"},
-  film:{en:"Film & timeless",fr:"Cinéma & intemporels",es:"Cine y clásicos eternos"},
-  bossa:{en:"Bossa nova",fr:"Bossa nova",es:"Bossa nova"},
-  moments:{en:"Special moments",fr:"Moments spéciaux",es:"Momentos especiales"}
+  classical:{en:"Classical & sacred",fr:"Classique & sacré",es:"Clásica y sacra",de:"Klassik & Geistliches"},
+  chanson:{en:"French chanson",fr:"Chanson française",es:"Chanson francesa",de:"Französisches Chanson"},
+  pop:{en:"Pop & love songs",fr:"Pop & chansons d'amour",es:"Pop y canciones de amor",de:"Pop & Liebeslieder"},
+  rock:{en:"Rock & alternative",fr:"Rock & alternatif",es:"Rock y alternativo",de:"Rock & Alternative"},
+  latin:{en:"Latin & Italian",fr:"Latino & italien",es:"Latina e italiana",de:"Lateinamerikanisch & Italienisch"},
+  film:{en:"Film & timeless",fr:"Cinéma & intemporels",es:"Cine y clásicos eternos",de:"Film & Zeitloses"},
+  bossa:{en:"Bossa nova",fr:"Bossa nova",es:"Bossa nova",de:"Bossa Nova"},
+  moments:{en:"Special moments",fr:"Moments spéciaux",es:"Momentos especiales",de:"Besondere Momente"}
 };
 const SONGS=[
   {t:"Spring — The Four Seasons",a:"Antonio Vivaldi",c:"classical",y:"xZYXRfREl8M"},
@@ -609,6 +613,37 @@ const dict={
     footer:`© <span id="y"></span> Sofia Gallego — Singer & Violinist — Paris & Île-de-France`,
     namePlaceholder:"Your name",emailPlaceholder:"Your email",eventPlaceholder:"Event type (wedding, cocktail, etc.)",
     locationPlaceholder:"Location (Paris, Île-de-France)",messagePlaceholder:"Tell me a few details (schedule, musical atmosphere, requested pieces...)"},
+  de:{pageTitle:"Geigerin und Sängerin für Hochzeiten und Events in Paris | Sofia Gallego",
+    pageDescription:"Sängerin und Geigerin für Hochzeiten und Events in Paris und der Île-de-France. Klassisches Repertoire, französische Chansons und internationaler Pop. Über 20 Jahre internationale Erfahrung.",
+    navVideos:"Videos",navServices:"Pakete",navRep:"Repertoire",navXp:"Über mich",navContact:"Kontakt",navScores:"Noten",
+    heroEyebrow:"Hochzeiten · Empfänge · Private Feiern",tagline:"Sängerin & Geigerin · Paris & Île-de-France",
+    heroIntro:"Gesang und Geige live für Ihre Trauung, Ihren Cocktail und Ihren Empfang. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten.",
+    heroListen:"Repertoire anhören",heroQuote:"Angebot anfragen",factYears:"Jahre auf der Bühne",factCountries:"Länder",factLangs:"Sprachen im Gesang",
+    vidEyebrow:"Live",vidTitle:"Ein Auftritt zum Ansehen",moreVids:"Alle Videos zeigen",lessVids:"Weniger Videos zeigen",playVideo:"Video abspielen",
+    svcEyebrow:"Formate",servicesTitle:"Leistungen & Pakete",servicesNote:"Richtpreise, angepasst an Dauer, Ort und Technik.",
+    soloTitle:"Solo",soloDesc:"Geige <em>oder</em> Gesang für Trauung, Cocktail oder musikalische Begleitung im Hintergrund.",soloPrice:"ab 200€",
+    duoTitle:"Duo",duoDesc:"Gesang + Klavier oder Geige + Gitarre. Ideal für Cocktail und Empfang.",duoPrice:"ab 400€",
+    ensTitle:"Ensemble",ensDesc:"Streichquartett, Chor oder individuelles Ensemble.",ensPrice:"ab 800€",
+    repEyebrow:"Anhören",repTitle:"Repertoire",repLead:"Eine Auswahl der Stücke, die ich spiele und singe. Hören Sie das Original und stellen Sie sich vor, wie es live bei Ihrer Feier klingt.",
+    all:"Alle",search:"Lied oder Künstler suchen",searchLabel:"Repertoire durchsuchen",surprise:"Überraschen Sie mich",
+    count:(n,m)=>n===m?m+" Lieder":n+" von "+m+" Liedern",empty:"Zu dieser Suche gibt es kein Lied. Fragen Sie mich, vielleicht spiele ich es.",
+    listen:"Anhören:",now:"Läuft gerade",prev:"◂ Zurück",next:"Weiter ▸",yt:"Auf YouTube öffnen",close:"Schließen",
+    repNote:"<strong>Ihr Lied fehlt?</strong> Die Liste wächst weiter, und ich bereite gern ein eigenes Arrangement für Ihren Hochzeitstanz, Ihren Einzug oder jeden besonderen Moment vor.",repAsk:"Lied anfragen",
+    xpEyebrow:"Über mich",xpTitle:"Erfahrung",
+    xpBody:"Über 20 Jahre Erfahrung in Chile, der Schweiz, den USA und Frankreich. Oper, Zarzuela, Musiktheater, Kammermusik, Trauungen und Firmenveranstaltungen. Auftritte an renommierten Orten (Teatro Municipal La Serena, Semanas Musicales de Frutillar, Salons und Hotels), Aufnahmen und Fernsehauftritte. Mit Sitz in Paris gestalte ich stilvolle Auftritte für Trauungen, Cocktails und Empfänge.",
+    rootsTitle:"Wurzeln in Chile (Auswahl)",
+    roots1:"Solistin in Opern, Zarzuelas und Theater (La Revoltosa, Mozart, Puccini, Bach).",
+    roots2:"Musicals und Galas (¡Sí!, somos americanos, Una Noche de Jazz en Copacabana).",
+    roots3:"Aufnahmen (Música Andalusí) und Fernsehauftritte (TVN, Canal 13).",
+    roots4:"Hotels und Bühnen: Ritz-Carlton, Teatro Municipal La Serena, Frutillar.",
+    contactEyebrow:"Sprechen wir über Ihren Tag",contactTitle:"Kontakt & Angebot",
+    soloOption:"Solo-Paket",duoOption:"Duo-Paket",customOption:"Individuell",sendButton:"Anfrage senden",
+    formNote:"Mit dem Absenden des Formulars stimmen Sie zu, per E-Mail kontaktiert zu werden.",sentOk:"Danke! Ihre Anfrage ist unterwegs. Ich antworte meist innerhalb von 24 Stunden.",sentErr:"Die Anfrage konnte nicht gesendet werden. Bitte schreiben Sie an contact@sofiaserenata.com.",
+    basedIn:"<strong>Sitz</strong> : Paris · Anreise innerhalb der Île-de-France",languages:"<strong>Sprachen</strong> : Englisch, Spanisch, Französisch, Italienisch, Deutsch",
+    techNote:"Brauchen Sie Mikrofon oder Tontechnik? Für kleine Räume komme ich mit eigener Technik, sonst stimme ich mich mit dem Technikteam des Veranstaltungsortes ab. Reisekosten außerhalb des Zentrums von Paris hängen von Entfernung und Zeitplan ab.",
+    footer:`© <span id="y"></span> Sofia Gallego · Sängerin & Geigerin · Paris & Île-de-France`,
+    namePlaceholder:"Ihr Name",emailPlaceholder:"Ihre E-Mail",eventPlaceholder:"Art der Feier (Hochzeit, Cocktail usw.)",
+    locationPlaceholder:"Ort (Paris, Île-de-France)",messagePlaceholder:"Erzählen Sie mir ein paar Details (Ablauf, musikalische Stimmung, gewünschte Stücke ...)"},
   fr:{pageTitle:"Violoniste et chanteuse lyrique pour mariages et événements à Paris | Sofia Gallego",
     pageDescription:"Chanteuse et violoniste pour mariages et événements à Paris et en Île-de-France. Répertoire classique, chansons françaises et pop internationale. +20 ans d’expérience internationale.",
     navVideos:"Vidéos",navServices:"Formules",navRep:"Répertoire",navXp:"À propos",navContact:"Contact",navScores:"Partitions",
@@ -749,7 +784,7 @@ const CITY=(()=>{const C=window.CITIES||{}; let k=document.documentElement.datas
     k=Object.keys(C).find(n=>C[n].tz.includes(z))||"";}
   return C[k]?k:"";})();
 if(CITY){const own=!!document.documentElement.dataset.city;
-  for(const l of ["en","fr","es"]) for(const key in CITIES[CITY][l]){
+  for(const l of ["en","fr","es","de"]) for(const key in CITIES[CITY][l]){
     if(own||["heroEyebrow","tagline","heroIntro"].includes(key)) dict[l][key]=CITIES[CITY][l][key];}}
 
 /* ---------- Language ---------- */
@@ -757,14 +792,14 @@ function setLang(l){
   if(!dict[l]) l="en";
   lang=l; document.documentElement.lang=l; document.title=dict[l].pageTitle;
   const desc=document.querySelector('meta[name="description"]'); if(desc) desc.setAttribute("content",dict[l].pageDescription);
-  const can=document.querySelector('link[rel="canonical"]'), forced=/[?&]lang=(en|fr|es)/.test(location.search);
+  const can=document.querySelector('link[rel="canonical"]'), forced=/[?&]lang=(en|fr|es|de)/.test(location.search);
   if(can) can.setAttribute("href",(document.documentElement.dataset.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"?"?lang="+l:""));
   document.querySelectorAll("[data-t]").forEach(el=>{const v=dict[l][el.dataset.t]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll("[data-t-html]").forEach(el=>{const v=dict[l][el.dataset.tHtml]; if(v) el.innerHTML=v;});
   document.querySelectorAll("[data-p]").forEach(el=>{const v=dict[l][el.dataset.p]; if(v) el.setAttribute("placeholder",v);});
-  ["en","fr","es"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
+  ["en","fr","es","de"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
   const y=document.getElementById("y"); if(y) y.textContent=new Date().getFullYear();
-  const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal"}[l]; lg.href="../mentions-legales/?lang="+l;}
+  const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal",de:"Impressum"}[l]; lg.href="../mentions-legales/?lang="+l;}
   const cl=document.getElementById("cityLinks");
   if(cl&&window.CITIES) cl.innerHTML=['<a href="/">Paris</a>'].concat(Object.keys(CITIES).map(k=>`<a href="/${k}/">${CITIES[k].name[l]}</a>`)).join(" · ");
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
@@ -773,6 +808,7 @@ const pickLang=l=>{setLang(l); try{localStorage.setItem("lang",l)}catch(_){}};
 $("#enBtn").addEventListener("click",()=>pickLang("en"));
 $("#frBtn").addEventListener("click",()=>pickLang("fr"));
 $("#esBtn").addEventListener("click",()=>pickLang("es"));
+$("#deBtn").addEventListener("click",()=>pickLang("de"));
 
 showPoster(0);
 

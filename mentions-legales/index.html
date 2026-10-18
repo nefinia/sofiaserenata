@@ -51,6 +51,7 @@
       <button type="button" data-l="fr">FR</button>
       <button type="button" data-l="en">EN</button>
       <button type="button" data-l="es">ES</button>
+      <button type="button" data-l="de">DE</button>
     </div>
   </div>
 
@@ -107,12 +108,29 @@
     <h2>Propiedad intelectual</h2>
     <p>Los textos, fotos y grabaciones de este sitio pertenecen a Sofia Gallego, salvo indicación contraria. No se permite su reproducción sin autorización.</p>
   </section>
+  <section lang="de" data-l="de" hidden>
+    <h1>Impressum</h1>
+    <h2>Herausgeberin der Website</h2>
+    <p><strong>COSMOVENTURES</strong>, französische SAS mit einer Gesellschafterin und einem Stammkapital von 100&nbsp;€<br>
+    Sitz: 50 rue Marx Dormoy, 75018 Paris, Frankreich<br>
+    SIREN 991&nbsp;740&nbsp;176 · SIRET 991&nbsp;740&nbsp;176&nbsp;00011 · eingetragen im französischen Unternehmensregister (RNE)<br>
+    Kontakt: <a href="mailto:contact@sofiaserenata.com">contact@sofiaserenata.com</a></p>
+    <p><strong>Verantwortlich für den Inhalt</strong>: Sofia Gallego, Präsidentin.</p>
+    <h2>Hosting</h2>
+    <p>GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA · <a href="https://github.com" rel="noopener">github.com</a></p>
+    <h2>Personenbezogene Daten</h2>
+    <p>Die Angaben aus dem Kontaktformular (Name, E-Mail, Details zur Feier) dienen nur dazu, Ihre Anfrage zu beantworten und ein Angebot vorzubereiten. Sie werden über den Dienst Formspree übermittelt und weder verkauft noch für andere Zwecke verwendet.</p>
+    <p>Die Website nutzt Google Analytics, um die Besucherzahlen insgesamt zu messen. Videos werden von YouTube im datenschutzfreundlichen Modus eingebunden.</p>
+    <p>Nach der DSGVO können Sie Auskunft, Berichtigung oder Löschung Ihrer Daten verlangen, indem Sie an <a href="mailto:contact@sofiaserenata.com">contact@sofiaserenata.com</a> schreiben. Sie können sich auch bei der CNIL, der französischen Datenschutzbehörde, beschweren (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
+    <h2>Urheberrecht</h2>
+    <p>Die Texte, Fotos und Aufnahmen auf dieser Website gehören Sofia Gallego, sofern nichts anderes angegeben ist. Eine Vervielfältigung ohne Erlaubnis ist nicht gestattet.</p>
+  </section>
 </main>
 <footer><a href="../" id="back">← sofiaserenata.com</a></footer>
 <script>
 (function(){
   var secs=document.querySelectorAll("section[data-l]"), btns=document.querySelectorAll(".lang button");
-  var titles={fr:"Mentions légales — Sofia Gallego",en:"Legal notice — Sofia Gallego",es:"Aviso legal — Sofia Gallego"};
+  var titles={fr:"Mentions légales — Sofia Gallego",en:"Legal notice — Sofia Gallego",es:"Aviso legal — Sofia Gallego",de:"Impressum — Sofia Gallego"};
   function set(l){
     if(!titles[l]) l="fr";
     secs.forEach(function(s){s.hidden=s.dataset.l!==l;});
@@ -122,7 +140,7 @@
   }
   btns.forEach(function(b){b.addEventListener("click",function(){set(b.dataset.l);});});
   var q=(new URLSearchParams(location.search).get("lang")||"").toLowerCase(), n=(navigator.language||"").toLowerCase();
-  set(titles[q]?q:/^es/.test(n)?"es":/^en/.test(n)?"en":"fr");
+  set(titles[q]?q:/^es/.test(n)?"es":/^de/.test(n)?"de":/^en/.test(n)?"en":"fr");
 })();
 </script>
 </body>

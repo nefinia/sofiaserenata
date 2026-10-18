@@ -5,7 +5,7 @@
 window.CITIES = {
   london: {
     tz: ["Europe/London"],
-    name: { en: "London", fr: "Londres", es: "Londres" },
+    name: { en: "London", fr: "Londres", es: "Londres", de: "London" },
     lang: "en",
     en: {
       pageTitle: "Violinist & Singer for Events in London | Sofia Gallego",
@@ -27,11 +27,18 @@ window.CITIES = {
       heroEyebrow: "Bodas · Recepciones · Eventos de empresa",
       tagline: "Cantante y violinista · París y Londres",
       heroIntro: "Viajo con frecuencia entre París y Londres, así que organizar voz y violín en vivo para su ceremonia, cóctel o recepción en Londres es sencillo. De Bach y Piaf a Coldplay y Taylor Swift, a la medida de su día."
+    },
+    de: {
+      pageTitle: "Geigerin und Sängerin für Events in London | Sofia Gallego",
+      pageDescription: "Gesang und Geige für Hochzeiten, Firmenabende und private Feiern in London. Mit Sitz in Paris und regelmäßig in London unterwegs. Klassisches Repertoire, französische Chansons und internationaler Pop.",
+      heroEyebrow: "Hochzeiten · Empfänge · Firmenveranstaltungen",
+      tagline: "Sängerin & Geigerin · Paris & London",
+      heroIntro: "Ich bin ständig zwischen Paris und London unterwegs, deshalb lässt sich Gesang und Geige live für Ihre Trauung, Ihren Cocktail oder Ihren Empfang in London leicht organisieren. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten."
     }
   },
   brussels: {
     tz: ["Europe/Brussels"],
-    name: { en: "Brussels", fr: "Bruxelles", es: "Bruselas" },
+    name: { en: "Brussels", fr: "Bruxelles", es: "Bruselas", de: "Brüssel" },
     lang: "fr",
     en: {
       pageTitle: "Violinist & Singer for Events in Brussels | Sofia Gallego",
@@ -53,12 +60,19 @@ window.CITIES = {
       heroEyebrow: "Bodas · Recepciones · Eventos de empresa",
       tagline: "Cantante y violinista · París y Bruselas",
       heroIntro: "Viajo con frecuencia entre París y Bruselas, así que organizar voz y violín en vivo para su ceremonia, cóctel o recepción en Bruselas es sencillo. De Bach y Piaf a Coldplay y Taylor Swift, a la medida de su día."
+    },
+    de: {
+      pageTitle: "Geigerin und Sängerin für Events in Brüssel | Sofia Gallego",
+      pageDescription: "Gesang und Geige für Hochzeiten, Firmenabende und private Feiern in Brüssel. Mit Sitz in Paris und regelmäßig in Brüssel unterwegs. Klassisches Repertoire, französische Chansons und internationaler Pop.",
+      heroEyebrow: "Hochzeiten · Empfänge · Firmenveranstaltungen",
+      tagline: "Sängerin & Geigerin · Paris & Brüssel",
+      heroIntro: "Ich bin ständig zwischen Paris und Brüssel unterwegs, deshalb lässt sich Gesang und Geige live für Ihre Trauung, Ihren Cocktail oder Ihren Empfang in Brüssel leicht organisieren. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten."
     }
   },
   zurich: {
     tz: ["Europe/Zurich"],
-    name: { en: "Zurich", fr: "Zurich", es: "Zúrich" },
-    lang: "en",
+    name: { en: "Zurich", fr: "Zurich", es: "Zúrich", de: "Zürich" },
+    lang: "de",
     en: {
       pageTitle: "Violinist & Singer for Events in Zurich | Sofia Gallego",
       pageDescription: "Violin and lyric singing for weddings, corporate evenings and private events in Zurich. Based in Paris and travelling to Zurich regularly. Classical repertoire, French songs and international pop.",
@@ -79,6 +93,13 @@ window.CITIES = {
       heroEyebrow: "Bodas · Recepciones · Eventos de empresa",
       tagline: "Cantante y violinista · París y Zúrich",
       heroIntro: "Viajo con frecuencia entre París y Zúrich, así que organizar voz y violín en vivo para su ceremonia, cóctel o recepción en Zúrich es sencillo. De Bach y Piaf a Coldplay y Taylor Swift, a la medida de su día."
+    },
+    de: {
+      pageTitle: "Geigerin und Sängerin für Events in Zürich | Sofia Gallego",
+      pageDescription: "Gesang und Geige für Hochzeiten, Firmenabende und private Feiern in Zürich. Mit Sitz in Paris und regelmäßig in Zürich unterwegs. Klassisches Repertoire, französische Chansons und internationaler Pop.",
+      heroEyebrow: "Hochzeiten · Empfänge · Firmenveranstaltungen",
+      tagline: "Sängerin & Geigerin · Paris & Zürich",
+      heroIntro: "Ich bin ständig zwischen Paris und Zürich unterwegs, deshalb lässt sich Gesang und Geige live für Ihre Trauung, Ihren Cocktail oder Ihren Empfang in Zürich leicht organisieren. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten."
     }
   }
 };
