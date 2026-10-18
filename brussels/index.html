@@ -142,6 +142,7 @@
     input[type=search]{flex:1 1 200px;min-width:0;max-width:320px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;color:var(--ink)}
     .surprise{white-space:nowrap}
     .count{color:var(--soft);font-size:14px;margin:0 0 6px;font-variant-numeric:tabular-nums}
+    .rep-more{text-align:center;margin:18px 0 4px}
     .songs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}
     .song{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);border-radius:10px}
     .song:hover{background:rgba(255,253,249,.7)}
@@ -354,6 +355,7 @@
       </div>
       <p class="count" id="count" aria-live="polite"></p>
       <ul class="songs" id="songs"></ul>
+      <div class="rep-more"><button class="more" type="button" id="moreSongs" hidden></button></div>
       <div class="rep-cta">
         <p data-t-html="repNote"><strong>Don't see your song?</strong> This list keeps growing, and I can prepare a custom arrangement for your first dance, your entrance or any special moment.</p>
         <a class="btn solid" href="#contact" data-t="repAsk">Ask for a song</a>
@@ -590,7 +592,7 @@ const dict={
     heroEyebrow:"Weddings · Receptions · Private events",tagline:"Singer & Violinist — Paris & Île-de-France",
     heroIntro:"Live voice and violin for your ceremony, cocktail and reception — from Bach and Piaf to Coldplay and Taylor Swift, shaped around your day.",
     heroListen:"Listen to the repertoire",heroQuote:"Request a quote",factYears:"years on stage",factCountries:"countries",factLangs:"languages sung",
-    vidEyebrow:"Live",vidTitle:"See me perform",moreVids:"Show all videos",lessVids:"Show fewer videos",playVideo:"Play video",
+    vidEyebrow:"Live",vidTitle:"See me perform",moreVids:"Show all videos",lessVids:"Show fewer videos",playVideo:"Play video",moreSongs:n=>"Show all "+n+" songs",lessSongs:"Show fewer songs",
     svcEyebrow:"Formats",servicesTitle:"Services & Packages",servicesNote:"Guide prices — adjusted by duration, venue and setup.",
     soloTitle:"Solo",soloDesc:"Violin <em>or</em> voice for a ceremony, cocktail, or background atmosphere.",soloPrice:"from 200€",
     duoTitle:"Duo",duoDesc:"Voice + piano, or violin + guitar. Ideal for cocktails and receptions.",duoPrice:"from 400€",
@@ -621,7 +623,7 @@ const dict={
     heroEyebrow:"Hochzeiten · Empfänge · Private Feiern",tagline:"Sängerin & Geigerin · Paris & Île-de-France",
     heroIntro:"Gesang und Geige live für Ihre Trauung, Ihren Cocktail und Ihren Empfang. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten.",
     heroListen:"Repertoire anhören",heroQuote:"Angebot anfragen",factYears:"Jahre auf der Bühne",factCountries:"Länder",factLangs:"Sprachen im Gesang",
-    vidEyebrow:"Live",vidTitle:"Ein Auftritt zum Ansehen",moreVids:"Alle Videos zeigen",lessVids:"Weniger Videos zeigen",playVideo:"Video abspielen",
+    vidEyebrow:"Live",vidTitle:"Ein Auftritt zum Ansehen",moreVids:"Alle Videos zeigen",lessVids:"Weniger Videos zeigen",playVideo:"Video abspielen",moreSongs:n=>"Alle "+n+" Lieder zeigen",lessSongs:"Weniger Lieder zeigen",
     svcEyebrow:"Formate",servicesTitle:"Leistungen & Pakete",servicesNote:"Richtpreise, angepasst an Dauer, Ort und Technik.",
     soloTitle:"Solo",soloDesc:"Geige <em>oder</em> Gesang für Trauung, Cocktail oder musikalische Begleitung im Hintergrund.",soloPrice:"ab 200€",
     duoTitle:"Duo",duoDesc:"Gesang + Klavier oder Geige + Gitarre. Ideal für Cocktail und Empfang.",duoPrice:"ab 400€",
@@ -652,7 +654,7 @@ const dict={
     heroEyebrow:"Mariages · Réceptions · Événements privés",tagline:"Chanteuse & Violoniste — Paris & Île-de-France",
     heroIntro:"Chant et violon en live pour votre cérémonie, cocktail et réception — de Bach et Piaf à Coldplay et Taylor Swift, pensés pour votre journée.",
     heroListen:"Écouter le répertoire",heroQuote:"Demander un devis",factYears:"ans de scène",factCountries:"pays",factLangs:"langues chantées",
-    vidEyebrow:"En live",vidTitle:"Me voir sur scène",moreVids:"Voir toutes les vidéos",lessVids:"Voir moins de vidéos",playVideo:"Lire la vidéo",
+    vidEyebrow:"En live",vidTitle:"Me voir sur scène",moreVids:"Voir toutes les vidéos",lessVids:"Voir moins de vidéos",playVideo:"Lire la vidéo",moreSongs:n=>"Voir les "+n+" chansons",lessSongs:"Voir moins de chansons",
     svcEyebrow:"Formules",servicesTitle:"Prestations & Forfaits",servicesNote:"Tarifs indicatifs — adaptés selon durée, lieu et configuration.",
     soloTitle:"Solo",soloDesc:"Violon <em>ou</em> chant pour cérémonie, cocktail ou ambiance.",soloPrice:"à partir de 200€",
     duoTitle:"Duo",duoDesc:"Chant + piano, ou violon + guitare. Idéal cocktail/réception.",duoPrice:"à partir de 400€",
@@ -683,7 +685,7 @@ const dict={
     heroEyebrow:"Bodas · Recepciones · Eventos privados",tagline:"Cantante y violinista — París e Île-de-France",
     heroIntro:"Voz y violín en vivo para su ceremonia, cóctel y recepción — de Bach y Piaf a Coldplay y Taylor Swift, a la medida de su día.",
     heroListen:"Escuchar el repertorio",heroQuote:"Solicitar un presupuesto",factYears:"años en escena",factCountries:"países",factLangs:"idiomas cantados",
-    vidEyebrow:"En vivo",vidTitle:"Véame en escena",moreVids:"Ver todos los videos",lessVids:"Ver menos videos",playVideo:"Reproducir video",
+    vidEyebrow:"En vivo",vidTitle:"Véame en escena",moreVids:"Ver todos los videos",lessVids:"Ver menos videos",playVideo:"Reproducir video",moreSongs:n=>"Ver las "+n+" canciones",lessSongs:"Ver menos canciones",
     svcEyebrow:"Formatos",servicesTitle:"Servicios y paquetes",servicesNote:"Precios orientativos — se ajustan según la duración, el lugar y la configuración.",
     soloTitle:"Solo",soloDesc:"Violín <em>o</em> voz para una ceremonia, un cóctel o música ambiental.",soloPrice:"desde 200€",
     duoTitle:"Dúo",duoDesc:"Voz + piano, o violín + guitarra. Ideal para cócteles y recepciones.",duoPrice:"desde 400€",
@@ -711,7 +713,8 @@ const dict={
 };
 
 /* ---------- Helpers ---------- */
-let lang="en",cat="all",current=-1,visible=[],vid=0,allVids=false;
+let lang="en",cat="all",current=-1,visible=[],vid=0,allVids=false,allSongs=false;
+const SONG_CAP=10; /* the list starts short so the rest of the page stays within reach */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -751,7 +754,9 @@ function renderSongs(){
   const q=norm($("#q").value.trim());
   visible=SONGS.map((s,i)=>i).filter(i=>{const s=SONGS[i];return (cat==="all"||s.c===cat)&&(!q||norm(s.t+" "+s.a).includes(q));});
   $("#count").textContent=dict[lang].count(visible.length,SONGS.length);
-  $("#songs").innerHTML=visible.length?visible.map(i=>{const s=SONGS[i];
+  const capped=!q&&visible.length>SONG_CAP, shown=capped&&!allSongs?visible.slice(0,SONG_CAP):visible;
+  const mb=$("#moreSongs"); mb.hidden=!capped; if(capped) mb.textContent=allSongs?dict[lang].lessSongs:dict[lang].moreSongs(visible.length);
+  $("#songs").innerHTML=shown.length?shown.map(i=>{const s=SONGS[i];
     return `<li class="song${i===current?" now":""}" data-i="${i}"><button class="play" type="button" data-i="${i}" aria-label="${esc(dict[lang].listen+" "+s.t+" — "+s.a)}">${PLAY}</button><div><div class="s-title">${esc(s.t)}</div><div class="s-who">${esc(s.a)}</div></div><span class="s-cat">${esc(CATS[s.c][lang])}</span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span></li>`;
   }).join(""):`<li class="empty">${esc(dict[lang].empty)}</li>`;
 }
@@ -770,7 +775,8 @@ function stopSong(){
   $("#frame").innerHTML=""; $("#player").hidden=true; document.body.classList.remove("playing");
   current=-1; document.querySelectorAll(".song.now").forEach(el=>el.classList.remove("now"));
 }
-$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; cat=b.dataset.k; chips(); renderSongs();});
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; cat=b.dataset.k; allSongs=false; chips(); renderSongs();});
+$("#moreSongs").addEventListener("click",()=>{allSongs=!allSongs; renderSongs(); if(!allSongs) $("#chips").scrollIntoView({block:"nearest"});});
 $("#q").addEventListener("input",renderSongs);
 $("#songs").addEventListener("click",e=>{const b=e.target.closest(".play"); if(b) playSong(+b.dataset.i);});
 $("#surprise").addEventListener("click",()=>{const list=visible.length?visible:SONGS.map((s,i)=>i); playSong(list[Math.floor(Math.random()*list.length)]);});
