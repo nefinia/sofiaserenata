@@ -81,8 +81,9 @@
     .lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px}
     .lang button{background:none;border:0;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--soft);cursor:pointer}
     .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-    @media (max-width:560px){.top-in{gap:8px}.top-right{gap:8px}.lang button{padding:4px 6px;letter-spacing:.02em}}
-    @media (max-width:420px){.top-in,.top-right{gap:6px}.brand{font-size:1.1rem}.lang{gap:0;padding:2px}.lang button{font-size:11px;padding:4px 4px;letter-spacing:0}#menuBtn{width:34px}}
+    .lang-cycle{display:none;background:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--ink);cursor:pointer}
+    @media (max-width:560px){.lang{display:none}.lang-cycle{display:inline-flex}}
+    @media (max-width:360px){.top-in,.top-right{gap:8px}.brand{font-size:1.1rem}.lang-cycle{padding:7px 10px}#menuBtn{width:36px}}
 
     /* Hero */
     .hero{padding-block:96px 88px;text-align:center;position:relative;overflow:hidden;
@@ -262,6 +263,7 @@
       <button type="button" id="esBtn" aria-pressed="false">ES</button>
       <button type="button" id="deBtn" aria-pressed="false">DE</button>
     </div>
+    <button type="button" class="lang-cycle" id="langCycle" aria-label="Language">EN</button>
     </div>
   </div>
 </header>
@@ -798,6 +800,7 @@ function setLang(l){
   document.querySelectorAll("[data-t-html]").forEach(el=>{const v=dict[l][el.dataset.tHtml]; if(v) el.innerHTML=v;});
   document.querySelectorAll("[data-p]").forEach(el=>{const v=dict[l][el.dataset.p]; if(v) el.setAttribute("placeholder",v);});
   ["en","fr","es","de"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
+  const lc=$("#langCycle"); if(lc){lc.textContent=l.toUpperCase(); lc.setAttribute("aria-label","Language: "+l.toUpperCase());}
   const y=document.getElementById("y"); if(y) y.textContent=new Date().getFullYear();
   const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal",de:"Impressum"}[l]; lg.href="../mentions-legales/?lang="+l;}
   const cl=document.getElementById("cityLinks");
@@ -809,6 +812,8 @@ $("#enBtn").addEventListener("click",()=>pickLang("en"));
 $("#frBtn").addEventListener("click",()=>pickLang("fr"));
 $("#esBtn").addEventListener("click",()=>pickLang("es"));
 $("#deBtn").addEventListener("click",()=>pickLang("de"));
+/* Phones show one button; each tap moves to the next language */
+$("#langCycle").addEventListener("click",()=>{const o=["en","fr","es","de"]; pickLang(o[(o.indexOf(lang)+1)%o.length]);});
 
 showPoster(0);
 
