@@ -233,6 +233,7 @@
     }
   </style>
 <script src="assets/js/display.js"></script>
+<script src="assets/js/cities.js"></script>
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
@@ -432,6 +433,7 @@
 
 <footer>
   <div data-t-html="footer">© <span id="y"></span> Sofia Gallego — Singer & Violinist — Paris & Île-de-France</div>
+  <div id="cityLinks" style="margin-top:6px"><a href="/">Paris</a> · <a href="/london/">London</a> · <a href="/brussels/">Brussels</a> · <a href="/zurich/">Zurich</a></div>
   <div style="margin-top:6px"><a href="https://sofiagallego.com/">sofiagallego.com</a> · <a id="legal" href="mentions-legales/">Legal notice</a></div>
 </footer>
 
@@ -739,19 +741,32 @@ $("#prev").addEventListener("click",()=>step(-1));
 $("#next").addEventListener("click",()=>step(1));
 $("#close").addEventListener("click",stopSong);
 
+/* ---------- City ----------
+   City pages (london/, brussels/, zurich/) carry data-city on <html> and use all their lines.
+   On the homepage the hero lines follow the visitor's time zone when it matches a city. */
+const CITY=(()=>{const C=window.CITIES||{}; let k=document.documentElement.dataset.city||"";
+  if(!k){let z=""; try{z=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(_){}
+    k=Object.keys(C).find(n=>C[n].tz.includes(z))||"";}
+  return C[k]?k:"";})();
+if(CITY){const own=!!document.documentElement.dataset.city;
+  for(const l of ["en","fr","es"]) for(const key in CITIES[CITY][l]){
+    if(own||["heroEyebrow","tagline","heroIntro"].includes(key)) dict[l][key]=CITIES[CITY][l][key];}}
+
 /* ---------- Language ---------- */
 function setLang(l){
   if(!dict[l]) l="en";
   lang=l; document.documentElement.lang=l; document.title=dict[l].pageTitle;
   const desc=document.querySelector('meta[name="description"]'); if(desc) desc.setAttribute("content",dict[l].pageDescription);
   const can=document.querySelector('link[rel="canonical"]'), forced=/[?&]lang=(en|fr|es)/.test(location.search);
-  if(can) can.setAttribute("href","https://sofiaserenata.com/"+(forced&&l!=="en"?"?lang="+l:""));
+  if(can) can.setAttribute("href",(document.documentElement.dataset.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"?"?lang="+l:""));
   document.querySelectorAll("[data-t]").forEach(el=>{const v=dict[l][el.dataset.t]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll("[data-t-html]").forEach(el=>{const v=dict[l][el.dataset.tHtml]; if(v) el.innerHTML=v;});
   document.querySelectorAll("[data-p]").forEach(el=>{const v=dict[l][el.dataset.p]; if(v) el.setAttribute("placeholder",v);});
   ["en","fr","es"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
   const y=document.getElementById("y"); if(y) y.textContent=new Date().getFullYear();
   const lg=document.getElementById("legal"); if(lg){lg.textContent={en:"Legal notice",fr:"Mentions légales",es:"Aviso legal"}[l]; lg.href="mentions-legales/?lang="+l;}
+  const cl=document.getElementById("cityLinks");
+  if(cl&&window.CITIES) cl.innerHTML=['<a href="/">Paris</a>'].concat(Object.keys(CITIES).map(k=>`<a href="/${k}/">${CITIES[k].name[l]}</a>`)).join(" · ");
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
 }
 const pickLang=l=>{setLang(l); try{localStorage.setItem("lang",l)}catch(_){}};
@@ -773,6 +788,9 @@ let savedLang=""; try{savedLang=localStorage.getItem("lang")||""}catch(_){}
 const navLang=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""])
   .map(x=>String(x).toLowerCase().slice(0,2)).find(x=>dict[x])||"en";
 setLang(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang);
+/* City pages: the quote form starts with the city filled in */
+if(document.documentElement.dataset.city){const fl=document.getElementById("f-loc"),L=document.documentElement.lang;
+  if(fl&&!fl.value&&CITIES[CITY]) fl.value=CITIES[CITY].name[L]||CITIES[CITY].name.en;}
 </script>
 <script>
 /* menu button for small screens */

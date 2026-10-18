@@ -9,6 +9,30 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/"/>
   </url>
   <url>
+    <loc>https://sofiaserenata.com/london/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/london/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/london/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/london/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/london/"/>
+  </url>
+  <url>
+    <loc>https://sofiaserenata.com/brussels/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/brussels/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/brussels/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/brussels/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/brussels/"/>
+  </url>
+  <url>
+    <loc>https://sofiaserenata.com/zurich/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/zurich/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/zurich/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/zurich/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/zurich/"/>
+  </url>
+  <url>
     <loc>https://sofiaserenata.com/scores/</loc>
     <lastmod>2026-10-07</lastmod>
   </url>
