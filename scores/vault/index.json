@@ -1,7 +1,7 @@
 {
  "files": {
-  "c-catalog": "d75c8c172bc191edf09161d9",
-  "c-pdfs": "a9ae44cd17614a2b25748bd9",
+  "c-catalog": "295a03f7008b2a1eef81c4a9",
+  "c-pdfs": "b9300af0dde7acf93df0307f",
   "m-air-on-the-g-string-solo": "8fb5483b8f7c70d626cb2401",
   "m-besame-mucho-gig": "dc0dad81ea0368a85e081fc6",
   "m-bolero-gig": "523cfac3244dc03c06fe5c26",
@@ -17,6 +17,7 @@
   "m-dust-in-the-wind-gig": "0ba43aec1d43dfc3d2edc770",
   "m-eine-kleine-nachtmusik-violin": "23df52eda2bf4e00f971911e",
   "m-hymne-a-l-amour-gig": "db36cd7e55c03b1fd59f45ac",
+  "m-imagen-protectora-gig": "a4b24f455cad6ca331fc22cc",
   "m-kiss-from-a-rose-solo": "90ef584a413968453dc5f72e",
   "m-la-foule-gig": "82df44066d675403b9fbd40a",
   "m-la-vie-en-rose-gig": "45fc3e4182b197aade2e1c08",
@@ -77,6 +78,7 @@
   "x-eine-kleine-nachtmusik-violin": "4c74dc428752f75a2bd63d06",
   "x-hallelujah-solo": "10940eda825096cf1d6529b4",
   "x-hymne-a-l-amour-gig": "13292d44fd2b12c424675780",
+  "x-imagen-protectora-gig": "1ac36820554c0f34c75a248e",
   "x-kiss-from-a-rose-solo": "54e3db08e10c5a3a1ecbd0ea",
   "x-la-foule-gig": "dfc8963ab6b1507d7514653d",
   "x-la-vie-en-rose-gig": "00bfd0684e92775db2f31551",
