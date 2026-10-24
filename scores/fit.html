@@ -41,6 +41,9 @@ button:disabled{opacity:.4}
 body:not(.pages) .ponly{display:none}
 #msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#555;z-index:1;background:var(--paper)}
 #msg a{color:#8a6a2a}
+#verBar{position:absolute;left:0;right:0;top:0;z-index:6;background:#2b2b2b;color:#f2e6c8;font-size:14px;padding:8px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+#verBar[hidden]{display:none}
+#verBar button{min-height:36px;padding:2px 12px}
 #cd{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;font:600 min(40vw,40vh)/1 system-ui,sans-serif;color:rgba(40,40,40,.28);pointer-events:none}
 #cd[hidden]{display:none}
 #menuBtn{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:4;width:44px;height:44px;min-width:44px;padding:0;border-radius:12px;border:0;background:rgba(40,40,40,.72);color:#fff;font-size:20px;line-height:44px;backdrop-filter:blur(6px)}
@@ -76,6 +79,7 @@ body.editing #score{padding-bottom:190px}
 </head>
 <body class="pages">
 <div id="app">
+<div id="verBar" hidden><span></span> <button type="button" id="verTry">Apply them anyway</button> <button type="button" id="verDrop">Discard them</button></div>
 <div id="msg">Loading the score…</div>
 <div id="trPanel" hidden><div class="trbox" role="dialog" aria-label="Transpose">
   <h4>Transpose</h4>
@@ -130,7 +134,7 @@ body.editing #score{padding-bottom:190px}
   </div>
   <div class="row">
     <button type="button" data-ty="whole" title="Whole (7)">𝅝</button><button type="button" data-ty="half" title="Half (6)">𝅗𝅥</button><button type="button" data-ty="quarter" title="Quarter (5)">♩</button><button type="button" data-ty="eighth" title="Eighth (4)">♪</button><button type="button" data-ty="16th" title="Sixteenth (3)">𝅘𝅥𝅯</button><button type="button" data-ed="dot" title="Dotted (.)">·</button><span class="sep"></span>
-    <button type="button" data-ed="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button type="button" data-ed="reset" title="Remove all your corrections to this score">Reset</button>
+    <button type="button" data-ed="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button type="button" data-ed="ver" hidden title="Switch between the score as published and your corrections">Showing: mine</button><button type="button" data-ed="reset" title="Remove all your corrections to this score">Reset</button>
     <button type="button" id="edDone" data-ed="done" title="Done (Esc)">Done</button>
   </div>
   <div id="edMsg" aria-live="polite"></div>
@@ -359,11 +363,18 @@ let lock=null; async function wake(){ try{ lock=await navigator.wakeLock.request
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") wake(); });
 
 /* ---------- corrections (edit.js): replayed on the original file, saved per score and synced like drawings ---------- */
-let XO0=null, XU0=null, edKey0="", edOps=[], edOn=false, edPrevView=null, edSel=null, edPrevCont=null, edResetArm=0;
-function edLoad(){ try{ edOps=JSON.parse(localStorage.getItem(edKey0)||"[]"); }catch(e){ edOps=[]; } edBadge(); }
-function edSave(){ try{ edOps.length?localStorage.setItem(edKey0,JSON.stringify(edOps)):localStorage.removeItem(edKey0); }catch(e){} if(window.Vault&&Vault.note) Vault.note(edKey0); edBadge(); }
-function edBadge(){ $("#edLbl").textContent=edOps.length?" Edit •":" Edit"; $("#edBtn").title=edOps.length?`Correct notes (E) — ${edOps.length} correction${edOps.length>1?"s":""} on this device`:"Correct notes (E)"; }
-function edBuild(){ const r=ScoreEdit.apply(XO0,edOps); XOs=r.xml; XUs=edOps.length?(XU0?ScoreEdit.unroll(XOs):null):XU0; return r.errs; }
+let XO0=null, XU0=null, edKey0="", edOff=false, edHash="", edOps=[], edOn=false, edPrevView=null, edSel=null, edPrevCont=null, edResetArm=0;
+function edHashOf(t){ let h=5381; for(let i=0;i<t.length;i++) h=((h<<5)+h+t.charCodeAt(i))|0; return String(h>>>0); }
+function edLoad(){ try{ edOps=JSON.parse(localStorage.getItem(edKey0)||"[]"); }catch(e){ edOps=[]; }
+  /* corrections are tied to the score file they were made on: after the score is re-transcribed they are paused, never silently applied to different notes */
+  let base=null; try{ base=localStorage.getItem(edKey0+"~h"); }catch(e){}
+  edOff=!!edOps.length&&base!==edHash; edBadge(); edBanner(); }
+function edBanner(){ const b=$("#verBar"); if(!b) return; const stale=edOff&&edOps.length&&(()=>{ try{ return localStorage.getItem(edKey0+"~h")!==edHash; }catch(e){ return true; } })();
+  b.hidden=!stale; if(stale) b.querySelector("span").textContent=`This score was updated since you corrected it. Showing the new version; your ${edOps.length} older correction${edOps.length>1?"s are":" is"} on hold.`; }
+function edVer(on){ edOff=!on; edBuild(); edBadge(); if(tk) edRefresh(); }
+function edSave(){ try{ if(edOps.length){ localStorage.setItem(edKey0,JSON.stringify(edOps)); localStorage.setItem(edKey0+"~h",edHash); } else { localStorage.removeItem(edKey0); localStorage.removeItem(edKey0+"~h"); } }catch(e){} if(window.Vault&&Vault.note){ Vault.note(edKey0); Vault.note(edKey0+"~h"); } edBadge(); edBanner(); }
+function edBadge(){ const v=document.querySelector('#edPal [data-ed="ver"]'); if(v){ v.hidden=!edOps.length; v.textContent=edOff?"Showing: original":"Showing: mine"; v.classList.toggle("on",!edOff); } $("#edLbl").textContent=edOps.length?" Edit •":" Edit"; $("#edBtn").title=edOps.length?`Correct notes (E) — ${edOps.length} correction${edOps.length>1?"s":""} on this device`:"Correct notes (E)"; }
+function edBuild(){ const ops=edOff?[]:edOps; const r=ScoreEdit.apply(XO0,ops); XOs=r.xml; XUs=ops.length?(XU0?ScoreEdit.unroll(XOs):null):XU0; return r.errs; }
 function edRefresh(){ trPrep(); loaded=null; loadFor(view); layout(false); edGo(); }
 function edBase(id){ return id?id.split("~")[0]:id; }
 function edMark(){ if(!edOn) return; document.querySelectorAll("#score .ed-sel").forEach(e=>e.classList.remove("ed-sel")); if(!edSel) return;
@@ -398,11 +409,13 @@ function edTap(e){ /* nearest note or rest to the tap (noteheads are small on a 
     const dx=Math.max(r.left-x,0,x-r.right), dy=Math.max(r.top-y,0,y-r.bottom), d=dx*dx+dy*dy*1.5; if(d<bd){ bd=d; best=g; } });
   if(!best||bd>60*60) return; edSel=edBase(best.id); edMark(); edShow(); }
 function edDo(op){ if(!edSel) return edShow("Tap a note first");
+  if(edOff){ if(edOps.length&&!confirm("Your older corrections belong to the previous version of this score. Start new corrections on the updated score (the older ones are removed)?")) return; edOps=[]; edOff=false; }
   edOps.push(op); const errs=edBuild();
   const bad=errs[errs.length-1]; if(bad){ edOps.pop(); edBuild(); return edShow(bad==="bar"?"Not enough room left in this bar":bad==="tuplet"?"Can’t change the rhythm inside a triplet":bad==="tie"?"The next note must be the same pitch to tie":"Couldn’t do that"); }
   edSave(); edRefresh(); }
 function edAct(a){ const i=edSel?ScoreEdit.info(XOs,edSel):null;
   if(a==="done") return edExit();
+  if(a==="ver") return edVer(edOff);
   if(a==="undo"){ if(!edOps.length) return edShow("Nothing to undo"); edOps.pop(); edBuild(); edSave(); if(edSel&&!ScoreEdit.info(XOs,edSel)) edSel=null; return edRefresh(); }
   if(a==="reset"){ if(!edOps.length) return edShow("No corrections on this score"); if(Date.now()-edResetArm>4000){ edResetArm=Date.now(); return edShow("Tap Reset again to remove all corrections"); }
     edResetArm=0; edOps=[]; edBuild(); edSave(); return edRefresh(); }
@@ -420,6 +433,8 @@ function edAct(a){ const i=edSel?ScoreEdit.info(XOs,edSel):null;
 document.querySelectorAll("#edPal [data-ed]").forEach(b=>b.addEventListener("click",()=>edAct(b.dataset.ed)));
 document.querySelectorAll("#edPal [data-ty]").forEach(b=>b.addEventListener("click",()=>{ const i=edSel?ScoreEdit.info(XOs,edSel):null; if(!i) return edShow("Tap a note first"); edDo({t:"d",id:edSel,ty:b.dataset.ty,dt:0}); }));
 $("#edBtn").onclick=()=>edOn?edExit():edEnter();
+$("#verTry").onclick=()=>{ try{ localStorage.setItem(edKey0+"~h",edHash); }catch(e){} if(window.Vault&&Vault.note) Vault.note(edKey0+"~h"); edOff=false; edBuild(); edBanner(); edBadge(); if(tk) edRefresh(); };
+$("#verDrop").onclick=()=>{ edOps=[]; edOff=false; edSave(); edBuild(); if(tk) edRefresh(); };
 function edKey(e){ const k=e.key, mod=e.metaKey||e.ctrlKey;
   const map={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"prev",ArrowRight:"next",Delete:"rest",Backspace:"rest",Escape:"done",".":"dot",t:"tie",T:"tie"};
   if(mod&&(k==="z"||k==="Z")){ e.preventDefault(); return edAct("undo"); }
@@ -461,7 +476,7 @@ async function start(){
     tk.setOptions({scale:scale(),breaks:"auto"});
     if(!ZIP) XO=clean(xml); loaded=null;
     const sk=vk||(lid?"l:"+lid:"")||xid||src||title;
-    if(!ZIP){ XO0=ScoreEdit.prepare(XO); XU0=XU; edKey0="ed:"+sk; edLoad(); edBuild(); } else { XOs=XO; XUs=XU; $("#edBtn").hidden=true; } zkey="fit-zoom:"+sk; const zs=localStorage.getItem(zkey); if(zs!==null) zoom=+zs; partsInit(sk, XOs); trInit(sk, pickPart(XOs)); trPrep();
+    if(!ZIP){ XO0=ScoreEdit.prepare(XO); XU0=XU; edKey0="ed:"+sk; edHash=edHashOf(XO); edLoad(); edBuild(); } else { XOs=XO; XUs=XU; $("#edBtn").hidden=true; } zkey="fit-zoom:"+sk; const zs=localStorage.getItem(zkey); if(zs!==null) zoom=+zs; partsInit(sk, XOs); trInit(sk, pickPart(XOs)); trPrep();
     if(!loadFor(view)) return fail();
     $("#msg").remove(); $("#gapLbl").textContent=" "+GAPS[gap][0]; $("#hspLbl").textContent=" "+HSP[hsp][0]; showSpd(); showCd(); if(XU){ $("#rep").hidden=false; showRep(); } setupInk("ink:fit:"+(vk||(lid?"l:"+lid:"")||xid||src||title)); setView(view); if(zs===null) autoFill(); showBar(); barSpace(); wake();
   }catch(e){ fail(); }
