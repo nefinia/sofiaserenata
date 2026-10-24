@@ -374,8 +374,9 @@ async function showUser(){
   me=await Vault.user(); document.body.classList.toggle("locked",!me);
   $("#lock").hidden=!!me; $("#userBox").hidden=!me; PDFS=null; setCatalog([]);
   if(me){ $("#who").textContent=me.charAt(0).toUpperCase()+me.slice(1); try{ setCatalog(JSON.parse(await Vault.text("c-catalog"))); }catch(e){} try{ PDFS=JSON.parse(await Vault.text("c-pdfs")); }catch(e){}
-    offN=null; offText(); const n=await Vault.warm(); offN=n?n.length:0; syncOff=!(await Vault.syncOn()); }
+    offN=null; syncOff=!(await Vault.syncOn()); }
   offText(); chips(); render(); renderDevice();
+  if(me) Vault.warm().then(n=>{ offN=n?n.length:0; offText(); });   /* offline copies download in the background */
 }
 $("#loginForm").addEventListener("submit",async e=>{
   e.preventDefault(); const b=e.target.querySelector("button"); $("#lkErr").textContent=""; b.disabled=true; b.textContent=L().signing;

@@ -142,7 +142,9 @@
   async function warm() {
     try {
       const idx = await getJSON("index.json");
-      await Promise.all(Object.entries(idx.files).map(([n, v]) => fetch(BASE + n + ".bin?v=" + v).catch(() => {})));
+      const list = Object.entries(idx.files); let i = 0;
+      const next = async () => { while (i < list.length) { const [n, v] = list[i++]; try { await fetch(BASE + n + ".bin?v=" + v); } catch (e) {} } };
+      await Promise.all([next(), next(), next(), next()]);   // four at a time, never waits on a stuck request forever
       return Object.keys(idx.files);
     } catch (e) { return null; }
   }
