@@ -129,7 +129,9 @@
   }
   async function get(name) {
     const priv = await key(); if (!priv) throw new Error("locked");
-    const r = await fetch(BASE + name + ".bin"); if (!r.ok) throw new Error("missing");
+    /* ask for the current version of the file (from index.json) so an updated score is never served from an old offline copy */
+    let v = ""; try { const idx = await getJSON("index.json"); if (idx.files && idx.files[name]) v = "?v=" + idx.files[name]; } catch (e) {}
+    const r = await fetch(BASE + name + ".bin" + v); if (!r.ok) throw new Error("missing");
     const b = new Uint8Array(await r.arrayBuffer());
     const epk = await S.importKey("raw", b.slice(0, 65), { name: "ECDH", namedCurve: "P-256" }, false, []);
     const k = await S.deriveKey({ name: "ECDH", public: epk }, priv, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);

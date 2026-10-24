@@ -2,7 +2,7 @@
    - The app itself (pages, viewers, notation engine) is stored on install and refreshed in the background.
    - Locked score files (vault/*.bin) are stored as they're fetched; Vault.warm() fetches them all after sign-in.
    - PDFs opened from Google Drive and the MIDI instrument sounds are kept once used, so they also work offline later. */
-const V = "scores-v6";
+const V = "scores-v7";
 const SHELL = ["./", "index.html", "fit.html", "view.html", "vault.js", "ink.js", "edit.js",
   "lib/verovio-toolkit-wasm.js", "lib/pdf.min.js", "lib/pdf.worker.min.js", "lib/tone.js", "lib/magenta-core.js", "lib/midi-player.min.js",
   "vault/keys.json", "vault/index.json", "../assets/js/display.js", "../icon.svg", "../icon-32.png", "../apple-touch-icon.png"];
@@ -24,7 +24,8 @@ self.addEventListener("fetch", e => {
   e.respondWith((async () => {
     const c = await caches.open(V);
     if (u.origin === location.origin) {
-      const key = u.origin + u.pathname;               // ignore ?v= / ?x= etc.
+      const v = u.searchParams.get("v");               // score files carry their version: a new version is a new entry
+      const key = u.origin + u.pathname + (v ? "?v=" + v : "");
       const live = /\/vault\/((keys|index)\.json|c-[a-z]+\.bin)$/.test(u.pathname) || req.mode === "navigate";
       const hit = await c.match(key);
       if (live) {                                     // network first, offline copy as fallback
