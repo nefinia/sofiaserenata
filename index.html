@@ -94,11 +94,11 @@
     .hero .role{margin-top:14px;font-size:clamp(1rem,2.3vw,1.25rem);letter-spacing:.28em;text-transform:uppercase;color:var(--soft)}
     .hero .ornament{margin:22px auto 0;width:96px}
     .hero p.intro{max-width:54ch;margin:22px auto 0;color:var(--soft)}
-    .btn.wa{background:#1f9d55;border-color:#1f9d55;color:#fff}
-    .btn.wa:hover{background:#188647;border-color:#188647}
-    .wa-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;width:56px;height:56px;border-radius:50%;background:#1f9d55;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);text-decoration:none}
-    .wa-fab svg{width:30px;height:30px}
-    .wa-fab:hover{background:#188647}
+    .btn.wa{background:var(--rose-soft);border-color:var(--rose-soft);color:var(--ink)}
+    .btn.wa:hover{background:transparent;border-color:var(--rose);color:var(--rose)}
+    .btn.wa svg{color:var(--rose)}
+    .wa-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(59,48,54,.28);text-decoration:none;transition:background .2s}
+    .wa-fab:hover{background:var(--rose)}
     .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
     .btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:13px 24px;font-size:15px;font-weight:500;letter-spacing:.04em;text-decoration:none;cursor:pointer;border:1px solid var(--ink)}
     .btn.solid{background:var(--ink);color:var(--paper)}
@@ -286,7 +286,7 @@
       <div class="actions">
         <a class="btn solid" href="#repertoire" data-t="heroListen">Listen to the repertoire</a>
         <a class="btn ghost" href="#contact" data-t="heroQuote">Request a quote</a>
-        <a class="btn wa" data-wa href="https://wa.me/33744545106" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.5A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.3 15l-.3-.2-3.1.9.9-3-.2-.3A8.1 8.1 0 0 1 12.04 3.8zM8.6 7.3c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.2 2.4.9 2.9.7 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4l-1.8-.9c-.3-.1-.5-.1-.7.1l-.8 1c-.1.2-.3.2-.6.1-1-.5-2-1.200-2.800-2.700-.1-.3 0-.4.1-.5l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4z"/></svg><span data-t="waButton">WhatsApp</span></a>
+        <a class="btn wa" data-wa href="https://wa.me/33744545106" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.1A8.2 8.2 0 1 1 8.2 18.7L4 20z"/></svg><span data-t="waButton">WhatsApp</span></a>
       </div>
       <div class="facts">
         <span><b>20+</b><span data-t="factYears">years on stage</span></span>
@@ -451,7 +451,7 @@
   <div id="cityLinks" style="margin-top:6px"><a href="/">Paris</a> · <a href="/london/">London</a> · <a href="/brussels/">Brussels</a> · <a href="/zurich/">Zurich</a></div>
   <div style="margin-top:6px"><a href="https://sofiagallego.com/">sofiagallego.com</a> · <a id="legal" href="mentions-legales/">Legal notice</a></div>
 </footer>
-<a class="wa-fab" data-wa id="waFab" href="https://wa.me/33744545106" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="wa-ic" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.5A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.3 15l-.3-.2-3.1.9.9-3-.2-.3A8.1 8.1 0 0 1 12.04 3.8zM8.6 7.3c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.2 2.4.9 2.9.7 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4l-1.8-.9c-.3-.1-.5-.1-.7.1l-.8 1c-.1.2-.3.2-.6.1-1-.5-2-1.200-2.800-2.700-.1-.3 0-.4.1-.5l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4z"/></svg></a>
+<a class="wa-fab" data-wa id="waFab" href="https://wa.me/33744545106" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="wa-ic" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.1A8.2 8.2 0 1 1 8.2 18.7L4 20z"/></svg></a>
 
 <div class="player" id="player" hidden>
   <div class="player-in">
