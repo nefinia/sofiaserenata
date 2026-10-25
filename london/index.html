@@ -165,9 +165,10 @@
     .rep-cta strong{color:var(--ink);font-weight:500}
 
     /* Experience */
-    .xp{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start}
+    .xp{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;align-items:center}
     .xp p{margin:0 0 16px}
-    .xp-photo{display:block;width:100%;max-width:440px;height:auto;margin-top:12px;border-radius:18px;box-shadow:0 18px 40px -22px rgba(59,48,54,.45)}
+    .xp strong{font-weight:500;color:var(--ink);background:linear-gradient(transparent 62%,var(--rose-soft) 62%);padding:0 2px}
+    .xp-photo{display:block;width:100%;max-width:440px;height:auto;margin:0 auto;border-radius:18px;box-shadow:0 18px 40px -22px rgba(59,48,54,.45)}
     .places{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
     .places li{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;color:var(--soft)}
     .places li::before{content:"✦";color:var(--gold);margin-right:10px}
@@ -372,18 +373,11 @@
       </div>
       <div class="xp">
         <div>
-          <p data-t="xpBody">+20 years of experience across Chile, Switzerland, the United States, and France. Opera, zarzuela, musical theater, chamber music, ceremonies, and corporate events. Performances in hotels, embassies, salons and theaters, recordings, and television appearances. Based in Paris, I offer refined performances for ceremonies, cocktails, and receptions.</p>
+          <p data-t-html="xpBody">Twenty years on stage across <strong>Chile, Switzerland, the United States and France</strong>. <strong>Opera, zarzuela, musical theater and chamber music</strong> shaped the craft, and today it goes to <strong>weddings, receptions, cocktails and corporate evenings</strong>, in hotels, embassies, salons and theaters. Recordings and television appearances belong to those years too. Based in Paris.</p>
           <p data-t-html="xpMore">Beyond the stage, I am an astrophysicist and a writer, and I design games. The rest is at <a href="https://sofiagallego.com/">sofiagallego.com</a>.</p>
-          <img class="xp-photo" src="../sofia-violin-eiffel.jpg" width="900" height="1247" loading="lazy" alt="Sofia Gallego playing the violin on the Seine, with the Eiffel Tower behind" />
         </div>
         <div>
-          <div class="eyebrow" style="margin-bottom:12px" data-t="rootsTitle">On stage (selection)</div>
-          <ul class="places">
-            <li data-t="roots1">Private and corporate events: weddings, receptions, cocktails, company evenings.</li>
-            <li data-t="roots2">Soloist in opera, zarzuela and musical theater, and chamber music.</li>
-            <li data-t="roots3">Hotels (including the Ritz-Carlton), embassies, salons and theaters in Chile and France.</li>
-            <li data-t="roots4">Recordings and television appearances.</li>
-          </ul>
+          <img class="xp-photo" src="../sofia-violin-eiffel.jpg" width="900" height="1247" loading="lazy" alt="Sofia Gallego playing the violin on the Seine, with the Eiffel Tower behind" />
         </div>
       </div>
     </div>
@@ -604,7 +598,7 @@ const dict={
     listen:"Listen to",now:"Now playing",prev:"◂ Previous",next:"Next ▸",yt:"Open on YouTube",close:"Close",
     repNote:"<strong>Don't see your song?</strong> This list keeps growing, and I can prepare a custom arrangement for your first dance, your entrance or any special moment.",repAsk:"Ask for a song",
     xpEyebrow:"About",xpTitle:"Experience",
-    xpBody:"+20 years of experience across Chile, Switzerland, the United States, and France. Opera, zarzuela, musical theater, chamber music, ceremonies, and corporate events. Performances in hotels, embassies, salons and theaters, recordings, and television appearances. Based in Paris, I offer refined performances for ceremonies, cocktails, and receptions.",
+    xpBody:"Twenty years on stage across <strong>Chile, Switzerland, the United States and France</strong>. <strong>Opera, zarzuela, musical theater and chamber music</strong> shaped the craft, and today it goes to <strong>weddings, receptions, cocktails and corporate evenings</strong>, in hotels, embassies, salons and theaters. Recordings and television appearances belong to those years too. Based in Paris.",
     xpMore:"Beyond the stage, I am an astrophysicist and a writer, and I design games. The rest is at <a href=\"https://sofiagallego.com/\">sofiagallego.com</a>.",
     rootsTitle:"On stage (selection)",
     roots1:"Private and corporate events: weddings, receptions, cocktails, company evenings.",
@@ -636,7 +630,7 @@ const dict={
     listen:"Anhören:",now:"Läuft gerade",prev:"◂ Zurück",next:"Weiter ▸",yt:"Auf YouTube öffnen",close:"Schließen",
     repNote:"<strong>Ihr Lied fehlt?</strong> Die Liste wächst weiter, und ich bereite gern ein eigenes Arrangement für Ihren Hochzeitstanz, Ihren Einzug oder jeden besonderen Moment vor.",repAsk:"Lied anfragen",
     xpEyebrow:"Über mich",xpTitle:"Erfahrung",
-    xpBody:"Über 20 Jahre Erfahrung in Chile, der Schweiz, den USA und Frankreich. Oper, Zarzuela, Musiktheater, Kammermusik, Trauungen und Firmenveranstaltungen. Auftritte in Hotels, Botschaften, Salons und Theatern, Aufnahmen und Fernsehauftritte. Mit Sitz in Paris gestalte ich stilvolle Auftritte für Trauungen, Cocktails und Empfänge.",
+    xpBody:"Zwanzig Jahre auf der Bühne in <strong>Chile, der Schweiz, den USA und Frankreich</strong>. <strong>Oper, Zarzuela, Musiktheater und Kammermusik</strong> haben das Handwerk geprägt, heute gehört es <strong>Hochzeiten, Empfängen, Cocktails und Firmenabenden</strong>, in Hotels, Botschaften, Salons und Theatern. Aufnahmen und Fernsehauftritte gehören ebenfalls zu diesen Jahren. Mit Sitz in Paris.",
     xpMore:"Neben der Bühne bin ich Astrophysikerin und Autorin und entwerfe Spiele. Den Rest finden Sie auf <a href=\"https://sofiagallego.com/\">sofiagallego.com</a>.",
     rootsTitle:"Auf der Bühne (Auswahl)",
     roots1:"Private und Firmenveranstaltungen: Hochzeiten, Empfänge, Cocktails, Firmenabende.",
@@ -668,7 +662,7 @@ const dict={
     listen:"Écouter",now:"En écoute",prev:"◂ Précédent",next:"Suivant ▸",yt:"Ouvrir sur YouTube",close:"Fermer",
     repNote:"<strong>Votre chanson n'y est pas ?</strong> Cette liste grandit sans cesse, et je peux préparer un arrangement sur mesure pour votre première danse, votre entrée ou tout autre moment fort.",repAsk:"Demander un morceau",
     xpEyebrow:"À propos",xpTitle:"Expérience",
-    xpBody:"+20 ans d’expérience entre Chili, Suisse, États-Unis et France. Opéra, zarzuela, comédies musicales, musique de chambre, cérémonies et événements corporatifs. Prestations dans des hôtels, ambassades, salons et théâtres, enregistrements et apparitions télévisées. Basée à Paris, je propose des prestations raffinées pour cérémonies, cocktails et réceptions.",
+    xpBody:"Vingt ans de scène entre le <strong>Chili, la Suisse, les États-Unis et la France</strong>. <strong>L'opéra, la zarzuela, le théâtre musical et la musique de chambre</strong> ont forgé le métier, qui va aujourd'hui aux <strong>mariages, réceptions, cocktails et soirées d'entreprise</strong>, dans des hôtels, ambassades, salons et théâtres. Enregistrements et apparitions télévisées font aussi partie de ces années. Basée à Paris.",
     xpMore:"En dehors de la scène, je suis astrophysicienne et autrice, et je conçois des jeux. Le reste se trouve sur <a href=\"https://sofiagallego.com/\">sofiagallego.com</a>.",
     rootsTitle:"Sur scène (sélection)",
     roots1:"Événements privés et d'entreprise : mariages, réceptions, cocktails, soirées d'entreprise.",
@@ -700,7 +694,7 @@ const dict={
     listen:"Escuchar",now:"Sonando ahora",prev:"◂ Anterior",next:"Siguiente ▸",yt:"Abrir en YouTube",close:"Cerrar",
     repNote:"<strong>¿No encuentra su canción?</strong> Esta lista sigue creciendo, y puedo preparar un arreglo a medida para su primer baile, su entrada o cualquier momento especial.",repAsk:"Pedir una canción",
     xpEyebrow:"Sobre mí",xpTitle:"Experiencia",
-    xpBody:"Más de 20 años de experiencia en Chile, Suiza, Estados Unidos y Francia. Ópera, zarzuela, teatro musical, música de cámara, ceremonias y eventos corporativos. Presentaciones en hoteles, embajadas, salones y teatros, grabaciones y apariciones en televisión. Con base en París, ofrezco música en vivo para ceremonias, cócteles y recepciones.",
+    xpBody:"Veinte años en escena entre <strong>Chile, Suiza, Estados Unidos y Francia</strong>. <strong>La ópera, la zarzuela, el teatro musical y la música de cámara</strong> forjaron el oficio, que hoy llega a <strong>bodas, recepciones, cócteles y veladas de empresa</strong>, en hoteles, embajadas, salones y teatros. Las grabaciones y apariciones en televisión también forman parte de esos años. Con base en París.",
     xpMore:"Fuera del escenario soy astrofísica y escritora, y diseño juegos. El resto está en <a href=\"https://sofiagallego.com/\">sofiagallego.com</a>.",
     rootsTitle:"En escena (selección)",
     roots1:"Eventos privados y corporativos: bodas, recepciones, cócteles, veladas de empresa.",
