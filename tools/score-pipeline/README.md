@@ -1,8 +1,11 @@
-# Score pipeline (Sofia's violin + cello duets)
+# Score pipeline: convert, transcribe, adapt and lay out scores (any instruments)
 
-Sofia plays violin-cello duets with Claire. Standing wishes: every score Claude generates is delivered as
+The core skill is turning any score source (MusicXML/.mxl, MIDI, PDF, photos of sheet music) into clean, playable
+scores for any instrumentation: transcribe, extract or merge parts, transpose, change clefs/octaves, arrange for another
+ensemble (e.g. trio to violin+cello duet, melody swapped between instruments), re-lay out PDFs. Violin-cello duets with
+Claire are just the current use case. Standing wishes: every score Claude generates is delivered as
 **MusicXML + PDF (+ MIDI)** and added to the library at sofiaserenata.com/scores, with the **composer/author printed**
-and **bowings/slurs checked against the original**. Violin and cello parts should each fit **one page** when short enough.
+and **bowings/slurs checked against the original**. Short parts should each fit **one page**.
 
 ## Tools (this folder, Python 3 + music21 + verovio + playwright + pypdf; node for the vault)
 - `gen.py` builds parts from text tokens (`NAME:DUR`, chords `[A,B]`, `~` tie, `!` natural; DUR w h q e s, dotted `q.`, triplets `te tq ts`, quintuplet `f`, 32nd `ss`; `clefs={bar: clef}` for clef changes).
