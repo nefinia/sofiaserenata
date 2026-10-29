@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-city="brussels" data-canonical="https://sofiaserenata.com/brussels/">
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P1R33X8R0E"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-P1R33X8R0E');
-</script>
+<script defer src="https://sofiagallego.com/tally/tally.js" data-app="serenata"></script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -826,7 +818,7 @@ showPoster(0);
 (function(){const f=document.getElementById("quoteForm"),st=document.getElementById("quoteStatus");if(!f)return;
 f.addEventListener("submit",async e=>{e.preventDefault();const L=document.documentElement.lang||"en",d=dict[L]||dict.en;const b=f.querySelector("button[type=submit]");b.disabled=true;
 try{const r=await fetch(f.action,{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.reset();st.textContent=d.sentOk;
-try{gtag("event","generate_lead",{form:"event_quote"});}catch(_){}}catch(_){st.textContent=d.sentErr;}b.disabled=false;});})();
+try{window.__tally&&window.__tally.track("lead:quote");}catch(_){}}catch(_){st.textContent=d.sentErr;}b.disabled=false;});})();
 /* Language: ?lang= or #lang forces it; then the visitor's last choice; then the first
    supported language in the browser's preference list (es-CL, fr-CA… count); else English */
 const urlLang=(new URLSearchParams(location.search).get("lang")||location.hash.slice(1)).toLowerCase();
