@@ -28,7 +28,7 @@ and **bowings/slurs checked against the original**. Short parts should each fit 
 
 ## Layout preferences learned
 - Notes large and clear, systems packed close (small gaps between lines), more room inside measures than between systems.
-- Instrument name on the first system only (drop abbreviations). No "Vc."/"Vln." labels on later lines.
+- Never print the "Violin"/"Vln." label (render.py strips it); other instrument names on the first system only (drop abbreviations). No "Vc."/"Vln." labels on later lines.
 - Cello-on-top scores use plain bass clef (move melody down an octave if needed).
 - Long-note bars can be narrow (spacingLinear 0.2, spacingNonLinear 0.45).
 - Fill all pages: use `fit_width(file, N)` for the biggest notes at N pages.

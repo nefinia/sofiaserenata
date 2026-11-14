@@ -22,7 +22,17 @@ def fit_width(f, n, lo=1600, hi=3200, step=20, **kw):
     for w in range(lo, hi, step):
         if pages(f, w=w, **kw) <= n: return w
     return hi
+def no_violin_label(f):
+    """Standing wish: never print the "Violin"/"Vln." instrument label (waste of space). Returns a temp copy."""
+    import re, tempfile
+    x = open(f, encoding='utf8').read()
+    y = re.sub(r'(<part-name[^>]*>)\s*Violin\s*(</part-name>)', r'\1\2', x)
+    y = re.sub(r'(<part-abbreviation[^>]*>)\s*Vln\.?\s*(</part-abbreviation>)', r'\1\2', y)
+    y = re.sub(r'(<instrument-abbreviation[^>]*>)\s*Vln\.?\s*(</instrument-abbreviation>)', r'\1\2', y)
+    if y == x: return f
+    t = tempfile.NamedTemporaryFile('w', suffix='.musicxml', delete=False, encoding='utf8'); t.write(y); t.close(); return t.name
 def render(files, out, **kw):
+    files = [no_violin_label(f) for f in files]
     wr = PdfWriter()
     with sync_playwright() as pw:
         br = pw.chromium.launch(); pg = br.new_page()
@@ -34,6 +44,6 @@ def render(files, out, **kw):
         br.close()
     wr.write(out)
 if __name__ == '__main__':
-    out, files = sys.argv[1], sys.argv[2:]
+    out, files = sys.argv[1], [no_violin_label(f) for f in sys.argv[2:]]
     w = int(os.environ.get('W', 0)) or (fit_width(files[0], int(os.environ['PAGES'])) if os.environ.get('PAGES') else 2200)
     render(files, out, w=w)
