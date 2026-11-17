@@ -8,10 +8,10 @@
   <title>Sofia Serenata · Violinist &amp; Singer for Weddings and Events in Paris</title>
   <meta name="description" content="Singer and violinist for birthdays, corporate events and weddings in Paris and Île-de-France. Classical repertoire, French songs and international pop. Own sound for up to 50 guests, microphones for larger rooms." />
   <link rel="canonical" href="https://sofiaserenata.com/">
-  <link rel="alternate" hreflang="en" href="https://sofiaserenata.com/?lang=en">
-  <link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/?lang=fr">
-  <link rel="alternate" hreflang="es" href="https://sofiaserenata.com/?lang=es">
-  <link rel="alternate" hreflang="de" href="https://sofiaserenata.com/?lang=de">
+  <link rel="alternate" hreflang="en" href="https://sofiaserenata.com/">
+  <link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/fr/">
+  <link rel="alternate" hreflang="es" href="https://sofiaserenata.com/es/">
+  <link rel="alternate" hreflang="de" href="https://sofiaserenata.com/de/">
   <link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Sofia Serenata · Violinist &amp; Singer for Weddings and Events in Paris">
@@ -685,7 +685,7 @@ const dict={
     footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego — Singer & Violinist — Paris & Île-de-France`,
     namePlaceholder:"Your name",emailPlaceholder:"Your email",eventPlaceholder:"Event type (wedding, cocktail, etc.)",
     locationPlaceholder:"Location (Paris, Île-de-France)",messagePlaceholder:"Tell me a few details (schedule, musical atmosphere, requested pieces...)"},
-  de:{pageTitle:"Geigerin und Sängerin für Hochzeiten und Events in Paris | Sofia Gallego",
+  de:{pageTitle:"Geigerin und Sängerin in Paris: Hochzeiten, Geburtstage und Firmenveranstaltungen | Sofia Gallego",
     pageDescription:"Sängerin und Geigerin für Geburtstage, Firmenveranstaltungen und Hochzeiten in Paris und der Île-de-France. Klassisches Repertoire, französische Chansons und internationaler Pop. Eigene Tontechnik bis 50 Gäste, Mikrofone für größere Räume.",
     navVideos:"Videos",navServices:"Pakete",navRep:"Repertoire",navXp:"Über mich",navContact:"Kontakt",navScores:"Noten",
     heroEyebrow:"Hochzeiten · Firmenveranstaltungen · Private Feiern",tagline:"Sängerin & Geigerin · Paris & Île-de-France",
@@ -729,7 +729,7 @@ const dict={
     footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego · Sängerin & Geigerin · Paris & Île-de-France`,
     namePlaceholder:"Ihr Name",emailPlaceholder:"Ihre E-Mail",eventPlaceholder:"Art der Feier (Hochzeit, Cocktail usw.)",
     locationPlaceholder:"Ort (Paris, Île-de-France)",messagePlaceholder:"Erzählen Sie mir ein paar Details (Ablauf, musikalische Stimmung, gewünschte Stücke ...)"},
-  fr:{pageTitle:"Violoniste et chanteuse lyrique pour mariages et événements à Paris | Sofia Gallego",
+  fr:{pageTitle:"Violoniste et chanteuse lyrique à Paris : mariages, anniversaires et événements d’entreprise | Sofia Gallego",
     pageDescription:"Chanteuse et violoniste pour anniversaires, événements d’entreprise et mariages à Paris et en Île-de-France. Répertoire classique, chansons françaises et pop internationale. Sonorisation propre jusqu’à 50 invités, micros pour les salles plus grandes.",
     navVideos:"Vidéos",navServices:"Formules",navRep:"Répertoire",navXp:"À propos",navContact:"Contact",navScores:"Partitions",
     heroEyebrow:"Mariages · Événements d’entreprise · Fêtes privées",tagline:"Chanteuse & Violoniste — Paris & Île-de-France",
@@ -773,7 +773,7 @@ const dict={
     footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego — Chanteuse & Violoniste — Paris & Île-de-France`,
     namePlaceholder:"Votre nom",emailPlaceholder:"Votre email",eventPlaceholder:"Type d’événement (mariage, cocktail, etc.)",
     locationPlaceholder:"Lieu (Paris, Île-de-France)",messagePlaceholder:"Dites-moi quelques détails (horaires, ambiance musicale, morceaux souhaités…)"},
-  es:{pageTitle:"Violinista y cantante para bodas y eventos en París | Sofia Gallego",
+  es:{pageTitle:"Violinista y cantante en París: bodas, cumpleaños y eventos de empresa | Sofia Gallego",
     pageDescription:"Cantante y violinista para cumpleaños, eventos de empresa y bodas en París e Île-de-France. Repertorio clásico, chanson francesa y pop internacional. Sonido propio hasta 50 invitados, micrófonos para salas más grandes.",
     navVideos:"Videos",navServices:"Paquetes",navRep:"Repertorio",navXp:"Sobre mí",navContact:"Contacto",navScores:"Partituras",
     heroEyebrow:"Bodas · Eventos de empresa · Fiestas privadas",tagline:"Cantante y violinista — París e Île-de-France",
@@ -908,7 +908,8 @@ function setLang(l){
   lang=l; document.documentElement.lang=l; document.title=dict[l].pageTitle;
   const desc=document.querySelector('meta[name="description"]'); if(desc) desc.setAttribute("content",dict[l].pageDescription);
   const can=document.querySelector('link[rel="canonical"]'), forced=/[?&]lang=(en|fr|es|de)/.test(location.search);
-  if(can) can.setAttribute("href",(document.documentElement.dataset.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"?"?lang="+l:""));
+  const cd=document.documentElement.dataset;
+  if(can) can.setAttribute("href",(!cd.city&&!cd.langpage&&forced&&l!=="en")?"https://sofiaserenata.com/"+l+"/":(cd.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"&&!cd.langpage?"?lang="+l:""));
   document.querySelectorAll("[data-t]").forEach(el=>{const v=dict[l][el.dataset.t]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll("[data-t-html]").forEach(el=>{const v=dict[l][el.dataset.tHtml]; if(v) el.innerHTML=v;});
   document.querySelectorAll("[data-wa]").forEach(el=>{el.href="https://wa.me/33744545106?text="+encodeURIComponent(dict[l].waMsg);});
@@ -921,7 +922,8 @@ function setLang(l){
   if(cl&&window.CITIES) cl.innerHTML=['<a href="/">Paris</a>'].concat(Object.keys(CITIES).map(k=>`<a href="/${k}/">${CITIES[k].name[l]}</a>`)).join(" · ");
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
 }
-const pickLang=l=>{setLang(l); try{localStorage.setItem("lang",l)}catch(_){}};
+const LANGPAGE=document.documentElement.dataset.langpage||"",LANGURL={en:"/",fr:"/fr/",es:"/es/",de:"/de/"};
+const pickLang=l=>{try{localStorage.setItem("lang",l)}catch(_){} if(LANGPAGE){location.href=LANGURL[l];return;} setLang(l);};
 $("#enBtn").addEventListener("click",()=>pickLang("en"));
 $("#frBtn").addEventListener("click",()=>pickLang("fr"));
 $("#esBtn").addEventListener("click",()=>pickLang("es"));
@@ -942,7 +944,7 @@ const urlLang=(new URLSearchParams(location.search).get("lang")||location.hash.s
 let savedLang=""; try{savedLang=localStorage.getItem("lang")||""}catch(_){}
 const navLang=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""])
   .map(x=>String(x).toLowerCase().slice(0,2)).find(x=>dict[x])||"en";
-setLang(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang);
+setLang(LANGPAGE||(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang));
 /* City pages: the quote form starts with the city filled in */
 if(document.documentElement.dataset.city){const fl=document.getElementById("f-loc"),L=document.documentElement.lang;
   if(fl&&!fl.value&&CITIES[CITY]) fl.value=CITIES[CITY].name[L]||CITIES[CITY].name.en;}

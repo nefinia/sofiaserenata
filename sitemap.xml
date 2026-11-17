@@ -2,11 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://sofiaserenata.com/</loc>
-    <lastmod>2026-10-04</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/?lang=es"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://sofiaserenata.com/?lang=de"/>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sofiaserenata.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/"/>
+  </url>
+  <url>
+    <loc>https://sofiaserenata.com/fr/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sofiaserenata.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/"/>
+  </url>
+  <url>
+    <loc>https://sofiaserenata.com/es/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sofiaserenata.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/"/>
+  </url>
+  <url>
+    <loc>https://sofiaserenata.com/de/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sofiaserenata.com/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://sofiaserenata.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://sofiaserenata.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sofiaserenata.com/de/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sofiaserenata.com/"/>
   </url>
   <url>

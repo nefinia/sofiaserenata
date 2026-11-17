@@ -18,7 +18,7 @@
   <meta property="og:description" content="Violin and lyric singing for weddings, corporate evenings and private events in London. Based in Paris and travelling to London regularly. Classical repertoire, French songs and international pop.">
   <meta property="og:url" content="https://sofiaserenata.com/london/">
   <meta property="og:image" content="https://sofiaserenata.com/sofia-violin-eiffel.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://sofiaserenata.com/london/#music","name":"Sofia Gallego · Violin & Voice","alternateName":["Sofia Gallego, violoniste et chanteuse","Sofia Gallego, violinista y cantante","Sofia Gallego, Geigerin und Sängerin"],"description":"Violin and lyric singing for weddings, corporate evenings and private events in London. Based in Paris and travelling to London regularly. Classical repertoire, French songs and international pop.","url":"https://sofiaserenata.com/london/","image":"https://sofiaserenata.com/sofia-violin-eiffel.jpg","email":"contact@sofiaserenata.com","areaServed":[{"@type":"City","name":"Paris"},{"@type":"AdministrativeArea","name":"Île-de-France"},{"@type":"City","name":"London"}],"address":{"@type":"PostalAddress","addressLocality":"Paris","addressCountry":"FR"},"founder":{"@type":"Person","@id":"https://sofiagallego.com/#sofia-gallego","name":"Sofia Gallego"},"knowsLanguage":["fr","en","es","it","de"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Violinist for wedding ceremonies"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Lyric singer for weddings"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for cocktails and receptions"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for corporate events"}}],"sameAs":["https://www.instagram.com/sofiagallego.events/","https://www.gigheaven.com/members/sofia-paris.html","https://linkaband.com/sofia-gallego","https://sofiagallego.com/"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://sofiaserenata.com/london/#music","name":"Sofia Serenata","alternateName":["Sofia Serenata · Violin & Voice","Sofia Gallego · Violin & Voice","Sofia Gallego, violoniste et chanteuse","Sofia Gallego, violinista y cantante","Sofia Gallego, Geigerin und Sängerin"],"description":"Violin and lyric singing for weddings, corporate evenings and private events in London. Based in Paris and travelling to London regularly. Classical repertoire, French songs and international pop.","url":"https://sofiaserenata.com/london/","image":"https://sofiaserenata.com/sofia-violin-eiffel.jpg","email":"contact@sofiaserenata.com","areaServed":[{"@type":"City","name":"Paris"},{"@type":"AdministrativeArea","name":"Île-de-France"},{"@type":"City","name":"London"}],"address":{"@type":"PostalAddress","addressLocality":"Paris","addressCountry":"FR"},"founder":{"@type":"Person","@id":"https://sofiagallego.com/#sofia-gallego","name":"Sofia Gallego"},"knowsLanguage":["fr","en","es","it","de"],"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Violinist for wedding ceremonies"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Lyric singer for weddings"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for cocktails and receptions"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Music for corporate events"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Violinist for birthday parties"}}],"sameAs":["https://www.instagram.com/sofiagallego.events/","https://www.gigheaven.com/members/sofia-paris.html","https://linkaband.com/sofia-gallego","https://sofiagallego.com/"]}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -86,6 +86,11 @@
     .hero .role{margin-top:14px;font-size:clamp(1rem,2.3vw,1.25rem);letter-spacing:.28em;text-transform:uppercase;color:var(--soft)}
     .hero .ornament{margin:22px auto 0;width:96px}
     .hero p.intro{max-width:54ch;margin:22px auto 0;color:var(--soft)}
+    .btn.wa{background:var(--rose-soft);border-color:var(--rose-soft);color:var(--ink)}
+    .btn.wa:hover{background:transparent;border-color:var(--rose);color:var(--rose)}
+    .btn.wa svg{color:var(--rose)}
+    .wa-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;width:52px;height:52px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(59,48,54,.28);text-decoration:none;transition:background .2s}
+    .wa-fab:hover{background:var(--rose)}
     .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
     .btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:13px 24px;font-size:15px;font-weight:500;letter-spacing:.04em;text-decoration:none;cursor:pointer;border:1px solid var(--ink)}
     .btn.solid{background:var(--ink);color:var(--paper)}
@@ -283,6 +288,7 @@
       <div class="actions">
         <a class="btn solid" href="#repertoire" data-t="heroListen">Listen to the repertoire</a>
         <a class="btn ghost" href="#contact" data-t="heroQuote">Request a quote</a>
+        <a class="btn wa" data-wa href="https://wa.me/33744545106" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.1A8.2 8.2 0 1 1 8.2 18.7L4 20z"/></svg><span data-t="waButton">WhatsApp</span></a>
       </div>
       <div class="facts">
         <span><b>20+</b><span data-t="factYears">years on stage</span></span>
@@ -336,6 +342,33 @@
         </article>
       </div>
       <p class="note-sm" data-t="servicesNote">Guide prices — adjusted by duration, venue and setup.</p>
+    </div>
+  </section>
+
+  <section id="occasions">
+    <div class="wrap">
+      <div class="sec-head center">
+        <div class="eyebrow" data-t="occEyebrow">Occasions</div>
+        <h2 data-t="occTitle">Birthdays, corporate events and weddings</h2>
+      </div>
+      <div class="cards">
+        <article class="svc" id="birthdays">
+          <h3 data-t="birthTitle">Birthday parties</h3>
+          <p data-t="birthDesc">A solo violinist or singer for an apartment, a restaurant room or a garden. I move between the tables, take song requests and prepare a piece for the birthday person. Light setup, ready in minutes.</p>
+          <p class="price" data-t="birthPrice">solo from 200€</p>
+        </article>
+        <article class="svc" id="corporate">
+          <h3 data-t="corpTitle">Corporate events</h3>
+          <p data-t="corpDesc">Cocktails, dinners, product launches and end-of-year parties in Paris, Île-de-France and beyond. Sets of one to three hours, as background music or as a featured moment. Up to 50 guests I bring my own sound. For larger rooms I connect my violin and voice microphones to the venue's sound system.</p>
+          <p class="price" data-t="corpPrice">solo from 200€ · duo from 400€</p>
+        </article>
+        <article class="svc" id="weddings">
+          <h3 data-t="wedTitle">Weddings</h3>
+          <p data-t="wedDesc">Ceremony, cocktail and reception. The timing is agreed with the officiant and the repertoire is chosen with you.</p>
+          <p class="price" data-t="wedPrice">from 200€</p>
+        </article>
+      </div>
+      <p class="note-sm" data-t="occNote">Write to me on WhatsApp or at contact@sofiaserenata.com and I will send you a quote.</p>
     </div>
   </section>
 
@@ -446,6 +479,7 @@
         </form>
 
         <div class="info">
+          <p><strong>WhatsApp</strong> : <a data-wa href="https://wa.me/33744545106" target="_blank" rel="noopener" data-t="waLink">Message me on WhatsApp</a></p>
           <p><strong>Email</strong> : <a href="mailto:contact@sofiaserenata.com">contact@sofiaserenata.com</a></p>
           <p data-t-html="basedIn"><strong>Based in</strong> : Paris — Travel across France; London, Brussels and Zurich on request</p>
           <p data-t-html="languages"><strong>Languages</strong> : English, Spanish, French, Italian, German</p>
@@ -460,10 +494,11 @@
 </main>
 
 <footer>
-  <div data-t-html="footer">© <span id="y"></span> Sofia Gallego — Singer & Violinist — Paris & Île-de-France</div>
+  <div data-t-html="footer">© <span id="y"></span> Sofia Serenata · Sofia Gallego — Singer & Violinist — Paris & Île-de-France</div>
   <div id="cityLinks" style="margin-top:6px"><a href="/">Paris</a> · <a href="/london/">London</a> · <a href="/brussels/">Brussels</a> · <a href="/zurich/">Zurich</a></div>
   <div style="margin-top:6px"><a href="https://sofiagallego.com/">sofiagallego.com</a> · <a id="legal" href="../mentions-legales/">Legal notice</a></div>
 </footer>
+<a class="wa-fab" data-wa id="waFab" href="https://wa.me/33744545106" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="wa-ic" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.1A8.2 8.2 0 1 1 8.2 18.7L4 20z"/></svg></a>
 
 <div class="player" id="player" hidden>
   <div class="player-in">
@@ -607,9 +642,9 @@ const SONGS=[
 /* ---------- Text ---------- */
 const dict={
   en:{pageTitle:"Violinist & Singer for Weddings and Events in Paris | Sofia Gallego",
-    pageDescription:"Singer and violinist for weddings and events in Paris and Île-de-France. Classical repertoire, French songs, and international pop. +20 years of international experience.",
+    pageDescription:"Singer and violinist for birthdays, corporate events and weddings in Paris and Île-de-France. Classical repertoire, French songs and international pop. Own sound for up to 50 guests, microphones for larger rooms.",
     navVideos:"Videos",navServices:"Packages",navRep:"Repertoire",navXp:"About",navContact:"Contact",navScores:"Scores",
-    heroEyebrow:"Weddings · Receptions · Private events",tagline:"Singer & Violinist — Paris & Île-de-France",
+    heroEyebrow:"Weddings · Corporate events · Private parties",tagline:"Singer & Violinist — Paris & Île-de-France",
     heroIntro:"Live voice and violin for your ceremony, cocktail and reception — from Bach and Piaf to Coldplay and Taylor Swift, shaped around your day.",
     heroListen:"Listen to the repertoire",heroQuote:"Request a quote",factYears:"years on stage",factCountries:"countries",factLangs:"languages sung",
     vidEyebrow:"Live",vidTitle:"See me perform",moreVids:"Show all videos",lessVids:"Show fewer videos",playVideo:"Play video",moreSongs:n=>"Show all "+n+" songs",lessSongs:"Show fewer songs",
@@ -617,6 +652,18 @@ const dict={
     soloTitle:"Solo",soloDesc:"Violin <em>or</em> voice for a ceremony, cocktail, or background atmosphere.",soloPrice:"from 200€",
     duoTitle:"Duo",duoDesc:"Voice + piano, or violin + guitar. Ideal for cocktails and receptions.",duoPrice:"from 400€",
     ensTitle:"Ensemble",ensDesc:"String quartet, choir, or custom ensemble.",ensPrice:"from 800€",
+    occEyebrow:"Occasions",
+    occTitle:"Birthdays, corporate events and weddings",
+    birthTitle:"Birthday parties",
+    birthDesc:"A solo violinist or singer for an apartment, a restaurant room or a garden. I move between the tables, take song requests and prepare a piece for the birthday person. Light setup, ready in minutes.",
+    birthPrice:"solo from 200€",
+    corpTitle:"Corporate events",
+    corpDesc:"Cocktails, dinners, product launches and end-of-year parties in Paris, Île-de-France and beyond. Sets of one to three hours, as background music or as a featured moment. Up to 50 guests I bring my own sound. For larger rooms I connect my violin and voice microphones to the venue's sound system.",
+    corpPrice:"solo from 200€ · duo from 400€",
+    wedTitle:"Weddings",
+    wedDesc:"Ceremony, cocktail and reception. The timing is agreed with the officiant and the repertoire is chosen with you.",
+    wedPrice:"from 200€",
+    occNote:"Write to me on WhatsApp or at contact@sofiaserenata.com and I will send you a quote.",
     repEyebrow:"Listen",repTitle:"Repertoire",repLead:"A selection of the songs I perform. Press play to hear the original, then imagine it live at your celebration.",
     all:"All",search:"Search a song or artist",searchLabel:"Search the repertoire",surprise:"Surprise me",
     count:(n,m)=>n===m?m+" songs":n+" of "+m+" songs",empty:"No song matches that search — ask me, I may well play it.",
@@ -630,18 +677,18 @@ const dict={
     roots2:"Soloist in opera, zarzuela and musical theater, and chamber music.",
     roots3:"Hotels (including the Ritz-Carlton), embassies, salons and theaters in Chile and France.",
     roots4:"Recordings and television appearances.",
-    contactEyebrow:"Let's talk about your day",contactTitle:"Contact & Quote",
+    waButton:"WhatsApp",waLink:"Message me on WhatsApp",waMsg:"Hello Sofia, I would like to ask about live music for my event.",contactEyebrow:"Let's talk about your day",contactTitle:"Contact & Quote",
     soloOption:"Solo Package",duoOption:"Duo Package",customOption:"Custom",sendButton:"Send request",
     formNote:"By sending this form, you agree to be contacted by email.",sentOk:"Thank you! Your request is on its way. I usually reply within 24 hours.",sentErr:"The request could not be sent. Please write to contact@sofiaserenata.com.",
     basedIn:"<strong>Based in</strong> : Paris — Travel across France; London, Brussels and Zurich on request",languages:"<strong>Languages</strong> : English, Spanish, French, Italian, German",
     techNote:"Need a microphone or sound system? I can come self-contained for intimate spaces, or coordinate with the venue's technical team. Travel costs outside central Paris depend on distance and schedule.",
-    footer:`© <span id="y"></span> Sofia Gallego — Singer & Violinist — Paris & Île-de-France`,
+    footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego — Singer & Violinist — Paris & Île-de-France`,
     namePlaceholder:"Your name",emailPlaceholder:"Your email",eventPlaceholder:"Event type (wedding, cocktail, etc.)",
     locationPlaceholder:"Location (Paris, Île-de-France)",messagePlaceholder:"Tell me a few details (schedule, musical atmosphere, requested pieces...)"},
-  de:{pageTitle:"Geigerin und Sängerin für Hochzeiten und Events in Paris | Sofia Gallego",
-    pageDescription:"Sängerin und Geigerin für Hochzeiten und Events in Paris und der Île-de-France. Klassisches Repertoire, französische Chansons und internationaler Pop. Über 20 Jahre internationale Erfahrung.",
+  de:{pageTitle:"Geigerin und Sängerin in Paris: Hochzeiten, Geburtstage und Firmenveranstaltungen | Sofia Gallego",
+    pageDescription:"Sängerin und Geigerin für Geburtstage, Firmenveranstaltungen und Hochzeiten in Paris und der Île-de-France. Klassisches Repertoire, französische Chansons und internationaler Pop. Eigene Tontechnik bis 50 Gäste, Mikrofone für größere Räume.",
     navVideos:"Videos",navServices:"Pakete",navRep:"Repertoire",navXp:"Über mich",navContact:"Kontakt",navScores:"Noten",
-    heroEyebrow:"Hochzeiten · Empfänge · Private Feiern",tagline:"Sängerin & Geigerin · Paris & Île-de-France",
+    heroEyebrow:"Hochzeiten · Firmenveranstaltungen · Private Feiern",tagline:"Sängerin & Geigerin · Paris & Île-de-France",
     heroIntro:"Gesang und Geige live für Ihre Trauung, Ihren Cocktail und Ihren Empfang. Von Bach und Piaf bis Coldplay und Taylor Swift, auf Ihren Tag zugeschnitten.",
     heroListen:"Repertoire anhören",heroQuote:"Angebot anfragen",factYears:"Jahre auf der Bühne",factCountries:"Länder",factLangs:"Sprachen im Gesang",
     vidEyebrow:"Live",vidTitle:"Ein Auftritt zum Ansehen",moreVids:"Alle Videos zeigen",lessVids:"Weniger Videos zeigen",playVideo:"Video abspielen",moreSongs:n=>"Alle "+n+" Lieder zeigen",lessSongs:"Weniger Lieder zeigen",
@@ -649,6 +696,18 @@ const dict={
     soloTitle:"Solo",soloDesc:"Geige <em>oder</em> Gesang für Trauung, Cocktail oder musikalische Begleitung im Hintergrund.",soloPrice:"ab 200€",
     duoTitle:"Duo",duoDesc:"Gesang + Klavier oder Geige + Gitarre. Ideal für Cocktail und Empfang.",duoPrice:"ab 400€",
     ensTitle:"Ensemble",ensDesc:"Streichquartett, Chor oder individuelles Ensemble.",ensPrice:"ab 800€",
+    occEyebrow:"Anlässe",
+    occTitle:"Geburtstage, Firmenveranstaltungen und Hochzeiten",
+    birthTitle:"Geburtstagsfeiern",
+    birthDesc:"Geige oder Gesang solo, in einer Wohnung, einem Restaurantsaal oder einem Garten. Ich gehe zwischen den Tischen umher, nehme Liedwünsche entgegen und bereite ein Stück für das Geburtstagskind vor. Leichtes Equipment, in wenigen Minuten aufgebaut.",
+    birthPrice:"solo ab 200€",
+    corpTitle:"Firmenveranstaltungen",
+    corpDesc:"Empfänge, Dinner, Produktpräsentationen und Jahresabschlussfeiern in Paris, der Île-de-France und darüber hinaus. Auftritte von ein bis drei Stunden, als Hintergrundmusik oder als besonderer Moment. Bis zu 50 Gästen bringe ich meine eigene Tontechnik mit. Für größere Räume schließe ich meine Geigen- und Gesangsmikrofone an die Anlage des Veranstaltungsorts an.",
+    corpPrice:"solo ab 200€ · Duo ab 400€",
+    wedTitle:"Hochzeiten",
+    wedDesc:"Trauung, Empfang und Feier. Der Ablauf wird mit dem Trauredner abgestimmt, das Repertoire wählen wir gemeinsam.",
+    wedPrice:"ab 200€",
+    occNote:"Schreiben Sie mir über WhatsApp oder an contact@sofiaserenata.com, und ich schicke Ihnen ein Angebot.",
     repEyebrow:"Anhören",repTitle:"Repertoire",repLead:"Eine Auswahl der Stücke, die ich spiele und singe. Hören Sie das Original und stellen Sie sich vor, wie es live bei Ihrer Feier klingt.",
     all:"Alle",search:"Lied oder Künstler suchen",searchLabel:"Repertoire durchsuchen",surprise:"Überraschen Sie mich",
     count:(n,m)=>n===m?m+" Lieder":n+" von "+m+" Liedern",empty:"Zu dieser Suche gibt es kein Lied. Fragen Sie mich, vielleicht spiele ich es.",
@@ -662,18 +721,18 @@ const dict={
     roots2:"Solistin in Oper, Zarzuela und Musiktheater sowie in der Kammermusik.",
     roots3:"Hotels (darunter das Ritz-Carlton), Botschaften, Salons und Theater in Chile und Frankreich.",
     roots4:"Aufnahmen und Fernsehauftritte.",
-    contactEyebrow:"Sprechen wir über Ihren Tag",contactTitle:"Kontakt & Angebot",
+    waButton:"WhatsApp",waLink:"Schreiben Sie mir auf WhatsApp",waMsg:"Hallo Sofia, ich möchte nach Livemusik für meine Veranstaltung fragen.",contactEyebrow:"Sprechen wir über Ihren Tag",contactTitle:"Kontakt & Angebot",
     soloOption:"Solo-Paket",duoOption:"Duo-Paket",customOption:"Individuell",sendButton:"Anfrage senden",
     formNote:"Mit dem Absenden des Formulars stimmen Sie zu, per E-Mail kontaktiert zu werden.",sentOk:"Danke! Ihre Anfrage ist unterwegs. Ich antworte meist innerhalb von 24 Stunden.",sentErr:"Die Anfrage konnte nicht gesendet werden. Bitte schreiben Sie an contact@sofiaserenata.com.",
     basedIn:"<strong>Sitz</strong> : Paris · Anreise in ganz Frankreich; London, Brüssel und Zürich auf Anfrage",languages:"<strong>Sprachen</strong> : Englisch, Spanisch, Französisch, Italienisch, Deutsch",
     techNote:"Brauchen Sie Mikrofon oder Tontechnik? Für kleine Räume komme ich mit eigener Technik, sonst stimme ich mich mit dem Technikteam des Veranstaltungsortes ab. Reisekosten außerhalb des Zentrums von Paris hängen von Entfernung und Zeitplan ab.",
-    footer:`© <span id="y"></span> Sofia Gallego · Sängerin & Geigerin · Paris & Île-de-France`,
+    footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego · Sängerin & Geigerin · Paris & Île-de-France`,
     namePlaceholder:"Ihr Name",emailPlaceholder:"Ihre E-Mail",eventPlaceholder:"Art der Feier (Hochzeit, Cocktail usw.)",
     locationPlaceholder:"Ort (Paris, Île-de-France)",messagePlaceholder:"Erzählen Sie mir ein paar Details (Ablauf, musikalische Stimmung, gewünschte Stücke ...)"},
-  fr:{pageTitle:"Violoniste et chanteuse lyrique pour mariages et événements à Paris | Sofia Gallego",
-    pageDescription:"Chanteuse et violoniste pour mariages et événements à Paris et en Île-de-France. Répertoire classique, chansons françaises et pop internationale. +20 ans d’expérience internationale.",
+  fr:{pageTitle:"Violoniste et chanteuse lyrique à Paris : mariages, anniversaires et événements d’entreprise | Sofia Gallego",
+    pageDescription:"Chanteuse et violoniste pour anniversaires, événements d’entreprise et mariages à Paris et en Île-de-France. Répertoire classique, chansons françaises et pop internationale. Sonorisation propre jusqu’à 50 invités, micros pour les salles plus grandes.",
     navVideos:"Vidéos",navServices:"Formules",navRep:"Répertoire",navXp:"À propos",navContact:"Contact",navScores:"Partitions",
-    heroEyebrow:"Mariages · Réceptions · Événements privés",tagline:"Chanteuse & Violoniste — Paris & Île-de-France",
+    heroEyebrow:"Mariages · Événements d’entreprise · Fêtes privées",tagline:"Chanteuse & Violoniste — Paris & Île-de-France",
     heroIntro:"Chant et violon en live pour votre cérémonie, cocktail et réception — de Bach et Piaf à Coldplay et Taylor Swift, pensés pour votre journée.",
     heroListen:"Écouter le répertoire",heroQuote:"Demander un devis",factYears:"ans de scène",factCountries:"pays",factLangs:"langues chantées",
     vidEyebrow:"En live",vidTitle:"Me voir sur scène",moreVids:"Voir toutes les vidéos",lessVids:"Voir moins de vidéos",playVideo:"Lire la vidéo",moreSongs:n=>"Voir les "+n+" chansons",lessSongs:"Voir moins de chansons",
@@ -681,6 +740,18 @@ const dict={
     soloTitle:"Solo",soloDesc:"Violon <em>ou</em> chant pour cérémonie, cocktail ou ambiance.",soloPrice:"à partir de 200€",
     duoTitle:"Duo",duoDesc:"Chant + piano, ou violon + guitare. Idéal cocktail/réception.",duoPrice:"à partir de 400€",
     ensTitle:"Ensemble",ensDesc:"Quatuor à cordes, chœur ou formation sur-mesure.",ensPrice:"à partir de 800€",
+    occEyebrow:"Occasions",
+    occTitle:"Anniversaires, événements d’entreprise et mariages",
+    birthTitle:"Anniversaires",
+    birthDesc:"Violon ou chant en solo, dans un appartement, un salon de restaurant ou un jardin. Je circule entre les tables, je prends des demandes de chansons et je prépare un morceau pour la personne fêtée. Installation légère, prête en quelques minutes.",
+    birthPrice:"solo dès 200€",
+    corpTitle:"Événements d’entreprise",
+    corpDesc:"Cocktails, dîners, lancements de produit et soirées de fin d’année à Paris, en Île-de-France et ailleurs. Sets d’une à trois heures, en fond sonore ou comme moment fort. Jusqu’à 50 invités, j’apporte ma propre sonorisation. Pour les salles plus grandes, je branche mes micros violon et voix sur la sono du lieu.",
+    corpPrice:"solo dès 200€ · duo dès 400€",
+    wedTitle:"Mariages",
+    wedDesc:"Cérémonie, cocktail et réception. Le minutage est défini avec l’officiant et le répertoire est choisi avec vous.",
+    wedPrice:"dès 200€",
+    occNote:"Écrivez-moi sur WhatsApp ou à contact@sofiaserenata.com et je vous envoie un devis.",
     repEyebrow:"Écouter",repTitle:"Répertoire",repLead:"Une sélection des morceaux que j'interprète. Appuyez sur lecture pour écouter l'original, et imaginez-le en live pour votre fête.",
     all:"Tout",search:"Chercher un titre ou un artiste",searchLabel:"Chercher dans le répertoire",surprise:"Surprenez-moi",
     count:(n,m)=>n===m?m+" morceaux":n+" sur "+m+" morceaux",empty:"Aucun morceau ne correspond — demandez-moi, je le joue peut-être.",
@@ -694,18 +765,18 @@ const dict={
     roots2:"Soliste en opéra, zarzuela et théâtre musical, et en musique de chambre.",
     roots3:"Hôtels (dont le Ritz-Carlton), ambassades, salons et théâtres au Chili et en France.",
     roots4:"Enregistrements et participations télévisées.",
-    contactEyebrow:"Parlons de votre journée",contactTitle:"Contact & Devis",
+    waButton:"WhatsApp",waLink:"Écrivez-moi sur WhatsApp",waMsg:"Bonjour Sofia, je souhaiterais des informations sur la musique live pour mon événement.",contactEyebrow:"Parlons de votre journée",contactTitle:"Contact & Devis",
     soloOption:"Forfait Solo",duoOption:"Forfait Duo",customOption:"Sur-mesure",sendButton:"Envoyer la demande",
     formNote:"En envoyant ce formulaire, vous acceptez d’être contacté·e par email.",sentOk:"Merci ! Votre demande est bien partie. Je réponds en général sous 24 heures.",sentErr:"La demande n’a pas pu être envoyée. Écrivez-moi à contact@sofiaserenata.com.",
     basedIn:"<strong>Basée à</strong> : Paris — Déplacements dans toute la France ; Londres, Bruxelles et Zurich sur demande",languages:"<strong>Langues</strong> : anglais, espagnol, français, italien, allemand",
     techNote:"Besoin d’un micro/sonorisation ? Je peux venir autonome pour des espaces intimes, ou me coordonner avec la technique sur place. Frais de déplacement hors Paris intra-muros selon distance/horaires.",
-    footer:`© <span id="y"></span> Sofia Gallego — Chanteuse & Violoniste — Paris & Île-de-France`,
+    footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego — Chanteuse & Violoniste — Paris & Île-de-France`,
     namePlaceholder:"Votre nom",emailPlaceholder:"Votre email",eventPlaceholder:"Type d’événement (mariage, cocktail, etc.)",
     locationPlaceholder:"Lieu (Paris, Île-de-France)",messagePlaceholder:"Dites-moi quelques détails (horaires, ambiance musicale, morceaux souhaités…)"},
-  es:{pageTitle:"Violinista y cantante para bodas y eventos en París | Sofia Gallego",
-    pageDescription:"Cantante y violinista para bodas y eventos en París e Île-de-France. Repertorio clásico, chanson francesa y pop internacional. Más de 20 años de experiencia internacional.",
+  es:{pageTitle:"Violinista y cantante en París: bodas, cumpleaños y eventos de empresa | Sofia Gallego",
+    pageDescription:"Cantante y violinista para cumpleaños, eventos de empresa y bodas en París e Île-de-France. Repertorio clásico, chanson francesa y pop internacional. Sonido propio hasta 50 invitados, micrófonos para salas más grandes.",
     navVideos:"Videos",navServices:"Paquetes",navRep:"Repertorio",navXp:"Sobre mí",navContact:"Contacto",navScores:"Partituras",
-    heroEyebrow:"Bodas · Recepciones · Eventos privados",tagline:"Cantante y violinista — París e Île-de-France",
+    heroEyebrow:"Bodas · Eventos de empresa · Fiestas privadas",tagline:"Cantante y violinista — París e Île-de-France",
     heroIntro:"Voz y violín en vivo para su ceremonia, cóctel y recepción — de Bach y Piaf a Coldplay y Taylor Swift, a la medida de su día.",
     heroListen:"Escuchar el repertorio",heroQuote:"Solicitar un presupuesto",factYears:"años en escena",factCountries:"países",factLangs:"idiomas cantados",
     vidEyebrow:"En vivo",vidTitle:"Véame en escena",moreVids:"Ver todos los videos",lessVids:"Ver menos videos",playVideo:"Reproducir video",moreSongs:n=>"Ver las "+n+" canciones",lessSongs:"Ver menos canciones",
@@ -713,6 +784,18 @@ const dict={
     soloTitle:"Solo",soloDesc:"Violín <em>o</em> voz para una ceremonia, un cóctel o música ambiental.",soloPrice:"desde 200€",
     duoTitle:"Dúo",duoDesc:"Voz + piano, o violín + guitarra. Ideal para cócteles y recepciones.",duoPrice:"desde 400€",
     ensTitle:"Ensemble",ensDesc:"Cuarteto de cuerdas, coro o conjunto a medida.",ensPrice:"desde 800€",
+    occEyebrow:"Ocasiones",
+    occTitle:"Cumpleaños, eventos de empresa y bodas",
+    birthTitle:"Cumpleaños",
+    birthDesc:"Violín o voz en solitario, en un apartamento, un salón de restaurante o un jardín. Me muevo entre las mesas, tomo peticiones de canciones y preparo una pieza para la persona que cumple años. Equipo ligero, listo en minutos.",
+    birthPrice:"solo desde 200€",
+    corpTitle:"Eventos de empresa",
+    corpDesc:"Cócteles, cenas, lanzamientos de producto y fiestas de fin de año en París, Île-de-France y más allá. Sets de una a tres horas, como música de fondo o como momento destacado. Hasta 50 invitados llevo mi propio sonido. Para salas más grandes conecto mis micrófonos de violín y voz al sistema de sonido del lugar.",
+    corpPrice:"solo desde 200€ · dúo desde 400€",
+    wedTitle:"Bodas",
+    wedDesc:"Ceremonia, cóctel y recepción. Los tiempos se acuerdan con el oficiante y el repertorio se elige con usted.",
+    wedPrice:"desde 200€",
+    occNote:"Escríbame por WhatsApp o a contact@sofiaserenata.com y le envío un presupuesto.",
     repEyebrow:"Escuchar",repTitle:"Repertorio",repLead:"Una selección de las canciones que interpreto. Reproduzca la versión original e imagínela en vivo en su celebración.",
     all:"Todo",search:"Buscar una canción o un artista",searchLabel:"Buscar en el repertorio",surprise:"Sorpréndame",
     count:(n,m)=>n===m?m+" canciones":n+" de "+m+" canciones",empty:"Ninguna canción coincide con la búsqueda — pregúnteme, es muy posible que la toque.",
@@ -726,12 +809,12 @@ const dict={
     roots2:"Solista en ópera, zarzuela y teatro musical, y en música de cámara.",
     roots3:"Hoteles (entre ellos el Ritz-Carlton), embajadas, salones y teatros en Chile y Francia.",
     roots4:"Grabaciones y apariciones en televisión.",
-    contactEyebrow:"Hablemos de su día",contactTitle:"Contacto y presupuesto",
+    waButton:"WhatsApp",waLink:"Escríbame por WhatsApp",waMsg:"Hola Sofia, me gustaría consultar por música en vivo para mi evento.",contactEyebrow:"Hablemos de su día",contactTitle:"Contacto y presupuesto",
     soloOption:"Paquete Solo",duoOption:"Paquete Dúo",customOption:"A medida",sendButton:"Enviar solicitud",
     formNote:"Al enviar este formulario, acepta ser contactado/a por correo electrónico.",sentOk:"¡Gracias! Su solicitud fue enviada. Suelo responder en menos de 24 horas.",sentErr:"No se pudo enviar la solicitud. Escríbame a contact@sofiaserenata.com.",
     basedIn:"<strong>Con base en</strong> : París — Desplazamientos por toda Francia; Londres, Bruselas y Zúrich bajo petición",languages:"<strong>Idiomas</strong> : inglés, español, francés, italiano, alemán",
     techNote:"¿Necesita micrófono o sonido? Puedo llegar con equipo propio para espacios íntimos, o coordinarme con el equipo técnico del lugar. Los gastos de desplazamiento fuera del centro de París dependen de la distancia y el horario.",
-    footer:`© <span id="y"></span> Sofia Gallego — Cantante y violinista — París e Île-de-France`,
+    footer:`© <span id="y"></span> Sofia Serenata · Sofia Gallego — Cantante y violinista — París e Île-de-France`,
     namePlaceholder:"Su nombre",emailPlaceholder:"Su correo electrónico",eventPlaceholder:"Tipo de evento (boda, cóctel, etc.)",
     locationPlaceholder:"Lugar (París, Île-de-France)",messagePlaceholder:"Cuénteme algunos detalles (horarios, ambiente musical, piezas deseadas…)"}
 };
@@ -825,9 +908,11 @@ function setLang(l){
   lang=l; document.documentElement.lang=l; document.title=dict[l].pageTitle;
   const desc=document.querySelector('meta[name="description"]'); if(desc) desc.setAttribute("content",dict[l].pageDescription);
   const can=document.querySelector('link[rel="canonical"]'), forced=/[?&]lang=(en|fr|es|de)/.test(location.search);
-  if(can) can.setAttribute("href",(document.documentElement.dataset.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"?"?lang="+l:""));
+  const cd=document.documentElement.dataset;
+  if(can) can.setAttribute("href",(!cd.city&&!cd.langpage&&forced&&l!=="en")?"https://sofiaserenata.com/"+l+"/":(cd.canonical||"https://sofiaserenata.com/")+(forced&&l!=="en"&&!cd.langpage?"?lang="+l:""));
   document.querySelectorAll("[data-t]").forEach(el=>{const v=dict[l][el.dataset.t]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll("[data-t-html]").forEach(el=>{const v=dict[l][el.dataset.tHtml]; if(v) el.innerHTML=v;});
+  document.querySelectorAll("[data-wa]").forEach(el=>{el.href="https://wa.me/33744545106?text="+encodeURIComponent(dict[l].waMsg);});
   document.querySelectorAll("[data-p]").forEach(el=>{const v=dict[l][el.dataset.p]; if(v) el.setAttribute("placeholder",v);});
   ["en","fr","es","de"].forEach(k=>$("#"+k+"Btn").setAttribute("aria-pressed",l===k));
   const lc=$("#langCycle"); if(lc){lc.textContent=l.toUpperCase(); lc.setAttribute("aria-label","Language: "+l.toUpperCase());}
@@ -837,7 +922,8 @@ function setLang(l){
   if(cl&&window.CITIES) cl.innerHTML=['<a href="/">Paris</a>'].concat(Object.keys(CITIES).map(k=>`<a href="/${k}/">${CITIES[k].name[l]}</a>`)).join(" · ");
   chips(); renderSongs(); if(current<0 || true) renderThumbs();
 }
-const pickLang=l=>{setLang(l); try{localStorage.setItem("lang",l)}catch(_){}};
+const LANGPAGE=document.documentElement.dataset.langpage||"",LANGURL={en:"/",fr:"/fr/",es:"/es/",de:"/de/"};
+const pickLang=l=>{try{localStorage.setItem("lang",l)}catch(_){} if(LANGPAGE){location.href=LANGURL[l];return;} setLang(l);};
 $("#enBtn").addEventListener("click",()=>pickLang("en"));
 $("#frBtn").addEventListener("click",()=>pickLang("fr"));
 $("#esBtn").addEventListener("click",()=>pickLang("es"));
@@ -858,7 +944,7 @@ const urlLang=(new URLSearchParams(location.search).get("lang")||location.hash.s
 let savedLang=""; try{savedLang=localStorage.getItem("lang")||""}catch(_){}
 const navLang=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""])
   .map(x=>String(x).toLowerCase().slice(0,2)).find(x=>dict[x])||"en";
-setLang(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang);
+setLang(LANGPAGE||(dict[urlLang]?urlLang:dict[savedLang]?savedLang:navLang));
 /* City pages: the quote form starts with the city filled in */
 if(document.documentElement.dataset.city){const fl=document.getElementById("f-loc"),L=document.documentElement.lang;
   if(fl&&!fl.value&&CITIES[CITY]) fl.value=CITIES[CITY].name[L]||CITIES[CITY].name.en;}
